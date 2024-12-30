@@ -12,7 +12,7 @@
   "dependencies": {
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.2",
-    "@nextui-org/react": "^2.6.8",
+    "@nextui-org/react": "^2.6.10",
     "@radix-ui/react-collapsible": "^1.1.2",
     "@radix-ui/react-scroll-area": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
