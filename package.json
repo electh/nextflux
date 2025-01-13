@@ -16,7 +16,7 @@
     "@radix-ui/react-collapsible": "^1.1.2",
     "@radix-ui/react-scroll-area": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/typography": "^0.5.16",
     "@vidstack/react": "^1.12.12",
     "axios": "^1.7.9",
     "canvas-confetti": "^1.9.3",
