@@ -22,7 +22,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "dayjs": "^1.11.13",
-    "framer-motion": "^11.15.0",
+    "framer-motion": "^12.4.2",
     "html-react-parser": "^5.2.2",
     "i18next": "^24.2.1",
     "i18next-browser-languagedetector": "^8.0.2",
