@@ -2,6 +2,8 @@ import i18next from "i18next";
 import { addToast, Spinner } from "@heroui/react";
 import minifluxAPI from "@/api/miniflux.js";
 import { forceSync } from "@/stores/syncStore.js";
+import { categoriesExpandStates } from "@/stores/feedsStore.js";
+
 export const handleRefresh = (feedId) => {
   if (!feedId) return;
 
@@ -27,4 +29,11 @@ export const handleRefresh = (feedId) => {
       throw error;
     }
   })();
+};
+
+export const toggleCategoryExpanded = (id, isOpen) => {
+  categoriesExpandStates.set({
+    ...categoriesExpandStates.get(),
+    [id]: isOpen ?? !categoriesExpandStates.get()[id],
+  });
 };

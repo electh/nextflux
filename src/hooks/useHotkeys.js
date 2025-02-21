@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
+import { categoriesAndFeeds } from "@/stores/feedsStore.js";
 import {
   activeArticle,
   filteredArticles,
@@ -11,6 +12,7 @@ import {
   handleToggleStar,
   handleToggleContent,
 } from "@/handlers/articleHandlers";
+import { toggleCategoryExpanded } from "@/handlers/feedHandlers";
 import { forceSync } from "@/stores/syncStore";
 import {
   searchDialogOpen,
@@ -23,7 +25,18 @@ export function useHotkeys() {
   const $articles = useStore(filteredArticles);
   const $activeArticle = useStore(activeArticle);
   const $imageGalleryActive = useStore(imageGalleryActive);
-  const { articleId } = useParams();
+  const { categoryId, feedId, articleId } = useParams();
+  const $categoriesAndFeeds = useStore(categoriesAndFeeds);
+
+  const currentCatFeedIndex = $categoriesAndFeeds.findIndex(
+    // certain feed only can be in one category
+    // NOTE: cid is string, fid is number
+    (i) =>
+      // when categoryId is undefined, it means currently selected certain feed
+      (categoryId === undefined && `${i.fid}` === feedId) ||
+      // when i.fid is undefined, it means currently selected certain category
+      (i.cid === categoryId && i.fid === undefined)
+  );
 
   // 获取当前文章在列表中的索引
   const currentIndex = $articles.findIndex((a) => a.id === $activeArticle?.id);
@@ -58,17 +71,71 @@ export function useHotkeys() {
           searchDialogOpen.set(true);
           break;
 
-        case "j": // 下一篇
-          if (articleId && currentIndex < $articles.length - 1) {
-            const nextArticle = $articles[currentIndex + 1];
-            navigate(`${basePath}/article/${nextArticle.id}`);
-            if (nextArticle.status !== "read") {
-              await handleMarkStatus(nextArticle);
-            }
+        case "N": // 新建订阅源
+          addFeedModalOpen.set(true);
+          break;
+
+        case "x":
+          toggleCategoryExpanded($categoriesAndFeeds[currentCatFeedIndex]?.cid);
+          // when currently selected feed, collapse category will go to the category of the feed
+          if (categoryId === undefined) {
+            navigate(
+              `/category/${$categoriesAndFeeds[currentCatFeedIndex]?.cid}`
+            );
           }
           break;
 
+        case "n": {
+          // next category or feed
+          // if current is category: when collapsed then select next category
+          // when expanded then select first feed of current category
+
+          // if current is feed, find next feed
+          // when it's the last feed of the category, select next category
+          // check any selected category or feed
+          const nextCategoryOrFeed =
+            $categoriesAndFeeds[currentCatFeedIndex + 1];
+          if (nextCategoryOrFeed) {
+            const { fid, cid } = nextCategoryOrFeed;
+            const type = fid ? "feed" : "category";
+            const id = fid ?? cid;
+
+            navigate(`/${type}/${id}`);
+          }
+          break;
+        }
+
+        case "p": {
+          // previous category or feed
+          const prevCategoryOrFeed =
+            $categoriesAndFeeds[currentCatFeedIndex - 1];
+          if (prevCategoryOrFeed) {
+            const { fid, cid } = prevCategoryOrFeed;
+            const type = fid ? "feed" : "category";
+            const id = fid ?? cid;
+
+            navigate(`/${type}/${id}`);
+          }
+          break;
+        }
+
+        case "j": {
+          // 下一篇
+          const nextArticleIndex =
+            articleId === undefined || currentIndex >= $articles.length - 1
+              ? 0
+              : currentIndex + 1;
+          const nextArticle = $articles[nextArticleIndex];
+          navigate(`${basePath}/article/${nextArticle.id}`);
+          if (nextArticle.status !== "read") {
+            await handleMarkStatus(nextArticle);
+          }
+          break;
+        }
+
         case "k": // 上一篇
+          // TODO: when no article opened, should open the last one
+          // but $articles is not full list, instead of paginated list
           if (currentIndex > 0) {
             const prevArticle = $articles[currentIndex - 1];
             navigate(`${basePath}/article/${prevArticle.id}`);
@@ -135,5 +202,9 @@ export function useHotkeys() {
     navigate,
     articleId,
     $imageGalleryActive,
+    $categoriesAndFeeds,
+    categoryId,
+    feedId,
+    currentCatFeedIndex,
   ]);
 }

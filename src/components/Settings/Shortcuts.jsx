@@ -36,13 +36,25 @@ export default function Shortcuts() {
       },
       { key: "R", desc: t("sidebar.shortcuts.refresh") },
       {
+        key: "F",
+        desc: t("sidebar.shortcuts.search"),
+      },
+      {
+        key: "X",
+        desc: t("sidebar.shortcuts.toggleCategory"),
+      },
+      {
+        key: "N",
+        desc: t("sidebar.shortcuts.nextCategoryOrFeed"),
+      },
+      {
+        key: "P",
+        desc: t("sidebar.shortcuts.prevCategoryOrFeed"),
+      },
+      {
         key: "N",
         desc: t("sidebar.shortcuts.addFeed"),
         kbdKey: ["shift"],
-      },
-      {
-        key: "F",
-        desc: t("sidebar.shortcuts.search"),
       },
     ],
   };

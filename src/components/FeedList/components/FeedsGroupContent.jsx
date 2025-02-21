@@ -19,46 +19,27 @@ import {
 } from "@/components/ui/sidebar";
 import { useSidebar } from "@/components/ui/sidebar.jsx";
 import FeedIcon from "@/components/ui/FeedIcon";
-import { settingsState } from "@/stores/settingsStore";
-import { useEffect, useState } from "react";
+import { categoriesExpandStates } from "@/stores/feedsStore";
+import { useEffect } from "react";
 import FeedContextMenu from "./FeedContextMenu";
 import CategoryContextMenu from "./CategoryContextMenu";
+import { toggleCategoryExpanded } from "@/handlers/feedHandlers";
 
 const FeedsGroupContent = ({ category }) => {
   const $getCategoryCount = useStore(getCategoryCount);
   const $getFeedCount = useStore(getFeedCount);
   const { isMobile, setOpenMobile } = useSidebar();
   const { categoryId, feedId } = useParams();
-  const { defaultExpandCategory } = useStore(settingsState);
-
-  // 从本地存储获取展开状态
-  const getStoredExpandState = () => {
-    const stored = localStorage.getItem("categoryExpanded");
-    return stored ? JSON.parse(stored) : {};
-  };
-
-  // 初始状态从本地存储获取,如果没有则使用默认值
-  const [open, setOpen] = useState(() => {
-    const stored = getStoredExpandState();
-    return stored[category.id] ?? defaultExpandCategory;
-  });
-
-  // 保存展开状态到本地存储
-  const updateExpandState = (isOpen) => {
-    const stored = getStoredExpandState();
-    stored[category.id] = isOpen;
-    localStorage.setItem("categoryExpanded", JSON.stringify(stored));
-    setOpen(isOpen);
-  };
+  const $categoriesExpandStates = useStore(categoriesExpandStates);
 
   useEffect(() => {
     if (feedId) {
       const shouldExpand = category.feeds.some(
-        (feed) => parseInt(feedId) === feed.id,
+        (feed) => parseInt(feedId) === feed.id
       );
       // 只在需要展开时更新状态
       if (shouldExpand) {
-        updateExpandState(true);
+        toggleCategoryExpanded(category.id, true);
       }
       // 滚动到活动的 feed
       if (shouldExpand) {
@@ -69,12 +50,16 @@ const FeedsGroupContent = ({ category }) => {
   }, [feedId, category.id]);
 
   return (
-    <Collapsible key={category.id} open={open} onOpenChange={updateExpandState}>
+    <Collapsible
+      key={category.id}
+      open={$categoriesExpandStates[category.id]}
+      onOpenChange={(open) => toggleCategoryExpanded(category.id, open)}
+    >
       <SidebarMenuItem key={`menu-${category.id}`}>
         <CategoryContextMenu category={category}>
           <SidebarMenuButton
             className={cn(
-              categoryId === category.id && "bg-default rounded-md",
+              categoryId === category.id && "bg-default rounded-md"
             )}
             asChild
           >
@@ -96,6 +81,7 @@ const FeedsGroupContent = ({ category }) => {
               $getCategoryCount(category.id)}
           </SidebarMenuBadge>
         </CategoryContextMenu>
+
         <CollapsibleContent>
           <SidebarMenuSub className="m-0 px-0 border-none">
             {category.feeds.map((feed) => (
@@ -106,7 +92,7 @@ const FeedsGroupContent = ({ category }) => {
                     className={cn(
                       "pl-8 pr-2 h-8",
                       parseInt(feedId) === feed.id &&
-                        "active-feed bg-default rounded-md",
+                        "active-feed bg-default rounded-md"
                     )}
                   >
                     <Link
