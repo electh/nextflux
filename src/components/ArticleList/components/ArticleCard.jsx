@@ -22,6 +22,7 @@ export default function ArticleCard({ article }) {
     cardImageSize,
     showFavicon,
     showReadingTime,
+    truncateTitles,
   } = useStore(settingsState);
   const hasBeenVisible = useRef(false);
   const { ripples, onClear, onPress } = useRipple();
@@ -148,10 +149,13 @@ export default function ArticleCard({ article }) {
             <div className="flex flex-col gap-1 flex-1">
               <h3
                 className={cn(
-                  "card-title text-base font-semibold line-clamp-2 text-wrap break-words break-all",
+                  "card-title text-base font-semibold text-wrap break-words",
                   article.status === "read"
                     ? "text-content2-foreground"
                     : "text-foreground",
+                  truncateTitles
+                    ? "line-clamp-2"
+                    : "",
                 )}
               >
                 {cleanTitle(article.title)}

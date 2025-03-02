@@ -110,6 +110,15 @@ Run with Docker using the following command:
 docker run -d --name nextflux -p 3000:3000 --restart unless-stopped electh/nextflux:latest
 ```
 
+You can use the following environment variables to fine-tune your default configuration:
+
+- `NEXTFLUX_DEFAULT_SERVER_URL`
+  - Set a default value for the `Server URL` field on the login page. 
+  - Defaults to `<empty>`.
+- `NEXTFLUX_SINGLE_SERVER_MODE`
+  - `true` or `false` to hide or show the `Server URL` field from the login page.
+  - Defaults to `false`.
+
 ### Cloudflare Pages Deployment (standalone)
 
 1. Fork this repository to your GitHub account

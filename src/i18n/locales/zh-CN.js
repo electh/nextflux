@@ -255,6 +255,7 @@ export default {
       showFavicon: "显示订阅图标",
       showTextPreview: "文本预览",
       showReadingTime: "估计阅读时间",
+      truncateTitles: "截断标题",
       codeBlock: "代码块",
       showLineNumbers: "显示行号",
       forceDarkCodeTheme: "强制深色主题",

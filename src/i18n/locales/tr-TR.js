@@ -256,6 +256,7 @@ export default {
       showFavicon: "Faviconları göster",
       showTextPreview: "Metin önizlemesi",
       showReadingTime: "Tahmini okuma süresi",
+      truncateTitles: "Başlıkları Kırp",
       codeBlock: "KOD BLOĞU",
       showLineNumbers: "Satır numaralarını göster",
       forceDarkCodeTheme: "Karanlık moda zorla",

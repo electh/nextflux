@@ -12,6 +12,7 @@ import {
   CircleDashed,
   Clock,
   LayoutList,
+  ListEnd,
   Rss,
   Square,
   Text,
@@ -29,6 +30,7 @@ export default function Appearance() {
     showFavicon,
     showTextPreview,
     showReadingTime,
+    truncateTitles,
     reduceMotion,
     interfaceFontSize,
   } = useStore(settingsState);
@@ -128,6 +130,17 @@ export default function Appearance() {
           }
           settingName="showReadingTime"
           settingValue={showReadingTime}
+        />
+        <Divider />
+        <SwitchItem
+          label={t("settings.appearance.truncateTitles")}
+          icon={
+            <SettingIcon variant="green">
+              <ListEnd />
+            </SettingIcon>
+          }
+          settingName="truncateTitles"
+          settingValue={truncateTitles}
         />
       </ItemWrapper>
 

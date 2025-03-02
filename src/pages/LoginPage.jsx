@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authState, login } from "@/stores/authStore";
+import { environment } from "@/stores/environmentStore";
 import { Button, Form, Input, Link, Divider } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 import { addToast } from "@heroui/react";
@@ -12,7 +13,7 @@ export default function LoginPage() {
   const $auth = useStore(authState);
   const { t } = useTranslation();
   const [authType, setAuthType] = useState("basic");
-  const [serverUrl, setServerUrl] = useState("");
+  const [serverUrl, setServerUrl] = useState(environment.get().defaultServerUrl ?? "");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
@@ -70,7 +71,7 @@ export default function LoginPage() {
             label={t("auth.serverUrl")}
             name="serverUrl"
             placeholder={t("auth.serverUrlPlaceholder")}
-            type="text"
+            type={environment.get().singleServerMode && environment.get().defaultServerUrl ? "hidden" : "text"}
             variant="faded"
             value={serverUrl}
             onChange={(e) => setServerUrl(e.target.value)}
