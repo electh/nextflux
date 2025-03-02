@@ -19,6 +19,7 @@ const defaultValue = {
   showFavicon: true,
   showTextPreview: true,
   showReadingTime: true,
+  truncateTitles: true,
   autoHideToolbar: false,
   syncInterval: "15", // 添加同步间隔设置，默认15分钟
   showLineNumbers: false,

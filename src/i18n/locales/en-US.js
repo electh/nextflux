@@ -256,6 +256,7 @@ export default {
       showFavicon: "Display favicons",
       showTextPreview: "Text preview",
       showReadingTime: "Estimated reading time",
+      truncateTitles: "Truncate titles",
       codeBlock: "CODE BLOCK",
       showLineNumbers: "Show line numbers",
       forceDarkCodeTheme: "Force dark code",
