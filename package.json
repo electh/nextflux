@@ -38,7 +38,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.4.0",
     "react-photo-view": "^1.2.7",
-    "react-router": "^7.0.2",
+    "react-router": "^7.5.3",
     "react-router-dom": "^7.0.2",
     "react-virtuoso": "^4.12.3",
     "shiki": "^1.26.2",
