@@ -49,7 +49,7 @@
     "tailwindcss-safe-area": "^0.6.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.33.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^22.10.6",
     "@types/react": "^18.3.12",
