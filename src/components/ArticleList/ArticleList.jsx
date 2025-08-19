@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import {
   filter,
@@ -78,9 +78,75 @@ const ArticleList = () => {
     }
   }, []);
 
+  // resizable list width (stored in localStorage)
+  const getInitialListWidth = () => {
+    try {
+        const stored = localStorage.getItem("listWidth");
+        if (stored) return stored;
+      } catch {
+        // ignore
+      }
+    // default values align with existing CSS (18rem - 30%)
+    return "30%";
+  };
+
+  const [listWidth, setListWidth] = useState(getInitialListWidth);
+  const resizerRef = useRef(null);
+  const isDragging = useRef(false);
+  const pointerIdRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("listWidth", listWidth);
+    } catch {
+      // ignore
+    }
+  }, [listWidth]);
+
+  useEffect(() => {
+    const onPointerMove = (e) => {
+      if (!isDragging.current) return;
+      // compute new width in px then convert to percentage of container
+      const container = resizerRef.current?.parentElement;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const newWidthPx = e.clientX - rect.left;
+      // clamp
+      const min = 200; // px
+      const max = rect.width - 320; // leave space for article view
+      const clamped = Math.max(min, Math.min(max, newWidthPx));
+      const percent = (clamped / rect.width) * 100;
+      setListWidth(`${percent}%`);
+    };
+
+    const onPointerUp = () => {
+      isDragging.current = false;
+      document.body.style.userSelect = "auto";
+      try {
+        const id = pointerIdRef.current;
+        if (id != null && resizerRef.current?.releasePointerCapture) {
+          resizerRef.current.releasePointerCapture(id);
+        }
+      } catch {
+        // ignore
+      }
+      pointerIdRef.current = null;
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
+  }, []);
+
   return (
-    <div className="main-content flex">
-      <div className="w-full relative max-w-screen md:w-84 md:max-w-[30%] md:min-w-[18rem] h-dvh flex flex-col">
+    <div className="main-content flex group" style={{ columnGap: 0 }}>
+      <div
+        className="w-full relative h-dvh flex flex-col"
+        style={{ width: listWidth, minWidth: 200, maxWidth: "60%" }}
+      >
         <ArticleListHeader />
         {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
         <ArticleListContent
@@ -92,7 +158,41 @@ const ArticleList = () => {
         />
         <ArticleListFooter />
       </div>
-      <ArticleView />
+
+      {/* resizer (overlaps the list; only visible on hover) */}
+      <div
+        ref={resizerRef}
+        role="separator"
+        aria-orientation="vertical"
+        className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto"
+        style={{ width: 16, touchAction: "none", marginLeft: -16, zIndex: 20 }}
+        onPointerDown={(e) => {
+          isDragging.current = true;
+          // avoid selecting text while dragging
+          document.body.style.userSelect = "none";
+          try {
+            pointerIdRef.current = e.pointerId;
+            if (resizerRef.current?.setPointerCapture) {
+              resizerRef.current.setPointerCapture(e.pointerId);
+            }
+          } catch {
+            // ignore
+          }
+        }}
+      >
+        {/* visual handle: three vertical dots */}
+        <div className="h-full w-full flex items-center justify-center">
+          <div className="flex flex-col items-center gap-1 pointer-events-none">
+            <span className="block w-1 h-1 rounded-full bg-default-400" />
+            <span className="block w-1 h-1 rounded-full bg-default-400" />
+            <span className="block w-1 h-1 rounded-full bg-default-400" />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 h-dvh">
+        <ArticleView />
+      </div>
     </div>
   );
 };
