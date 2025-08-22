@@ -132,19 +132,22 @@ const ArticleList = () => {
       }
       pointerIdRef.current = null;
     };
+    const onPointerCancel = onPointerUp;
 
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerCancel);
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
     };
   }, []);
 
   return (
     <div className="main-content flex group" style={{ columnGap: 0 }}>
       <div
-        className="w-full relative h-dvh flex flex-col"
+        className="w-full relative h-dvh flex flex-col z-10"
         style={{ width: listWidth, minWidth: 200, maxWidth: "60%" }}
       >
         <ArticleListHeader />
@@ -159,14 +162,15 @@ const ArticleList = () => {
         <ArticleListFooter />
       </div>
 
-      {/* resizer (overlaps the list; only visible on hover) */}
+      {/* resizer (overlaps the list; bar stays invisible, handle stays visible) */}
       <div
         ref={resizerRef}
         role="separator"
         aria-orientation="vertical"
-        className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto"
+        className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 transition-colors duration-150 resize-bar"
         style={{ width: 16, touchAction: "none", marginLeft: -16, zIndex: 20 }}
         onPointerDown={(e) => {
+          e.stopPropagation();
           isDragging.current = true;
           // avoid selecting text while dragging
           document.body.style.userSelect = "none";
@@ -180,12 +184,31 @@ const ArticleList = () => {
           }
         }}
       >
-        {/* visual handle: three vertical dots */}
-        <div className="h-full w-full flex items-center justify-center">
-          <div className="flex flex-col items-center gap-1 pointer-events-none">
-            <span className="block w-1 h-1 rounded-full bg-default-400" />
-            <span className="block w-1 h-1 rounded-full bg-default-400" />
-            <span className="block w-1 h-1 rounded-full bg-default-400" />
+        {/* persistent touch-friendly handle */}
+        <div className="h-full w-full relative">
+          <div
+            aria-label="Resize articles panel"
+            className="absolute top-1/2 right-[26px] md:right-[30px] w-8 h-16 flex items-center justify-center resize-handle"
+            style={{ touchAction: "none", zIndex: 21, transform: 'translateY(-50%) translateX(38px)' }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              isDragging.current = true;
+              document.body.style.userSelect = "none";
+              try {
+                pointerIdRef.current = e.pointerId;
+                if (resizerRef.current?.setPointerCapture) {
+                  resizerRef.current.setPointerCapture(e.pointerId);
+                }
+              } catch {
+                // ignore
+              }
+            }}
+          >
+            <div className="flex flex-col items-center gap-1 px-1.5 py-1 rounded-full bg-default-100/80 dark:bg-default-900/60 shadow-sm ring-1 ring-black/5 md:bg-transparent md:shadow-none md:ring-0">
+              <span className="block w-1 h-1 rounded-full bg-default-400" />
+              <span className="block w-1 h-1 rounded-full bg-default-400" />
+              <span className="block w-1 h-1 rounded-full bg-default-400" />
+            </div>
           </div>
         </div>
       </div>
