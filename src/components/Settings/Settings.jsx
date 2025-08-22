@@ -13,6 +13,7 @@ import { useStore } from "@nanostores/react";
 import General from "@/components/Settings/General.jsx";
 import Appearance from "@/components/Settings/Appearance.jsx";
 import Readability from "@/components/Settings/Readability.jsx";
+import AISettings from "@/components/Settings/ai/AI.jsx";
 import { Cog, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -94,6 +95,7 @@ export default function App() {
                       key="readability"
                       title={t("settings.readability.title")}
                     />
+                    <Tab key="ai" title={t("settings.ai.title")} />
                   </Tabs>
                 </div>
               </ModalHeader>
@@ -102,6 +104,7 @@ export default function App() {
                   {activeTab === "general" && <General />}
                   {activeTab === "appearance" && <Appearance />}
                   {activeTab === "readability" && <Readability />}
+                  {activeTab === "ai" && <AISettings />}
                 </div>
               </ModalBody>
             </>

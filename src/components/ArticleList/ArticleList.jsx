@@ -51,20 +51,19 @@ const ArticleList = () => {
           feedId ? "feed" : categoryId ? "category" : null,
         );
 
-        if (ignore) {
-          return;
+        if (!ignore && res) {
+          filteredArticles.set(res.articles);
+          hasMore.set(res.isMore);
+          currentPage.set(1);
         }
-
-        filteredArticles.set(res.articles);
-        hasMore.set(res.isMore);
-        currentPage.set(1);
-        loading.set(false);
-      } catch {
-        console.error("加载文章失败");
+      } catch (err) {
+        console.error("加载文章失败", err);
+      } finally {
+        // always clear loading so UI doesn't get stuck after navigation/unmount
         loading.set(false);
       }
     };
-    handleFetchArticles(ignore);
+    handleFetchArticles();
 
     return () => {
       ignore = true;
@@ -76,7 +75,7 @@ const ArticleList = () => {
     if (!feedId && !categoryId && showUnreadByDefault) {
       filter.set("unread");
     }
-  }, []);
+  }, [feedId, categoryId, showUnreadByDefault]);
 
   // resizable list width (stored in localStorage)
   const getInitialListWidth = () => {

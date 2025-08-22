@@ -43,9 +43,7 @@ const ArticlesGroup = () => {
               </div>
             </Link>
           </SidebarMenuButton>
-          <SidebarMenuBadge className="text-default-400!">
-            {$totalUnreadCount !== 0 && $totalUnreadCount}
-          </SidebarMenuBadge>
+          {/* No badge for 'All' */}
         </SidebarMenuItem>
 
         {/* Unread (top level, always shown) */}
