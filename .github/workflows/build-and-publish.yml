@@ -32,7 +32,9 @@ jobs:
       - name: Get app version from package.json
         id: vars
         run: |
-          echo "image_tag=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+          # capture version in a variable first to avoid shell quoting issues
+          IMAGE_TAG=$(node -p 'require("./package.json").version')
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
