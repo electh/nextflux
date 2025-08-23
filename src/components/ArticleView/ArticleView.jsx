@@ -32,9 +32,11 @@ import { summarizeWithAI } from "@/api/ai";
 import { extractTextFromHtml } from "@/lib/utils";
 import { Card, CardBody, Spinner } from "@heroui/react";
 import { markdownToHtml } from "@/lib/markdown";
+import { useIsMobile } from "@/hooks/use-mobile.jsx";
 const ArticleView = () => {
   const { t } = useTranslation();
   const { articleId } = useParams();
+  const { isPhone } = useIsMobile();
   const [error, setError] = useState(null);
   const $activeArticle = useStore(activeArticle);
   const $filteredArticles = useStore(filteredArticles);
@@ -54,10 +56,8 @@ const ArticleView = () => {
   const $aiLoading = useStore(aiLoading);
   const $aiSummary = useStore(aiSummary);
   const $aiError = useStore(aiError);
-  // 判断当前是否实际使用了stone主题
-  const isStoneTheme = () => {
-    return lightTheme === "stone" && $currentThemeMode === "light";
-  };
+  // isStoneTheme: assists prose styling for the light Stone theme
+  const isStoneTheme = lightTheme === "stone" && $currentThemeMode === "light";
 
   // 监听文章ID变化,滚动到顶部
   useEffect(() => {
@@ -173,11 +173,13 @@ const ArticleView = () => {
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
+    <motion.div
           key={articleId ? "content" : "empty"}
           className={cn(
-            "flex-1 p-0 md:pr-2 md:py-2 h-screen fixed md:static inset-0 z-20",
-            !articleId ? "hidden md:flex md:flex-1" : "",
+      "flex-1 p-0 md:pr-2 md:py-2 h-screen",
+            isPhone ? "fixed inset-0 z-[30]" : "static",
+      // When no article is selected, hide on phones but keep pane visible on larger screens
+      !articleId && isPhone ? "hidden" : "",
           )}
           initial={
             articleId
@@ -275,12 +277,12 @@ const ArticleView = () => {
                         {!$aiLoading && $aiError && (
                           <div className="text-danger text-sm">{$aiError}</div>
                         )}
-                        {!$aiLoading && $aiSummary && (
+        {!$aiLoading && $aiSummary && (
                           <div
                             className={cn(
                               "article-content prose dark:prose-invert max-w-none ai-summary",
                               getFontSizeClass(fontSize),
-                              isStoneTheme() ? "prose-stone" : "",
+          isStoneTheme ? "prose-stone" : "",
                             )}
                             style={{
                               lineHeight: lineHeight + "em",
@@ -314,7 +316,7 @@ const ArticleView = () => {
                         "prose-pre:rounded-lg prose-pre:shadow-small",
                         "prose-h1:text-[1.5em] prose-h2:text-[1.25em] prose-h3:text-[1.125em] prose-h4:text-[1em]",
                         getFontSizeClass(fontSize),
-                        isStoneTheme() ? "prose-stone" : "",
+                        isStoneTheme ? "prose-stone" : "",
                       )}
                       style={{
                         lineHeight: lineHeight + "em",

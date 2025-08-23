@@ -17,9 +17,11 @@ import ArticleListFooter from "./components/ArticleListFooter";
 import { settingsState } from "@/stores/settingsStore.js";
 import ArticleView from "@/components/ArticleView/ArticleView.jsx";
 import Indicator from "@/components/ArticleList/components/Indicator.jsx";
+import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { cn } from "@/lib/utils";
 
 const ArticleList = () => {
-  const { feedId, categoryId } = useParams();
+  const { feedId, categoryId, articleId } = useParams();
   const $filteredArticles = useStore(filteredArticles);
   const $filter = useStore(filter);
   const $lastSync = useStore(lastSync);
@@ -28,6 +30,10 @@ const ArticleList = () => {
   const virtuosoRef = useRef(null);
 
   const lastSyncTime = useRef(null);
+  const { isPhone } = useIsMobile();
+  // Phones: overlay article, keep list mounted; Non-phones: show both panes.
+  const showListPane = true;
+  const showArticlePane = isPhone ? !!articleId : true;
 
   useEffect(() => {
     // 如果为同步触发刷新且当前文章列表不在顶部，则暂时不刷新列表，防止位置发生位移
@@ -144,77 +150,90 @@ const ArticleList = () => {
   }, []);
 
   return (
-    <div className="main-content flex group" style={{ columnGap: 0 }}>
-      <div
-        className="w-full relative h-dvh flex flex-col z-10"
-        style={{ width: listWidth, minWidth: 200, maxWidth: "60%" }}
-      >
-        <ArticleListHeader />
-        {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
-        <ArticleListContent
-          articles={$filteredArticles}
-          virtuosoRef={virtuosoRef}
-          setVisibleRange={(range) => {
-            visibleRange.set(range);
-          }}
-        />
-        <ArticleListFooter />
-      </div>
-
-      {/* resizer (overlaps the list; bar stays invisible, handle stays visible) */}
-      <div
-        ref={resizerRef}
-        role="separator"
-        aria-orientation="vertical"
-        className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 transition-colors duration-150 resize-bar"
-        style={{ width: 16, touchAction: "none", marginLeft: -16, zIndex: 20 }}
-        onPointerDown={(e) => {
-          e.stopPropagation();
-          isDragging.current = true;
-          // avoid selecting text while dragging
-          document.body.style.userSelect = "none";
-          try {
-            pointerIdRef.current = e.pointerId;
-            if (resizerRef.current?.setPointerCapture) {
-              resizerRef.current.setPointerCapture(e.pointerId);
-            }
-          } catch {
-            // ignore
-          }
-        }}
-      >
-        {/* persistent touch-friendly handle */}
-        <div className="h-full w-full relative">
-          <div
-            aria-label="Resize articles panel"
-            className="absolute top-1/2 right-[26px] md:right-[30px] w-8 h-16 flex items-center justify-center resize-handle"
-            style={{ touchAction: "none", zIndex: 21, transform: 'translateY(-50%) translateX(38px)' }}
-            onPointerDown={(e) => {
-              e.stopPropagation();
-              isDragging.current = true;
-              document.body.style.userSelect = "none";
-              try {
-                pointerIdRef.current = e.pointerId;
-                if (resizerRef.current?.setPointerCapture) {
-                  resizerRef.current.setPointerCapture(e.pointerId);
-                }
-              } catch {
-                // ignore
-              }
+  <div className="main-content flex group" style={{ columnGap: 0 }}>
+      {/* List pane - full width on mobile when no article is open */}
+      {showListPane && (
+        <div
+          className="w-full relative h-dvh flex flex-col z-10"
+          style={{ width: isPhone ? "100%" : listWidth, minWidth: isPhone ? undefined : 200, maxWidth: isPhone ? undefined : "60%" }}
+        >
+          <ArticleListHeader />
+          {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
+          <ArticleListContent
+            articles={$filteredArticles}
+            virtuosoRef={virtuosoRef}
+            setVisibleRange={(range) => {
+              visibleRange.set(range);
             }}
-          >
-            <div className="flex flex-col items-center gap-1 px-1.5 py-1 rounded-full bg-default-100/80 dark:bg-default-900/60 shadow-sm ring-1 ring-black/5 md:bg-transparent md:shadow-none md:ring-0">
-              <span className="block w-1 h-1 rounded-full bg-default-400" />
-              <span className="block w-1 h-1 rounded-full bg-default-400" />
-              <span className="block w-1 h-1 rounded-full bg-default-400" />
+          />
+          <ArticleListFooter />
+        </div>
+      )}
+
+  {/* Resizer - non-phone only (tablets/desktops) */}
+  {!isPhone && (
+        <div
+          ref={resizerRef}
+          role="separator"
+          aria-orientation="vertical"
+          className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 transition-colors duration-150 resize-bar"
+          style={{ width: 16, touchAction: "none", marginLeft: -16, zIndex: 20 }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            isDragging.current = true;
+            // avoid selecting text while dragging
+            document.body.style.userSelect = "none";
+            try {
+              pointerIdRef.current = e.pointerId;
+              if (resizerRef.current?.setPointerCapture) {
+                resizerRef.current.setPointerCapture(e.pointerId);
+              }
+            } catch {
+              // ignore
+            }
+          }}
+        >
+          {/* persistent touch-friendly handle */}
+          <div className="h-full w-full relative">
+            <div
+              aria-label="Resize articles panel"
+              className="absolute top-1/2 right-[26px] md:right-[30px] w-8 h-16 flex items-center justify-center resize-handle"
+              style={{ touchAction: "none", zIndex: 21, transform: 'translateY(-50%) translateX(38px)' }}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                isDragging.current = true;
+                document.body.style.userSelect = "none";
+                try {
+                  pointerIdRef.current = e.pointerId;
+                  if (resizerRef.current?.setPointerCapture) {
+                    resizerRef.current.setPointerCapture(e.pointerId);
+                  }
+                } catch {
+                  // ignore
+                }
+              }}
+            >
+              <div className="flex flex-col items-center gap-1 px-1.5 py-1 rounded-full bg-default-100/80 dark:bg-default-900/60 shadow-sm ring-1 ring-black/5 md:bg-transparent md:shadow-none md:ring-0">
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex-1 h-dvh">
-        <ArticleView />
-      </div>
+      {/* Article pane - full width on mobile when an article is open */}
+      {showArticlePane && (
+        <div
+          className={cn(
+            "flex-1 h-dvh",
+            isPhone && "w-full fixed inset-0 z-20 bg-background",
+          )}
+        >
+          <ArticleView />
+        </div>
+      )}
     </div>
   );
 };

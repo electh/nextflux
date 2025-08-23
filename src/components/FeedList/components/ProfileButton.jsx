@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 export default function ProfileButton() {
   const { t } = useTranslation();
   const { username, serverUrl } = authState.get();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isNarrow, setOpenMobile } = useSidebar();
 
   return (
     <div className="profile-button standalone:pb-safe flex items-center gap-4">
@@ -60,7 +60,7 @@ export default function ProfileButton() {
             startContent={<Info className="size-4 text-default-500" />}
             onPress={() => {
               aboutModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.profile.about")}
@@ -71,7 +71,7 @@ export default function ProfileButton() {
             startContent={<Cog className="size-4 text-default-500" />}
             onPress={() => {
               settingsModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.profile.settings")}
@@ -82,7 +82,7 @@ export default function ProfileButton() {
             startContent={<Keyboard className="size-4 text-default-500" />}
             onPress={() => {
               shortcutsModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.shortcuts.title")}
@@ -113,7 +113,7 @@ export default function ProfileButton() {
             startContent={<LogOut className="size-4" />}
             onPress={() => {
               logoutModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.profile.logout")}

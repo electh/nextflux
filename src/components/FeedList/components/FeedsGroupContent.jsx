@@ -30,7 +30,7 @@ import { useEffect } from "react";
 const FeedsGroupContent = ({ category }) => {
   const $getCategoryCount = useStore(getCategoryCount);
   const $getFeedCount = useStore(getFeedCount);
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isNarrow, setOpenMobile } = useSidebar();
   const { categoryId, feedId } = useParams();
   const { defaultExpandCategory } = useStore(settingsState);
   const $categoryExpandedState = useStore(categoryExpandedState);
@@ -50,7 +50,7 @@ const FeedsGroupContent = ({ category }) => {
         feedItem?.scrollIntoView({ behavior: "instant", block: "nearest" });
       }
     }
-  }, [feedId, category.id]);
+  }, [feedId, category.id, category.feeds]);
 
   return (
     <Collapsible
@@ -67,7 +67,7 @@ const FeedsGroupContent = ({ category }) => {
         >
           <Link
             to={`/category/${category.id}`}
-            onClick={() => isMobile && setOpenMobile(false)}
+            onClick={() => isNarrow && setOpenMobile(false)}
           >
             <span className={"pl-6 font-medium"}>{category.title}</span>
           </Link>
@@ -96,7 +96,7 @@ const FeedsGroupContent = ({ category }) => {
                 >
                   <Link
                     to={`/feed/${feed.id}`}
-                    onClick={() => isMobile && setOpenMobile(false)}
+                    onClick={() => isNarrow && setOpenMobile(false)}
                   >
                     <FeedIcon feedId={feed.id} />
                     <span className="flex-1 flex items-center gap-1">

@@ -19,7 +19,7 @@ const ArticlesGroup = () => {
   const $filter = useStore(filter);
   const $totalUnreadCount = useStore(totalUnreadCount);
   const $totalStarredCount = useStore(totalStarredCount);
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isNarrow, setOpenMobile } = useSidebar();
   const { feedId, categoryId } = useParams();
   // No-op: sidebar shows All with sub-options (Unread / Starred) when at root
 
@@ -34,7 +34,7 @@ const ArticlesGroup = () => {
               to="/"
               onClick={() => {
                 filter.set("all");
-                if (isMobile) setOpenMobile(false);
+                if (isNarrow) setOpenMobile(false);
               }}
             >
               <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ const ArticlesGroup = () => {
               to="/"
               onClick={() => {
                 filter.set("unread");
-                if (isMobile) setOpenMobile(false);
+                if (isNarrow) setOpenMobile(false);
               }}
             >
               <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ const ArticlesGroup = () => {
               to="/"
               onClick={() => {
                 filter.set("starred");
-                if (isMobile) setOpenMobile(false);
+                if (isNarrow) setOpenMobile(false);
               }}
             >
               <div className="flex items-center gap-2">
