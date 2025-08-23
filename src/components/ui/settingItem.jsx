@@ -41,7 +41,7 @@ export const SliderItem = ({
 }) => {
   return (
     <div className={`grid gap-2 ${bgColor} p-2.5`}>
-      <div className="text-xs text-content2-foreground">{label}</div>
+  <div className="text-xs text-foreground/90">{label}</div>
       <div className="flex items-center gap-2">
         {icon}
         <Slider
@@ -53,7 +53,7 @@ export const SliderItem = ({
           showSteps
           step={step}
           classNames={{
-            trackWrapper: "rounded-full shadow-custom-inner bg-default/40",
+            trackWrapper: "rounded-full shadow-custom-inner bg-default-200/30",
             track:
               "h-6 my-0 border-s-primary/20! border-e-transparent! bg-transparent",
             filler:
@@ -63,7 +63,7 @@ export const SliderItem = ({
           renderThumb={(props) => (
             <div
               {...props}
-              className="group h-5 w-5 top-1/2 bg-white shadow-custom-sm rounded-full cursor-grab data-[dragging=true]:cursor-grabbing"
+              className="group h-5 w-5 top-1/2 bg-default-50 shadow-custom-sm rounded-full cursor-grab data-[dragging=true]:cursor-grabbing"
             ></div>
           )}
         />
@@ -95,7 +95,7 @@ export const SwitchItem = ({
     >
       <div className="flex items-center gap-2">
         {icon}
-        <div className="text-sm text-foreground line-clamp-1">{label}</div>
+  <div className="text-sm text-foreground line-clamp-1">{label}</div>
       </div>
       <Switch
         isSelected={settingValue}
@@ -120,7 +120,7 @@ export function SelItem({ label, icon, settingName, settingValue, options }) {
       <Dropdown>
         <DropdownTrigger>
           <Button
-            className="capitalize gap-1 pr-1.5 h-7 rounded-md bg-content1 dark:bg-default shadow-custom-cursor!"
+            className="capitalize gap-1 pr-1.5 h-7 rounded-md bg-content1 dark:bg-content3 text-foreground shadow-custom-cursor!"
             variant="solid"
             size="sm"
             endContent={
@@ -167,9 +167,10 @@ export function GroupItem({ label, icon, settingName, settingValue, options }) {
         variant="solid"
         classNames={{
           tabList:
-            "bg-default-100/90 backdrop-blur-md shadow-custom-inner p-px gap-0 rounded-small overflow-visible",
+            "bg-default-100/90 dark:bg-content2/90 backdrop-blur-md shadow-custom-inner p-px gap-0 rounded-small overflow-visible",
           tab: "py-1 h-7",
-          cursor: "bg-content1 shadow-custom-cursor! rounded-small",
+          // Light cursor for better contrast on near-black
+          cursor: "bg-default-200 shadow-custom-cursor! rounded-small",
         }}
         selectedKey={settingValue}
         onSelectionChange={(value) => {

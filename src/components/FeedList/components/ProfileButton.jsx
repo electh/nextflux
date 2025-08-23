@@ -45,7 +45,7 @@ export default function ProfileButton() {
             <div className="flex items-center w-full gap-2">
               {/*<Avatar name={username} radius="sm" size="sm" />*/}
               <div className="flex flex-col items-start">
-                <div className="font-semibold">{username}</div>
+                <div className="font-semibold dark:text-foreground">{username}</div>
                 {/*<div className="text-xs text-default-400 line-clamp-1">*/}
                 {/*  {serverUrl}*/}
                 {/*</div>*/}

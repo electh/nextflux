@@ -18,6 +18,13 @@ export default function AISettings() {
             label={t("settings.ai.baseUrl")}
             labelPlacement="outside"
             placeholder="http://localhost:11434"
+            classNames={{
+              inputWrapper:
+                "bg-content1 hover:bg-content1/90 focus-within:bg-content1/85 dark:bg-content3 dark:hover:bg-content3/90 dark:focus-within:bg-content3/85",
+              input:
+                "!text-foreground dark:!text-foreground caret-foreground placeholder:text-default-400 dark:placeholder:text-default-300",
+              label: "text-foreground/90",
+            }}
             startContent={<SettingIcon variant="blue"><Globe/></SettingIcon>}
             value={settings.aiApiBaseUrl}
             onValueChange={(v) => updateSettings({ aiApiBaseUrl: v })}
@@ -27,6 +34,13 @@ export default function AISettings() {
             label={t("settings.ai.apiKey")}
             labelPlacement="outside"
             placeholder={t("settings.ai.apiKeyPlaceholder")}
+            classNames={{
+              inputWrapper:
+                "bg-content1 hover:bg-content1/90 focus-within:bg-content1/85 dark:bg-content3 dark:hover:bg-content3/90 dark:focus-within:bg-content3/85",
+              input:
+                "!text-foreground dark:!text-foreground caret-foreground placeholder:text-default-400 dark:placeholder:text-default-300",
+              label: "text-foreground/90",
+            }}
             startContent={<SettingIcon variant="purple"><KeySquare/></SettingIcon>}
             type="password"
             value={settings.aiApiKey}
@@ -37,6 +51,13 @@ export default function AISettings() {
             label={t("settings.ai.model")}
             labelPlacement="outside"
             placeholder="gpt-4o-mini"
+            classNames={{
+              inputWrapper:
+                "bg-content1 hover:bg-content1/90 focus-within:bg-content1/85 dark:bg-content3 dark:hover:bg-content3/90 dark:focus-within:bg-content3/85",
+              input:
+                "!text-foreground dark:!text-foreground caret-foreground placeholder:text-default-400 dark:placeholder:text-default-300",
+              label: "text-foreground/90",
+            }}
             startContent={<SettingIcon variant="amber"><ServerCog/></SettingIcon>}
             value={settings.aiModel}
             onValueChange={(v) => updateSettings({ aiModel: v })}
@@ -46,6 +67,13 @@ export default function AISettings() {
             label={t("settings.ai.defaultPrompt")}
             labelPlacement="outside"
             placeholder={t("settings.ai.defaultPromptPlaceholder")}
+            classNames={{
+              inputWrapper:
+                "bg-content1 hover:bg-content1/90 focus-within:bg-content1/85 dark:bg-content3 dark:hover:bg-content3/90 dark:focus-within:bg-content3/85",
+              input:
+                "!text-foreground dark:!text-foreground caret-foreground placeholder:text-default-400 dark:placeholder:text-default-300",
+              label: "text-foreground/90",
+            }}
             startContent={<SettingIcon variant="green"><MessageSquare/></SettingIcon>}
             minRows={3}
             value={settings.aiDefaultPrompt}

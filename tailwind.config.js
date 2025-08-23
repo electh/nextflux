@@ -118,8 +118,21 @@ export default {
             },
           },
           colors: {
-            divider: "rgba(255,255,255,0.08)",
+            // Make pure black theme very close to true black with subtle contrast
+            divider: "rgba(255,255,255,0.06)",
             background: "#000000",
+            // Bright light foreground for all text/icons by default
+            foreground: "#FAFAFA",
+            // Near-black content surfaces
+            content1: "#000000", // Keep existing definition
+            content2: "#0a0a0a", // Keep existing definition
+            content3: "#0f0f0f", // Keep existing definition
+            content4: "#151515", // Keep existing definition
+            // Ensure readable text on each content surface
+            "content1-foreground": "#FFFFFF",
+            "content2-foreground": "#F5F5F5",
+            "content3-foreground": "#F0F0F0",
+            "content4-foreground": "#EAEAEA",
             primary: {
               50: "#004D1C",
               100: "#046625",
@@ -133,6 +146,21 @@ export default {
               900: "#EBFFEC",
               foreground: "#FFFFFF",
               DEFAULT: "#27C346",
+            },
+            // Light neutral scale so text-default-* and icons remain readable on black
+            default: {
+              50: "#FAFAFA",
+              100: "#F3F3F3",
+              200: "#EAEAEA",
+              300: "#E1E1E1",
+              400: "#CFCFCF",
+              500: "#B8B8B8",
+              600: "#9E9E9E",
+              700: "#858585",
+              800: "#6B6B6B",
+              900: "#545454",
+              DEFAULT: "#E5E5E5",
+              foreground: "#0A0A0A",
             },
           },
         },
