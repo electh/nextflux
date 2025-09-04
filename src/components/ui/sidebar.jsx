@@ -38,7 +38,9 @@ const SidebarProvider = React.forwardRef(
     },
     ref,
   ) => {
-    const { isMobile } = useIsMobile();
+  const { isMobile, isMedium } = useIsMobile();
+  // Treat anything under 1024px as "narrow" for sidebar behavior
+  const isNarrow = isMobile || isMedium;
     const [openMobile, setOpenMobile] = React.useState(false);
 
     // This is the internal state of the sidebar.
@@ -62,10 +64,10 @@ const SidebarProvider = React.forwardRef(
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
-      return isMobile
+      return isNarrow
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
-    }, [isMobile, setOpen, setOpenMobile]);
+    }, [isNarrow, setOpen, setOpenMobile]);
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -92,7 +94,9 @@ const SidebarProvider = React.forwardRef(
         state,
         open,
         setOpen,
-        isMobile,
+        // Back-compat: expose isMobile but make semantics explicit via isNarrow
+        isMobile: isNarrow,
+        isNarrow,
         openMobile,
         setOpenMobile,
         toggleSidebar,
@@ -101,7 +105,7 @@ const SidebarProvider = React.forwardRef(
         state,
         open,
         setOpen,
-        isMobile,
+        isNarrow,
         openMobile,
         setOpenMobile,
         toggleSidebar,
@@ -143,7 +147,7 @@ const Sidebar = React.forwardRef(
     },
     ref,
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const { isNarrow, state, openMobile, setOpenMobile } = useSidebar();
 
     if (collapsible === "none") {
       return (
@@ -160,13 +164,13 @@ const Sidebar = React.forwardRef(
       );
     }
 
-    if (isMobile) {
+  if (isNarrow) {
       return (
         <>
           {/* 侧边栏遮罩层 - 点击时关闭侧边栏 */}
-          <div
+      <div
             className={cn(
-              "fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-in-out",
+              "fixed inset-0 bg-black/50 z-[90] transition-opacity duration-300 ease-in-out",
               openMobile ? "opacity-100" : "opacity-0 pointer-events-none",
             )}
             onClick={() => setOpenMobile(false)}
@@ -174,9 +178,9 @@ const Sidebar = React.forwardRef(
           />
 
           {/* 侧边栏内容 */}
-          <div
+      <div
             className={cn(
-              "pl-safe fixed inset-y-0 left-0 z-50 w-(--sidebar-width) bg-content2 text-content2-foreground transform transition-all duration-300 ease-in-out",
+              "pl-safe fixed inset-y-0 left-0 z-[100] w-(--sidebar-width) bg-content2 text-content2-foreground transform transition-all duration-300 ease-in-out",
               openMobile ? "translate-x-0" : "-translate-x-full",
             )}
             style={{

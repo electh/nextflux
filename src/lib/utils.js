@@ -31,7 +31,8 @@ export function getFontSizeClass(fontSize) {
   if (fontSize === 14) {
     return "prose-sm"; // 14px
   } else if (fontSize === 16) {
-    return "prose-base"; // 16px (默认)
+    // 16px is the default prose size; don't add an extra class so the base `prose` applies
+    return "";
   } else if (fontSize === 18) {
     return "prose-lg"; // 18px
   } else if (fontSize === 20) {

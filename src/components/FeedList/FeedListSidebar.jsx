@@ -33,15 +33,16 @@ const FeedListSidebar = () => {
   const { showHiddenFeeds } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
-  const { isMobile } = useIsMobile();
+  const { isMobile, isMedium } = useIsMobile();
+  const isNarrow = isMobile || isMedium; // treat <=1024 as narrow
   const navigate = useNavigate();
   const basePath = window.location.pathname.split("/article/")[0];
   useSwipeGesture({
     onSwipeRight: () => {
-      if (!articleId && isMobile && !isModalOpen.get()) {
+      if (!articleId && isNarrow && !isModalOpen.get()) {
         setOpenMobile(true);
       }
-      if (articleId && isMobile) {
+      if (articleId && isNarrow) {
         navigate(basePath || "/");
       }
     },

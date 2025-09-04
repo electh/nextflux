@@ -28,6 +28,11 @@ const defaultValue = {
   reduceMotion: false,
   interfaceFontSize: "16",
   showIndicator: true,
+  // AI settings
+  aiApiBaseUrl: "",
+  aiApiKey: "",
+  aiModel: "gpt-4o-mini",
+  aiDefaultPrompt: "Please summarize in 2 paragraphs, be factual and concise, get to the core of the article.",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {

@@ -27,9 +27,16 @@ import { cn, getHostname } from "@/lib/utils.js";
 import FeedIcon from "@/components/ui/FeedIcon.jsx";
 import { getArticleById } from "@/db/storage";
 import Attachments from "@/components/ArticleView/components/Attachments.jsx";
+import { aiError, aiLoading, aiSummary, resetAISummary } from "@/stores/aiStore";
+import { summarizeWithAI } from "@/api/ai";
+import { extractTextFromHtml } from "@/lib/utils";
+import { Card, CardBody, Spinner } from "@heroui/react";
+import { markdownToHtml } from "@/lib/markdown";
+import { useIsMobile } from "@/hooks/use-mobile.jsx";
 const ArticleView = () => {
   const { t } = useTranslation();
   const { articleId } = useParams();
+  const { isPhone } = useIsMobile();
   const [error, setError] = useState(null);
   const $activeArticle = useStore(activeArticle);
   const $filteredArticles = useStore(filteredArticles);
@@ -46,10 +53,11 @@ const ArticleView = () => {
   const { lightTheme } = useStore(themeState);
   const $currentThemeMode = useStore(currentThemeMode);
   const scrollAreaRef = useRef(null);
-  // 判断当前是否实际使用了stone主题
-  const isStoneTheme = () => {
-    return lightTheme === "stone" && $currentThemeMode === "light";
-  };
+  const $aiLoading = useStore(aiLoading);
+  const $aiSummary = useStore(aiSummary);
+  const $aiError = useStore(aiError);
+  // isStoneTheme: assists prose styling for the light Stone theme
+  const isStoneTheme = lightTheme === "stone" && $currentThemeMode === "light";
 
   // 监听文章ID变化,滚动到顶部
   useEffect(() => {
@@ -68,6 +76,11 @@ const ArticleView = () => {
       }
     }
   }, [articleId, reduceMotion]);
+
+  // reset AI state when article changes
+  useEffect(() => {
+    resetAISummary();
+  }, [articleId]);
 
   useEffect(() => {
     const loadArticleByArticleId = async () => {
@@ -96,6 +109,27 @@ const ArticleView = () => {
 
     loadArticleByArticleId();
   }, [articleId, $filteredArticles]);
+
+  // listen for summarize action
+  useEffect(() => {
+    const handler = async () => {
+      if (!$activeArticle) return;
+      try {
+        aiLoading.set(true);
+        aiError.set(null);
+        const plain = extractTextFromHtml($activeArticle.content);
+        const summary = await summarizeWithAI(plain);
+        aiSummary.set(summary);
+      } catch (e) {
+        console.error(e);
+        aiError.set(t("settings.ai.error"));
+      } finally {
+        aiLoading.set(false);
+      }
+    };
+    window.addEventListener("ai:summarize", handler);
+    return () => window.removeEventListener("ai:summarize", handler);
+  }, [$activeArticle, t]);
 
   const handleLinkWithImg = (domNode) => {
     const imgNode = domNode.children.find(
@@ -139,11 +173,13 @@ const ArticleView = () => {
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
+    <motion.div
           key={articleId ? "content" : "empty"}
           className={cn(
-            "flex-1 p-0 md:pr-2 md:py-2 h-screen fixed md:static inset-0 z-20",
-            !articleId ? "hidden md:flex md:flex-1" : "",
+      "flex-1 p-0 md:pr-2 md:py-2 h-screen",
+            isPhone ? "fixed inset-0 z-[30]" : "static",
+      // When no article is selected, hide on phones but keep pane visible on larger screens
+      !articleId && isPhone ? "hidden" : "",
           )}
           initial={
             articleId
@@ -229,6 +265,36 @@ const ArticleView = () => {
                     </div>
                   </header>
                   <Divider className="my-4" />
+                  {($aiLoading || $aiSummary || $aiError) && (
+                    <Card className="mb-4 bg-content1/70 dark:bg-content2/60 shadow-custom">
+                      <CardBody>
+                        {$aiLoading && (
+                          <div className="flex items-center gap-2 text-default-500 text-sm">
+                            <Spinner size="sm" />
+                            <span>{t("settings.ai.generating")}</span>
+                          </div>
+                        )}
+                        {!$aiLoading && $aiError && (
+                          <div className="text-danger text-sm">{$aiError}</div>
+                        )}
+        {!$aiLoading && $aiSummary && (
+                          <div
+                            className={cn(
+                              "article-content prose dark:prose-invert max-w-none ai-summary",
+                              getFontSizeClass(fontSize),
+          isStoneTheme ? "prose-stone" : "",
+                            )}
+                            style={{
+                              lineHeight: lineHeight + "em",
+                              textAlign: alignJustify ? "justify" : "left",
+                            }}
+                          >
+                            {parse(markdownToHtml($aiSummary))}
+                          </div>
+                        )}
+                      </CardBody>
+                    </Card>
+                  )}
                   {audioEnclosure && (
                     <PlayAndPause
                       source={audioEnclosure}
@@ -250,7 +316,7 @@ const ArticleView = () => {
                         "prose-pre:rounded-lg prose-pre:shadow-small",
                         "prose-h1:text-[1.5em] prose-h2:text-[1.25em] prose-h3:text-[1.125em] prose-h4:text-[1em]",
                         getFontSizeClass(fontSize),
-                        isStoneTheme() ? "prose-stone" : "",
+                        isStoneTheme ? "prose-stone" : "",
                       )}
                       style={{
                         lineHeight: lineHeight + "em",
