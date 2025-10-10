@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { PhotoProvider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
@@ -136,6 +136,8 @@ const ArticleView = () => {
     enclosure.mime_type?.startsWith("audio/"),
   );
 
+  const navigate = useNavigate();
+
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <AnimatePresence mode="popLayout" initial={false}>
@@ -194,15 +196,20 @@ const ArticleView = () => {
                     className="article-header"
                     style={{ textAlign: titleAlignType }}
                   >
-                    <div
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/feed/${$activeArticle?.feed?.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") navigate(`/feed/${$activeArticle?.feed?.id}`);
+                      }}
                       className={cn(
-                        "text-default-500 text-sm flex items-center gap-1",
+                        "text-default-500 text-sm flex items-center gap-1 hover:cursor-pointer focus:outline-none",
                         titleAlignType === "center" ? "justify-center" : "",
                       )}
                     >
                       <FeedIcon feedId={$activeArticle?.feed?.id} />
                       {$activeArticle?.feed?.title}
-                    </div>
+                    </button>
                     <h1
                       className="article-title font-semibold my-2 hover:cursor-pointer leading-tight"
                       style={{
