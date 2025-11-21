@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { PhotoProvider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
@@ -132,15 +132,17 @@ const ArticleView = () => {
   }, [$activeArticle, t]);
 
   const handleLinkWithImg = (domNode) => {
-    const imgNode = domNode.children.find(
+    const imgNodes = domNode.children.filter(
       (child) => child.type === "tag" && child.name === "img",
     );
 
-    if (imgNode) {
+    if (imgNodes.length > 0) {
       const hostname = getHostname(domNode.attribs.href);
       return (
         <>
-          <ArticleImage imgNode={imgNode} />
+          {imgNodes.map((imgNode, index) => (
+            <ArticleImage imgNode={imgNode} key={imgNode.attribs?.src || index} />
+          ))}
           <div className="flex justify-center">
             <Chip
               color="primary"
@@ -170,26 +172,24 @@ const ArticleView = () => {
     enclosure.mime_type?.startsWith("audio/"),
   );
 
+  const navigate = useNavigate();
+
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <AnimatePresence mode="popLayout" initial={false}>
-    <motion.div
+        <motion.div
           key={articleId ? "content" : "empty"}
           className={cn(
-      "flex-1 p-0 md:pr-2 md:py-2 h-screen",
-            isPhone ? "fixed inset-0 z-[30]" : "static",
-      // When no article is selected, hide on phones but keep pane visible on larger screens
-      !articleId && isPhone ? "hidden" : "",
+            "flex-1 p-0 h-screen fixed md:static inset-0 z-20",
+            !articleId ? "hidden md:flex md:flex-1" : "",
           )}
           initial={
-            articleId
-              ? { opacity: 1, x: "100%" }
-              : { opacity: 0, x: 0, scale: 0.8 }
+            articleId ? { opacity: 1, x: 40 } : { opacity: 0, x: 0, scale: 0.8 }
           }
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={
             articleId
-              ? { opacity: 0, x: "100%", scale: 1 }
+              ? { opacity: 0, x: 40, scale: 1 }
               : { opacity: 0, x: 0, scale: 0.8 }
           }
           transition={{
@@ -205,7 +205,7 @@ const ArticleView = () => {
             <ScrollShadow
               ref={scrollAreaRef}
               isEnabled={false}
-              className="article-scroll-area h-full bg-background rounded-none md:rounded-lg shadow-none md:shadow-custom"
+              className="article-scroll-area h-full bg-content2 md:bg-transparent"
             >
               <ActionButtons parentRef={scrollAreaRef} />
 
@@ -232,15 +232,20 @@ const ArticleView = () => {
                     className="article-header"
                     style={{ textAlign: titleAlignType }}
                   >
-                    <div
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/feed/${$activeArticle?.feed?.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") navigate(`/feed/${$activeArticle?.feed?.id}`);
+                      }}
                       className={cn(
-                        "text-default-500 text-sm flex items-center gap-1",
+                        "text-default-500 text-sm flex items-center gap-1 hover:cursor-pointer focus:outline-none",
                         titleAlignType === "center" ? "justify-center" : "",
                       )}
                     >
                       <FeedIcon feedId={$activeArticle?.feed?.id} />
                       {$activeArticle?.feed?.title}
-                    </div>
+                    </button>
                     <h1
                       className="article-title font-semibold my-2 hover:cursor-pointer leading-tight"
                       style={{

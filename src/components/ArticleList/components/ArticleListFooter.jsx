@@ -23,7 +23,7 @@ export default function ArticleListFooter() {
         variant="solid"
         radius="full"
         classNames={{
-          tabList: "bg-content3/90 backdrop-blur-md",
+          tabList: "bg-content3/90 backdrop-blur-md shadow-custom",
           tab: "h-auto px-2",
           cursor: "w-full bg-default-400/90 shadow-none dark:bg-primary",
           tabContent:

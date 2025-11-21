@@ -25,8 +25,13 @@ const ArticleList = () => {
   const $filteredArticles = useStore(filteredArticles);
   const $filter = useStore(filter);
   const $lastSync = useStore(lastSync);
-  const { showUnreadByDefault, sortDirection, sortField, showHiddenFeeds, showIndicator } =
-    useStore(settingsState);
+  const {
+    showUnreadByDefault,
+    sortDirection,
+    sortField,
+    showHiddenFeeds,
+    showIndicator,
+  } = useStore(settingsState);
   const virtuosoRef = useRef(null);
 
   const lastSyncTime = useRef(null);
@@ -74,7 +79,15 @@ const ArticleList = () => {
     return () => {
       ignore = true;
     };
-  }, [feedId, categoryId, $filter, sortDirection, sortField, showHiddenFeeds, $lastSync]);
+  }, [
+    feedId,
+    categoryId,
+    $filter,
+    sortDirection,
+    sortField,
+    showHiddenFeeds,
+    $lastSync,
+  ]);
 
   // 组件挂载时设置默认过滤器
   useEffect(() => {
@@ -150,7 +163,7 @@ const ArticleList = () => {
   }, []);
 
   return (
-  <div className="main-content flex group" style={{ columnGap: 0 }}>
+    <div className="main-content flex group" style={{ columnGap: 0 }}>
       {/* List pane - full width on mobile when no article is open */}
       {showListPane && (
         <div
@@ -170,8 +183,8 @@ const ArticleList = () => {
         </div>
       )}
 
-  {/* Resizer - non-phone only (tablets/desktops) */}
-  {!isPhone && (
+      {/* Resizer - non-phone only (tablets/desktops) */}
+      {!isPhone && (
         <div
           ref={resizerRef}
           role="separator"

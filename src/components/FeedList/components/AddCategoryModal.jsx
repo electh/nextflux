@@ -4,7 +4,7 @@ import { addCategoryModalOpen } from "@/stores/modalStore";
 import { useStore } from "@nanostores/react";
 import minifluxAPI from "@/api/miniflux";
 import { categories } from "@/stores/feedsStore";
-import { addToast } from "@heroui/react";
+import { toast } from "sonner";
 import CategoryChip from "./CategoryChip.jsx";
 import { useTranslation } from "react-i18next";
 import CustomModal from "@/components/ui/CustomModal.jsx";
@@ -33,7 +33,7 @@ export default function AddCategoryModal() {
         { id: newCategory.id, title: newCategory.title },
       ]);
       onClose();
-      addToast({ title: t("common.success"), color: "success" });
+      toast.success(t("common.success"));
     } catch (error) {
       console.error("添加分类失败:", error);
     } finally {

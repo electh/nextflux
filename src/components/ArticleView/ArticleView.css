@@ -16,7 +16,11 @@
 
 .article-content li,
 .article-content p {
-  @apply !my-4
+  @apply my-4!
+}
+
+.article-content img {
+  @apply my-0!
 }
 
 /* AI summary callout styling to match article typography */
@@ -85,19 +89,19 @@
 }
 
 .article-content figure {
-  @apply my-4 !w-auto
+  @apply my-4 w-auto!
 }
 
 iframe {
-  @apply aspect-video !border-none h-auto !w-[calc(100%+2.5rem)] !max-w-[calc(100%+2.5rem)] -mx-5
+  @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5
 }
 
 blockquote {
-  @apply !not-italic
+  @apply not-italic!
 }
 
 figcaption {
-  @apply !italic
+  @apply italic!
 }
 
 /*代码主题跟随系统当前使用主题*/

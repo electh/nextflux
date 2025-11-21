@@ -3,21 +3,19 @@ export const popUpVariants = {
   enter: {
     y: 0,
     opacity: 1,
-    scale: 1,
     transition: {
       type: "spring",
-      duration: 0.2,
+      duration: 0.3,
       bounce: 0.2,
       ease: "easeInOut",
     },
   },
   exit: {
-    y: -20,
+    y: -30,
     opacity: 0,
-    scale: 0.9,
     transition: {
       type: "spring",
-      duration: 0.2,
+      duration: 0.3,
       bounce: 0.2,
       ease: "easeInOut",
     },

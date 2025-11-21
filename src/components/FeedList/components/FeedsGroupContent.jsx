@@ -1,12 +1,11 @@
 import { useStore } from "@nanostores/react";
 import {
   getCategoryCount,
-  getFeedCount,
   categoryExpandedState,
   updateCategoryExpandState,
 } from "@/stores/feedsStore.js";
 import { cn } from "@/lib/utils";
-import { ChevronRight, TriangleAlert } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,18 +18,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { useSidebar } from "@/components/ui/sidebar.jsx";
-import FeedIcon from "@/components/ui/FeedIcon";
 import { settingsState } from "@/stores/settingsStore";
 import { useEffect } from "react";
+import FeedItem from "./FeedItem";
 
 const FeedsGroupContent = ({ category }) => {
   const $getCategoryCount = useStore(getCategoryCount);
-  const $getFeedCount = useStore(getFeedCount);
-  const { isNarrow, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { categoryId, feedId } = useParams();
   const { defaultExpandCategory } = useStore(settingsState);
   const $categoryExpandedState = useStore(categoryExpandedState);
@@ -85,34 +81,7 @@ const FeedsGroupContent = ({ category }) => {
         <CollapsibleContent>
           <SidebarMenuSub className="m-0 px-0 border-none">
             {category.feeds.map((feed) => (
-              <SidebarMenuSubItem key={feed.id}>
-                <SidebarMenuSubButton
-                  asChild
-                  className={cn(
-                    "pl-8 pr-2 h-8",
-                    parseInt(feedId) === feed.id &&
-                      "active-feed bg-default/60 rounded-md",
-                  )}
-                >
-                  <Link
-                    to={`/feed/${feed.id}`}
-                    onClick={() => isNarrow && setOpenMobile(false)}
-                  >
-                    <FeedIcon feedId={feed.id} />
-                    <span className="flex-1 flex items-center gap-1">
-                      {feed.parsing_error_count > 0 && (
-                        <span className="text-warning">
-                          <TriangleAlert className="size-4" />
-                        </span>
-                      )}
-                      <span className="line-clamp-1">{feed.title}</span>
-                    </span>
-                    <span className="text-default-400 text-xs">
-                      {$getFeedCount(feed.id) !== 0 && $getFeedCount(feed.id)}
-                    </span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
+              <FeedItem key={feed.id} feed={feed} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>

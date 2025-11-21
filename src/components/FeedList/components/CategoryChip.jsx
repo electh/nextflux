@@ -5,7 +5,7 @@ import { feeds, categories } from "@/stores/feedsStore.js";
 import { useStore } from "@nanostores/react";
 import { useState } from "react";
 import minifluxAPI from "@/api/miniflux.js";
-import { addToast } from "@heroui/react";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { deleteCategory } from "@/db/storage";
 
@@ -24,7 +24,7 @@ export default function CategoryChip({ category }) {
       await deleteCategory(categoryId);
       // 更新内存中的 store
       categories.set($categories.filter((c) => c.id !== categoryId));
-      addToast({ title: t("common.success"), color: "success" });
+      toast.success(t("common.success"));
     } catch (error) {
       console.error("删除分类失败:", error);
     } finally {

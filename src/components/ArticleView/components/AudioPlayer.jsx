@@ -83,9 +83,9 @@ export default function AudioPlayer({ source }) {
               transition={transitionConfig}
               className={cn(
                 "audio-player-controls flex items-center shadow-custom w-full bg-content1/80 backdrop-blur-lg dark:bg-content2/80 gap-2",
-                expand ? "flex-col p-6" : "p-2",
+                expand ? "flex-col p-6" : "px-2 py-1",
               )}
-              style={{ borderRadius: "12px" }}
+              style={{ borderRadius: "24px" }}
             >
               <motion.div
                 layout
@@ -94,8 +94,8 @@ export default function AudioPlayer({ source }) {
               >
                 <Card
                   className={cn(
-                    "w-10 aspect-square bg-content2 rounded-lg shadow-custom",
-                    expand ? "w-full rounded-lg" : "rounded-sm",
+                    "w-8 aspect-square bg-content2 rounded-lg shadow-custom",
+                    expand ? "w-full rounded-lg" : "rounded-md",
                   )}
                   isPressable
                   onPress={() => setExpand(!expand)}
@@ -144,7 +144,7 @@ export default function AudioPlayer({ source }) {
                     <div className="font-semibold text-sm line-clamp-1">
                       {title}
                     </div>
-                    <div className="text-default-500 text-sm line-clamp-1">
+                    <div className="text-default-500 text-tiny line-clamp-1">
                       {artist}
                     </div>
                   </div>

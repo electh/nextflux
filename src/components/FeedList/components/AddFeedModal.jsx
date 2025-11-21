@@ -10,8 +10,8 @@ import {
   SelectItem,
   Textarea,
   Divider,
-  addToast,
 } from "@heroui/react";
+import { toast } from "sonner";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
 import { categories } from "@/stores/feedsStore";
@@ -145,10 +145,7 @@ export default function AddFeedModal() {
       }
     } catch (e) {
       if (e.response?.status === 404) {
-        addToast({
-          title: t("search.searchResultsPlaceholder"),
-          color: "danger",
-        });
+        toast.error(t("search.searchResultsPlaceholder"));
       }
       setResults([]);
     } finally {
@@ -229,7 +226,6 @@ export default function AddFeedModal() {
                 size="sm"
                 variant="faded"
                 placeholder={t("feed.feedTypePlaceholder")}
-                errorMessage={t("feed.feedTypeRequired")}
                 disallowEmptySelection
                 selectedKeys={[searchType]}
                 onChange={(e) => {
@@ -237,7 +233,6 @@ export default function AddFeedModal() {
                   setSearchQuery("");
                   setResults([]);
                 }}
-                classNames={{ helperWrapper: "hidden!" }}
               >
                 {supportedTypes.map((type) => (
                   <SelectItem
@@ -324,7 +319,6 @@ export default function AddFeedModal() {
                 variant="faded"
                 name="category_id"
                 placeholder={t("feed.feedCategoryPlaceholder")}
-                errorMessage={t("feed.feedCategoryRequired")}
                 selectedKeys={[formData.category_id?.toString()]}
                 onChange={(e) =>
                   setFormData({
@@ -332,7 +326,6 @@ export default function AddFeedModal() {
                     category_id: parseInt(e.target.value),
                   })
                 }
-                classNames={{ helperWrapper: "hidden!" }}
               >
                 {$categories.map((category) => (
                   <SelectItem

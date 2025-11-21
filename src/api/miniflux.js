@@ -1,11 +1,11 @@
 import axios from "axios";
 import { authState, logout } from "@/stores/authStore";
-import { addToast } from "@heroui/react";
+import { toast } from "sonner";
 
 // 创建 axios 实例
 const createApiClient = () => {
   const auth = authState.get();
-  
+
   const client = axios.create({
     baseURL: auth?.serverUrl || "",
     headers:
@@ -31,7 +31,7 @@ const createApiClient = () => {
       }
       const errorMessage = error.response?.data?.error_message;
       if (errorMessage && error.response?.status !== 404) {
-        addToast({ title: errorMessage, color: "danger" });
+        toast.error(errorMessage);
       }
       return Promise.reject(error);
     },
@@ -72,12 +72,9 @@ export const getFeeds = async () => {
 // 获取指定订阅源的文章
 export const getFeedEntries = async (feedId, params = {}) => {
   try {
-    const response = await apiClient.get(
-      "/v1/feeds/" + feedId + "/entries",
-      {
-        params: { direction: "desc", limit: 50, ...params },
-      },
-    );
+    const response = await apiClient.get("/v1/feeds/" + feedId + "/entries", {
+      params: { direction: "desc", limit: 50, ...params },
+    });
     return response.data.entries;
   } catch (error) {
     console.error("获取文章失败:", error);

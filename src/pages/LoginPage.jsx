@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { authState, login } from "@/stores/authStore";
 import { Button, Form, Input, Link, Divider } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
-import { addToast } from "@heroui/react";
+import { toast } from "sonner";
 import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
 
@@ -69,7 +69,7 @@ export default function LoginPage() {
       navigate("/");
     } catch (err) {
       console.log(err.message);
-      addToast({ title: err.message, color: "danger" });
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

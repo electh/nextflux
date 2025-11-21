@@ -13,40 +13,6 @@ function ArticleImage({ imgNode, type = "article" }) {
 
   const { src, alt = "" } = imgNode.attribs;
 
-  const handleImageClick = (e) => {
-    e.preventDefault();
-
-    if (imgRef.current) {
-      const imgRect = imgRef.current.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-
-      const scrollContainer = imgRef.current.closest(".article-scroll-area");
-
-      if (scrollContainer) {
-        const actionButtons = document.querySelector(".action-buttons");
-        if (actionButtons) {
-          const actionButtonsRect = actionButtons.getBoundingClientRect();
-          const actionButtonsHeight = actionButtonsRect.bottom;
-
-          if (
-            imgRect.top < actionButtonsHeight ||
-            imgRect.bottom > viewportHeight
-          ) {
-            const scrollTop =
-              scrollContainer.scrollTop +
-              imgRect.top -
-              (actionButtonsHeight + 10);
-
-            scrollContainer.scrollTo({
-              top: scrollTop,
-              behavior: "smooth",
-            });
-          }
-        }
-      }
-    }
-  };
-
   if (error) {
     return (
       <div
@@ -65,26 +31,27 @@ function ArticleImage({ imgNode, type = "article" }) {
 
   return (
     <PhotoView key={src} src={src}>
-      <Image
-        ref={imgRef}
-        disableAnimation
-        classNames={{
-          wrapper: cn(
-            " flex justify-center my-1",
-            type === "article" ? "max-w-[calc(100%+2.5rem)]! -mx-5" : "",
-            type === "enclosure"
-              ? "rounded-lg shadow-custom! mx-auto overflow-hidden"
-              : "",
-          ),
-          img: "h-auto object-cover m-0",
-        }}
-        radius="none"
-        src={src}
-        alt={alt}
-        loading="eager"
-        onError={() => setError(true)}
-        onClick={handleImageClick}
-      />
+      <div>
+        <Image
+          ref={imgRef}
+          disableAnimation
+          classNames={{
+            wrapper: cn(
+              " flex justify-center my-1",
+              type === "article" ? "max-w-[calc(100%+2.5rem)]! -mx-5" : "",
+              type === "enclosure"
+                ? "rounded-lg shadow-custom! mx-auto overflow-hidden"
+                : "",
+            ),
+            img: "h-auto object-cover m-0",
+          }}
+          radius="none"
+          src={src}
+          alt={alt}
+          loading="eager"
+          onError={() => setError(true)}
+        />
+      </div>
     </PhotoView>
   );
 }

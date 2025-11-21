@@ -3,6 +3,8 @@ import {
   updateArticleStarred,
   updateArticleStatus,
   markAllAsRead,
+  markAboveAsRead,
+  markBelowAsRead,
   loadingOriginContent,
 } from "../stores/articlesStore.js";
 import minifluxAPI from "@/api/miniflux";
@@ -40,6 +42,24 @@ export const handleMarkAllRead = async (type, id) => {
     }
   } catch (err) {
     console.error("标记已读失败:", err);
+  }
+};
+
+// 处理标记上方文章为已读
+export const handleMarkAboveAsRead = async (articleId) => {
+  try {
+    await markAboveAsRead(articleId);
+  } catch (err) {
+    console.error("标记上方为已读失败:", err);
+  }
+};
+
+// 处理标记下方文章为已读
+export const handleMarkBelowAsRead = async (articleId) => {
+  try {
+    await markBelowAsRead(articleId);
+  } catch (err) {
+    console.error("标记下方为已读失败:", err);
   }
 };
 

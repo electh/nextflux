@@ -19,6 +19,7 @@ import {
   WrapText,
   LetterText,
   SquareArrowUp,
+  PanelLeft,
 } from "lucide-react";
 import Theme from "./components/Theme";
 import { useTranslation } from "react-i18next";
@@ -36,6 +37,7 @@ export default function Appearance() {
     textPreviewLines,
     titleLines,
     showIndicator,
+    floatingSidebar,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -83,6 +85,18 @@ export default function Appearance() {
           }
           settingName="useGrayIcon"
           settingValue={useGrayIcon}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.appearance.sidebar")}>
+        <SwitchItem
+          label={t("settings.appearance.floatingSidebar")}
+          icon={
+            <SettingIcon variant="default">
+              <PanelLeft />
+            </SettingIcon>
+          }
+          settingName="floatingSidebar"
+          settingValue={floatingSidebar}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.articleList")}>

@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@heroui/react": "^2.8.2",
-    "@heroui/toast": "^2.0.14",
     "@icons-pack/react-simple-icons": "^11.2.0",
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.4",
@@ -45,6 +44,7 @@
     "react-virtuoso": "^4.12.3",
     "shiki": "^1.26.2",
     "simple-icons": "^14.7.0",
+    "sonner": "^2.0.7",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-safe-area": "^0.6.0"
   },

@@ -1,31 +1,20 @@
 import i18next from "i18next";
-import { addToast, Spinner } from "@heroui/react";
+import { toast } from "sonner";
 import minifluxAPI from "@/api/miniflux.js";
 import { forceSync } from "@/stores/syncStore.js";
 
 export const handleRefresh = (feedId) => {
   if (!feedId) return;
 
-  addToast({
-    title: i18next.t("common.refreshing"),
-    color: "default",
-    icon: <Spinner variant="simple" />,
-  });
-
-  return (async () => {
-    try {
+  return toast.promise(
+    (async () => {
       await minifluxAPI.refreshFeed(feedId);
       await forceSync();
-      addToast({
-        title: i18next.t("common.success"),
-        color: "success",
-      });
-    } catch (error) {
-      addToast({
-        title: i18next.t("common.error"),
-        color: "danger",
-      });
-      throw error;
-    }
-  })();
+    })(),
+    {
+      loading: i18next.t("common.loading"),
+      success: i18next.t("common.success"),
+      error: i18next.t("common.error"),
+    },
+  );
 };

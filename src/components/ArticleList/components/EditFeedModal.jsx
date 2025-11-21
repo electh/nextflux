@@ -117,7 +117,6 @@ export default function EditFeedModal() {
             variant="faded"
             name="category_id"
             placeholder={t("feed.feedCategoryPlaceholder")}
-            errorMessage={t("feed.feedCategoryRequired")}
             selectedKeys={[formData.category_id?.toString()]}
             onChange={(e) =>
               setFormData({

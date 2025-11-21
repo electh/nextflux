@@ -2,6 +2,7 @@ import { updateSettings } from "@/stores/settingsStore.js";
 import {
   Button,
   Chip,
+  cn,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -55,15 +56,15 @@ export const SliderItem = ({
           classNames={{
             trackWrapper: "rounded-full shadow-custom-inner bg-default-200/30",
             track:
-              "h-6 my-0 border-s-primary/20! border-e-transparent! bg-transparent",
+              "h-1.5 my-0 border-s-primary! border-e-transparent! bg-transparent",
             filler:
-              "bg-primary/20 after:absolute after:-right-3 after:h-6 after:w-3 after:bg-primary/20 after:rounded-r-full",
-            step: "data-[in-range=true]:bg-primary data-[in-range=true]:shadow-md shadow-primary",
+              "bg-primary after:absolute after:-right-3 after:w-3 after:bg-primary",
+            step: "data-[in-range=true]:bg-primary mt-1.5 w-0.5 h-0.5",
           }}
           renderThumb={(props) => (
             <div
               {...props}
-              className="group h-5 w-5 top-1/2 bg-default-50 shadow-custom-sm rounded-full cursor-grab data-[dragging=true]:cursor-grabbing"
+              className="group h-4 w-5 top-1/2 bg-white shadow-custom rounded-full cursor-grab data-[dragging=true]:cursor-grabbing transition-size data-[dragging=true]:w-6 data-[dragging=true]:h-5"
             ></div>
           )}
         />
@@ -100,8 +101,16 @@ export const SwitchItem = ({
       <Switch
         isSelected={settingValue}
         classNames={{
-          wrapper: "shadow-custom-inner h-6 w-11 px-0.5 overflow-visible",
-          thumb: "absolute w-5 h-5 shadow-md",
+          wrapper: "shadow-custom-inner h-6 w-12 px-0.5 overflow-visible",
+          thumb: cn(
+            "w-7 h-5 shadow-md",
+            "group-data-[hover=true]:border-primary",
+            //selected
+            "group-data-[selected=true]:ms-4",
+            // pressed
+            "group-data-[pressed=true]:w-7.5",
+            "group-data-pressed:group-data-selected:ms-3.5!",
+          ),
         }}
         isDisabled={disabled}
         onValueChange={(value) => updateSettings({ [settingName]: value })}

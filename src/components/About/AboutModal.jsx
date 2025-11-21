@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useStore } from "@nanostores/react";
 import { aboutModalOpen } from "@/stores/modalStore";
-import { FancyLogo } from "@/components/About/FancyLogo.jsx";
+import { NotFancyLogo } from "@/components/About/NotFancyLogo.jsx";
 import {
   Button,
   Modal,
@@ -63,7 +63,7 @@ export default function AboutModal() {
               </ModalHeader>
               <ModalBody>
                 <div className="overflow-y-auto flex flex-col gap-4">
-                  <FancyLogo since={2025} />
+                  <NotFancyLogo since={2025} />
 
                   {/* Made with love section */}
                   <div className="text-center text-default-500 px-3">

@@ -3,22 +3,32 @@ import { initTheme } from "@/stores/themeStore";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { router } from "@/routes/index.jsx";
-import { HeroUIProvider } from "@heroui/react";
-import { ToastProvider } from "@heroui/toast";
+import { HeroUIProvider, Spinner } from "@heroui/react";
 import { RouterProvider } from "react-router";
 import SplashScreen from "@/components/SplashScreen";
+import { Toaster } from "sonner";
 
 // 初始化主题
 initTheme();
 
 createRoot(document.getElementById("root")).render(
   <HeroUIProvider>
-    <ToastProvider
-      placement="bottom-center"
-      toastOffset={20}
-      toastProps={{ timeout: 3000, hideCloseButton: true }}
-    />
     <SplashScreen />
+    <Toaster
+      theme="system"
+      icons={{
+        loading: (
+          <div className="flex">
+            <Spinner variant="simple" classNames={{ wrapper: "size-4" }} />
+          </div>
+        ),
+      }}
+      toastOptions={{
+        classNames: {
+          toast: "rounded-lg! bg-content2! shadow-custom! p-4!",
+        },
+      }}
+    />
     <RouterProvider
       router={router}
       future={{

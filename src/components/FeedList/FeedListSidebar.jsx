@@ -30,7 +30,7 @@ const FeedListSidebar = () => {
   const { t } = useTranslation();
   const $lastSync = useStore(lastSync);
   const $isSyncing = useStore(isSyncing);
-  const { showHiddenFeeds } = useStore(settingsState);
+  const { showHiddenFeeds, floatingSidebar } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
   const { isMobile, isMedium } = useIsMobile();
@@ -57,7 +57,10 @@ const FeedListSidebar = () => {
   }, [$lastSync, showHiddenFeeds]);
 
   return (
-    <Sidebar variant="sidebar" className="sidebar">
+    <Sidebar
+      variant={floatingSidebar ? "floating" : "sidebar"}
+      className="sidebar"
+    >
       <SidebarHeader className="sidebar-header standalone:pt-safe-or-2">
         <SidebarMenu>
           <SidebarMenuItem>
