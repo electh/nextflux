@@ -10,6 +10,8 @@ export function useIsMobile() {
     (window.innerWidth >= MEDIUM_BREAKPOINT && window.innerWidth <= MOBILE_BREAKPOINT)
   )
   const [isMedium, setIsMedium] = useState(window.innerWidth <= MEDIUM_BREAKPOINT)
+  // phone-only helper (<= SMALL)
+  const [isPhone, setIsPhone] = useState(window.innerWidth <= SMALL_BREAKPOINT)
 
   useEffect(() => {
     const handleResize = () => {
@@ -18,11 +20,12 @@ export function useIsMobile() {
         (window.innerWidth >= MEDIUM_BREAKPOINT && window.innerWidth <= MOBILE_BREAKPOINT)
       )
       setIsMedium(window.innerWidth <= MEDIUM_BREAKPOINT)
+      setIsPhone(window.innerWidth <= SMALL_BREAKPOINT)
     }
 
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  return { isMobile, isMedium }
+  return { isMobile, isMedium, isPhone }
 }

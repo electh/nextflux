@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 export default function AddFeedButton() {
   const { t } = useTranslation();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isNarrow, setOpenMobile } = useSidebar();
   const fileInputRef = useRef(null);
 
   const handleFileChange = async (e) => {
@@ -60,7 +60,7 @@ export default function AddFeedButton() {
             startContent={<Rss className="size-4 text-default-500" />}
             onPress={() => {
               addFeedModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.addFeed")}
@@ -70,7 +70,7 @@ export default function AddFeedButton() {
             startContent={<Upload className="size-4 text-default-500" />}
             onPress={() => {
               fileInputRef.current?.click();
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.importOPML")}
@@ -87,7 +87,7 @@ export default function AddFeedButton() {
             startContent={<FolderPlus className="size-4 text-default-500" />}
             onPress={() => {
               addCategoryModalOpen.set(true);
-              isMobile && setOpenMobile(false);
+              isNarrow && setOpenMobile(false);
             }}
           >
             {t("sidebar.addCategory")}

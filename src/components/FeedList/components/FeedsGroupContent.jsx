@@ -46,7 +46,7 @@ const FeedsGroupContent = ({ category }) => {
         feedItem?.scrollIntoView({ behavior: "instant", block: "nearest" });
       }
     }
-  }, [feedId, category.id]);
+  }, [feedId, category.id, category.feeds]);
 
   return (
     <Collapsible
@@ -63,7 +63,7 @@ const FeedsGroupContent = ({ category }) => {
         >
           <Link
             to={`/category/${category.id}`}
-            onClick={() => isMobile && setOpenMobile(false)}
+            onClick={() => isNarrow && setOpenMobile(false)}
           >
             <span className={"pl-6 font-medium"}>{category.title}</span>
           </Link>

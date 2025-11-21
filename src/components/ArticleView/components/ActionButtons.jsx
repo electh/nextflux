@@ -8,6 +8,7 @@ import {
   Share,
   Star,
   CloudUpload,
+  Sparkles,
 } from "lucide-react";
 import {
   handleMarkStatus,
@@ -29,6 +30,7 @@ import minifluxAPI from "@/api/miniflux";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { hasIntegrations } from "@/stores/basicInfoStore.js";
+import { aiLoading } from "@/stores/aiStore";
 
 export default function ActionButtons({ parentRef }) {
   const { t } = useTranslation();
@@ -40,6 +42,7 @@ export default function ActionButtons({ parentRef }) {
   const fetchLoading = useStore(loadingOriginContent);
   const [saveLoading, setSaveLoading] = useState(false);
   const $hasIntegrations = useStore(hasIntegrations);
+  const $aiLoading = useStore(aiLoading);
 
   // 获取当前文章在列表中的索引
   const currentIndex = $articles.findIndex((a) => a.id === $activeArticle?.id);
@@ -169,6 +172,24 @@ export default function ActionButtons({ parentRef }) {
           </Tooltip>
         </div>
         <div className="ml-auto flex items-center gap-1 bg-background/70 backdrop-blur-lg shadow-custom rounded-full p-1">
+          <Tooltip
+            content={t("articleView.summarize")}
+            classNames={{ content: "shadow-custom!" }}
+          >
+            <Button
+              size="sm"
+              radius="full"
+              variant="light"
+              isIconOnly
+              isLoading={$aiLoading}
+              onPress={() => {
+                const event = new CustomEvent("ai:summarize");
+                window.dispatchEvent(event);
+              }}
+            >
+              <Sparkles className="size-4 text-default-500" />
+            </Button>
+          </Tooltip>
           <Tooltip
             content={
               $activeArticle?.status === "read"

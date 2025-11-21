@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import {
   filter,
@@ -17,9 +17,11 @@ import ArticleListFooter from "./components/ArticleListFooter";
 import { settingsState } from "@/stores/settingsStore.js";
 import ArticleView from "@/components/ArticleView/ArticleView.jsx";
 import Indicator from "@/components/ArticleList/components/Indicator.jsx";
+import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { cn } from "@/lib/utils";
 
 const ArticleList = () => {
-  const { feedId, categoryId } = useParams();
+  const { feedId, categoryId, articleId } = useParams();
   const $filteredArticles = useStore(filteredArticles);
   const $filter = useStore(filter);
   const $lastSync = useStore(lastSync);
@@ -33,6 +35,10 @@ const ArticleList = () => {
   const virtuosoRef = useRef(null);
 
   const lastSyncTime = useRef(null);
+  const { isPhone } = useIsMobile();
+  // Phones: overlay article, keep list mounted; Non-phones: show both panes.
+  const showListPane = true;
+  const showArticlePane = isPhone ? !!articleId : true;
 
   useEffect(() => {
     // 如果为同步触发刷新且当前文章列表不在顶部，则暂时不刷新列表，防止位置发生位移
@@ -56,20 +62,19 @@ const ArticleList = () => {
           feedId ? "feed" : categoryId ? "category" : null,
         );
 
-        if (ignore) {
-          return;
+        if (!ignore && res) {
+          filteredArticles.set(res.articles);
+          hasMore.set(res.isMore);
+          currentPage.set(1);
         }
-
-        filteredArticles.set(res.articles);
-        hasMore.set(res.isMore);
-        currentPage.set(1);
-        loading.set(false);
-      } catch {
-        console.error("加载文章失败");
+      } catch (err) {
+        console.error("加载文章失败", err);
+      } finally {
+        // always clear loading so UI doesn't get stuck after navigation/unmount
         loading.set(false);
       }
     };
-    handleFetchArticles(ignore);
+    handleFetchArticles();
 
     return () => {
       ignore = true;
@@ -89,23 +94,159 @@ const ArticleList = () => {
     if (!feedId && !categoryId && showUnreadByDefault) {
       filter.set("unread");
     }
+  }, [feedId, categoryId, showUnreadByDefault]);
+
+  // resizable list width (stored in localStorage)
+  const getInitialListWidth = () => {
+    try {
+        const stored = localStorage.getItem("listWidth");
+        if (stored) return stored;
+      } catch {
+        // ignore
+      }
+    // default values align with existing CSS (18rem - 30%)
+    return "30%";
+  };
+
+  const [listWidth, setListWidth] = useState(getInitialListWidth);
+  const resizerRef = useRef(null);
+  const isDragging = useRef(false);
+  const pointerIdRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("listWidth", listWidth);
+    } catch {
+      // ignore
+    }
+  }, [listWidth]);
+
+  useEffect(() => {
+    const onPointerMove = (e) => {
+      if (!isDragging.current) return;
+      // compute new width in px then convert to percentage of container
+      const container = resizerRef.current?.parentElement;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const newWidthPx = e.clientX - rect.left;
+      // clamp
+      const min = 200; // px
+      const max = rect.width - 320; // leave space for article view
+      const clamped = Math.max(min, Math.min(max, newWidthPx));
+      const percent = (clamped / rect.width) * 100;
+      setListWidth(`${percent}%`);
+    };
+
+    const onPointerUp = () => {
+      isDragging.current = false;
+      document.body.style.userSelect = "auto";
+      try {
+        const id = pointerIdRef.current;
+        if (id != null && resizerRef.current?.releasePointerCapture) {
+          resizerRef.current.releasePointerCapture(id);
+        }
+      } catch {
+        // ignore
+      }
+      pointerIdRef.current = null;
+    };
+    const onPointerCancel = onPointerUp;
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerCancel);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
+    };
   }, []);
 
   return (
-    <div className="main-content flex">
-      <div className="w-full relative max-w-screen md:w-84 md:max-w-[30%] md:min-w-[18rem] h-dvh flex flex-col md:border-r">
-        <ArticleListHeader />
-        {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
-        <ArticleListContent
-          articles={$filteredArticles}
-          virtuosoRef={virtuosoRef}
-          setVisibleRange={(range) => {
-            visibleRange.set(range);
+    <div className="main-content flex group" style={{ columnGap: 0 }}>
+      {/* List pane - full width on mobile when no article is open */}
+      {showListPane && (
+        <div
+          className="w-full relative h-dvh flex flex-col z-10"
+          style={{ width: isPhone ? "100%" : listWidth, minWidth: isPhone ? undefined : 200, maxWidth: isPhone ? undefined : "60%" }}
+        >
+          <ArticleListHeader />
+          {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
+          <ArticleListContent
+            articles={$filteredArticles}
+            virtuosoRef={virtuosoRef}
+            setVisibleRange={(range) => {
+              visibleRange.set(range);
+            }}
+          />
+          <ArticleListFooter />
+        </div>
+      )}
+
+      {/* Resizer - non-phone only (tablets/desktops) */}
+      {!isPhone && (
+        <div
+          ref={resizerRef}
+          role="separator"
+          aria-orientation="vertical"
+          className="h-dvh cursor-col-resize bg-transparent hover:bg-overlay/30 transition-colors duration-150 resize-bar"
+          style={{ width: 16, touchAction: "none", marginLeft: -16, zIndex: 20 }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            isDragging.current = true;
+            // avoid selecting text while dragging
+            document.body.style.userSelect = "none";
+            try {
+              pointerIdRef.current = e.pointerId;
+              if (resizerRef.current?.setPointerCapture) {
+                resizerRef.current.setPointerCapture(e.pointerId);
+              }
+            } catch {
+              // ignore
+            }
           }}
-        />
-        <ArticleListFooter />
-      </div>
-      <ArticleView />
+        >
+          {/* persistent touch-friendly handle */}
+          <div className="h-full w-full relative">
+            <div
+              aria-label="Resize articles panel"
+              className="absolute top-1/2 right-[26px] md:right-[30px] w-8 h-16 flex items-center justify-center resize-handle"
+              style={{ touchAction: "none", zIndex: 21, transform: 'translateY(-50%) translateX(38px)' }}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                isDragging.current = true;
+                document.body.style.userSelect = "none";
+                try {
+                  pointerIdRef.current = e.pointerId;
+                  if (resizerRef.current?.setPointerCapture) {
+                    resizerRef.current.setPointerCapture(e.pointerId);
+                  }
+                } catch {
+                  // ignore
+                }
+              }}
+            >
+              <div className="flex flex-col items-center gap-1 px-1.5 py-1 rounded-full bg-default-100/80 dark:bg-default-900/60 shadow-sm ring-1 ring-black/5 md:bg-transparent md:shadow-none md:ring-0">
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+                <span className="block w-1 h-1 rounded-full bg-default-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Article pane - full width on mobile when an article is open */}
+      {showArticlePane && (
+        <div
+          className={cn(
+            "flex-1 h-dvh",
+            isPhone && "w-full fixed inset-0 z-20 bg-background",
+          )}
+        >
+          <ArticleView />
+        </div>
+      )}
     </div>
   );
 };

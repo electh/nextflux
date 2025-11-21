@@ -13,6 +13,7 @@ import { useStore } from "@nanostores/react";
 import General from "@/components/Settings/General.jsx";
 import Appearance from "@/components/Settings/Appearance.jsx";
 import Readability from "@/components/Settings/Readability.jsx";
+import AISettings from "@/components/Settings/ai/AI.jsx";
 import { Cog, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -32,7 +33,8 @@ export default function App() {
           setActiveTab("general");
         }}
         classNames={{
-          base: "m-2 standalone:mb-safe-or-2 max-h-[80vh] h-[600px] overflow-hidden bg-content2/90 dark:bg-content1/90 backdrop-blur-lg shadow-custom!",
+          // Slightly lighter surface in dark to improve contrast on pure black
+          base: "m-2 standalone:mb-safe-or-2 max-h-[80vh] h-[600px] overflow-hidden bg-content2/90 dark:bg-content2/80 backdrop-blur-lg shadow-custom!",
           header:
             "border-b flex flex-col gap-3 p-3 bg-content1/80 dark:bg-transparent",
           footer: "hidden",
@@ -72,9 +74,10 @@ export default function App() {
                     fullWidth
                     classNames={{
                       tabList:
-                        "bg-default-100/90 shadow-custom-inner p-px gap-0 rounded-small overflow-visible",
+                        "bg-default-100/90 dark:bg-content2/90 shadow-custom-inner p-px gap-0 rounded-small overflow-visible",
                       tab: "py-1 h-7 text-sm",
-                      cursor: "bg-content1 shadow-custom-cursor! rounded-small",
+                      // Use a light neutral cursor so it’s visible on near-black
+                      cursor: "bg-default-200 shadow-custom-cursor! rounded-small",
                     }}
                     selectedKey={activeTab}
                     onSelectionChange={(key) => {
@@ -94,6 +97,7 @@ export default function App() {
                       key="readability"
                       title={t("settings.readability.title")}
                     />
+                    <Tab key="ai" title={t("settings.ai.title")} />
                   </Tabs>
                 </div>
               </ModalHeader>
@@ -102,6 +106,7 @@ export default function App() {
                   {activeTab === "general" && <General />}
                   {activeTab === "appearance" && <Appearance />}
                   {activeTab === "readability" && <Readability />}
+                  {activeTab === "ai" && <AISettings />}
                 </div>
               </ModalBody>
             </>

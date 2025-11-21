@@ -142,7 +142,8 @@ export default {
     getFullText: "Vue lecteur",
     showSummary: "Masquer la vue lecteur",
     saveToThirdParty: "Enregistrer dans des services tiers",
-    attachments: "Pièces jointes",
+  attachments: "Pièces jointes",
+  summarize: "Résumer",
   },
   player: {
     "Current time": "Temps actuel",
@@ -213,6 +214,18 @@ export default {
   },
   settings: {
     title: "Paramètres",
+    ai: {
+      title: "IA",
+      baseUrl: "URL de base",
+      apiKey: "Clé API",
+      apiKeyPlaceholder: "Entrez la clé API (si nécessaire)",
+      model: "Modèle",
+      defaultPrompt: "Invite par défaut",
+      defaultPromptPlaceholder: "Please summarize the following text in 2 paragraphs",
+      summarize: "Résumer",
+      generating: "Génération du résumé...",
+      error: "Échec de la génération du résumé",
+    },
     general: {
       title: "Général",
       language: "LANGUE",

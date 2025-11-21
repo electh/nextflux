@@ -144,6 +144,7 @@ export default {
     showSummary: "Hide reader view",
     saveToThirdParty: "Save to third-party services",
     attachments: "Attachments",
+  summarize: "Summarize",
   },
   player: {
     "Current time": "Current time",
@@ -214,6 +215,18 @@ export default {
   },
   settings: {
     title: "Settings",
+    ai: {
+      title: "AI",
+      baseUrl: "Base URL",
+      apiKey: "API Key",
+      apiKeyPlaceholder: "Enter API key (if required)",
+      model: "Model",
+      defaultPrompt: "Default prompt",
+      defaultPromptPlaceholder: "Please summarize the following text in 2 paragraphs",
+      summarize: "Summarize",
+      generating: "Generating summary...",
+      error: "Failed to generate summary",
+    },
     general: {
       title: "General",
       language: "LANGUAGE",

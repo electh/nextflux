@@ -13,6 +13,8 @@ export function useSwipeGesture({ onSwipeRight, threshold = 50 }) {
       ".video-player", // 视频播放器
       ".code-block", // code
       "iframe", // 所有iframe元素
+      ".resize-bar", // article list resizer bar
+      ".resize-handle", // article list resizer handle
     ];
 
     // 检查元素是否应该被排除

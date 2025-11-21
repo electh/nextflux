@@ -143,7 +143,8 @@ export default {
     getFullText: "Okuma görünümü",
     showSummary: "Okuma görünümünü gizle",
     saveToThirdParty: "Üçüncü taraf hizmetlerine kaydet",
-    attachments: "Ekler",
+  attachments: "Ekler",
+  summarize: "Özetle",
   },
   player: {
     "Current time": "Şimdiki zaman",
@@ -214,6 +215,18 @@ export default {
   },
   settings: {
     title: "Ayarlar",
+    ai: {
+      title: "YZ",
+      baseUrl: "Temel URL",
+      apiKey: "API Anahtarı",
+      apiKeyPlaceholder: "Gerekirse API anahtarını girin",
+      model: "Model",
+      defaultPrompt: "Varsayılan istem",
+      defaultPromptPlaceholder: "Please summarize the following text in 2 paragraphs",
+      summarize: "Özetle",
+      generating: "Özet oluşturuluyor...",
+      error: "Özet oluşturma başarısız",
+    },
     general: {
       title: "Genel",
       language: "DİL",

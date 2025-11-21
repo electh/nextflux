@@ -23,6 +23,26 @@
   @apply my-0!
 }
 
+/* AI summary callout styling to match article typography */
+.ai-summary {
+  @apply bg-transparent p-0 m-0;
+}
+.ai-summary p {
+  @apply my-2 text-foreground;
+}
+.ai-summary strong {
+  @apply font-semibold;
+}
+.ai-summary em {
+  @apply italic;
+}
+.ai-summary code {
+  @apply bg-default-100 dark:bg-default-100/80 px-1.5 py-0.5 rounded font-mono text-sm;
+}
+.ai-summary pre {
+  @apply bg-default-100 dark:bg-default-100/80 p-3 rounded my-2 overflow-auto font-mono text-sm;
+}
+
 /* 文章标题链接样式 */
 .article-title a {
   @apply text-foreground font-medium no-underline

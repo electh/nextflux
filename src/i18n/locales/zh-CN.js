@@ -142,7 +142,8 @@ export default {
     getFullText: "阅读模式",
     showSummary: "隐藏阅读模式",
     saveToThirdParty: "保存到第三方服务",
-    attachments: "附件",
+  attachments: "附件",
+  summarize: "总结",
   },
   player: {
     "Current time": "当前时间",
@@ -213,6 +214,18 @@ export default {
   },
   settings: {
     title: "设置",
+    ai: {
+      title: "AI",
+      baseUrl: "接口地址",
+      apiKey: "API Key",
+      apiKeyPlaceholder: "如需认证请输入 API Key",
+      model: "模型",
+      defaultPrompt: "默认提示词",
+      defaultPromptPlaceholder: "Please summarize the following text in 2 paragraphs",
+      summarize: "总结",
+      generating: "生成中...",
+      error: "生成摘要失败",
+    },
     general: {
       title: "常规",
       language: "语言",
