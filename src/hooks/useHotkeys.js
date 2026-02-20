@@ -18,14 +18,17 @@ import {
   shortcutsModalOpen,
 } from "@/stores/modalStore.js";
 import { useSidebarNavigation } from "@/hooks/useSidebarNavigation";
+import { settingsState } from "@/stores/settingsStore.js";
 
 export function useHotkeys() {
   const navigate = useNavigate();
   const $articles = useStore(filteredArticles);
   const $activeArticle = useStore(activeArticle);
+  const { markAsReadOnScroll } = useStore(settingsState);
   const $imageGalleryActive = useStore(imageGalleryActive);
   const { articleId } = useParams();
-  const { navigateToPrevious, navigateToNext, toggleCurrentCategory } = useSidebarNavigation();
+  const { navigateToPrevious, navigateToNext, toggleCurrentCategory } =
+    useSidebarNavigation();
 
   // 获取当前文章在列表中的索引
   const currentIndex = $articles.findIndex((a) => a.id === $activeArticle?.id);
@@ -57,6 +60,7 @@ export function useHotkeys() {
         return;
       }
 
+
       switch (e.key.toLowerCase()) {
         case "f": // 搜索
           e.preventDefault();
@@ -70,13 +74,13 @@ export function useHotkeys() {
             }
             const nextArticle = $articles[0];
             navigate(`${basePath}/article/${nextArticle.id}`);
-            if (nextArticle.status !== "read") {
+            if (nextArticle.status !== "read" && markAsReadOnScroll) {
               await handleMarkStatus(nextArticle);
             }
           } else if (currentIndex < $articles.length - 1) {
             const nextArticle = $articles[currentIndex + 1];
             navigate(`${basePath}/article/${nextArticle.id}`);
-            if (nextArticle.status !== "read") {
+            if (nextArticle.status !== "read" && markAsReadOnScroll) {
               await handleMarkStatus(nextArticle);
             }
           }
@@ -86,7 +90,7 @@ export function useHotkeys() {
           if (currentIndex > 0) {
             const prevArticle = $articles[currentIndex - 1];
             navigate(`${basePath}/article/${prevArticle.id}`);
-            if (prevArticle.status !== "read") {
+            if (prevArticle.status !== "read" && markAsReadOnScroll) {
               await handleMarkStatus(prevArticle);
             }
           }
@@ -164,6 +168,7 @@ export function useHotkeys() {
     navigate,
     articleId,
     $imageGalleryActive,
+    markAsReadOnScroll,
     navigateToPrevious,
     navigateToNext,
     toggleCurrentCategory,
