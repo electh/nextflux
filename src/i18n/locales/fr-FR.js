@@ -146,6 +146,7 @@ export default {
     getFullText: "Vue lecteur",
     showSummary: "Masquer la vue lecteur",
     saveToThirdParty: "Enregistrer dans des services tiers",
+    archive: "Archive web",
     attachments: "Pièces jointes",
     audioNotSupported:
       "Votre navigateur ne prend pas en charge la lecture audio",

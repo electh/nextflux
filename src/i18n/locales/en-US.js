@@ -145,6 +145,7 @@ export default {
     getFullText: "Reader view",
     showSummary: "Hide reader view",
     saveToThirdParty: "Save to third-party services",
+    archive: "Web Archive",
     attachments: "Attachments",
     audioNotSupported: "Your browser does not support audio playback",
     aiSummarize: "AI Summary",

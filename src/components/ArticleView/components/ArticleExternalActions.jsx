@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
 import { Button, Spinner, Tooltip } from "@heroui/react";
-import { CloudUpload, Share } from "lucide-react";
+import { Archive, CloudUpload, Share } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { saveToThirdParty } from "@/api/resources/integrations.js";
@@ -39,6 +39,15 @@ export default function ArticleExternalActions({ article }) {
     }
   };
 
+  const archive = () => {
+    if (!article?.url) return;
+    window.open(
+      `https://archive.ph/submit/?url=${encodeURIComponent(article.url)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
   return (
     <>
       {integrationsEnabled && (
@@ -62,6 +71,21 @@ export default function ArticleExternalActions({ article }) {
           </Tooltip.Content>
         </Tooltip>
       )}
+      <Tooltip delay={0}>
+        <Button
+          variant="ghost"
+          isIconOnly
+          size="sm"
+          isDisabled={!article?.url}
+          onPress={archive}
+        >
+          <Archive className="size-4 text-muted" />
+        </Button>
+        <Tooltip.Content showArrow>
+          <Tooltip.Arrow />
+          {t("articleView.archive")}
+        </Tooltip.Content>
+      </Tooltip>
       <Tooltip delay={0}>
         <Button variant="ghost" isIconOnly size="sm" onPress={share}>
           <Share className="size-4 text-muted" />
