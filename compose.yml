@@ -32,7 +32,7 @@ services:
       start_period: 10s
     restart: unless-stopped
   nextflux:
-    image: electh/nextflux:latest
+    image: acartoonist/nextflux:latest
     container_name: nextflux
     ports:
       - 3000:3000
