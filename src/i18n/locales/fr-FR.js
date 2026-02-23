@@ -142,6 +142,7 @@ export default {
     getFullText: "Vue lecteur",
     showSummary: "Masquer la vue lecteur",
     saveToThirdParty: "Enregistrer dans des services tiers",
+    archive: "Archive web",
     attachments: "Pièces jointes",
   },
   player: {

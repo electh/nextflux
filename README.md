@@ -2,6 +2,10 @@
 
 A modern RSS reader client for [Miniflux](https://github.com/miniflux/v2) built with React + Vite.
 
+*NOTE*: This fork includes some features that have not merged into Nextflux;
+which are either pending or rejected by the main author of Nextflux due to
+differences in project vision or implementation approach.
+
 ![preview](images/preview.png)
 
 ## ✨ Features
@@ -110,7 +114,7 @@ A modern RSS reader client for [Miniflux](https://github.com/miniflux/v2) built 
 Run with Docker using the following command:
 
 ```bash
-docker run -d --name nextflux -p 3000:3000 --restart unless-stopped electh/nextflux:latest
+docker run -d --name nextflux -p 3000:3000 --restart unless-stopped acartoonist/nextflux:latest
 ```
 
 ### Cloudflare Pages Deployment (standalone)

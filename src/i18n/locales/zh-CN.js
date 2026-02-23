@@ -142,6 +142,7 @@ export default {
     getFullText: "阅读模式",
     showSummary: "隐藏阅读模式",
     saveToThirdParty: "保存到第三方服务",
+    archive: "网页存档",
     attachments: "附件",
   },
   player: {

@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  Archive,
   Circle,
   CircleDot,
   FileText,
@@ -265,6 +266,28 @@ export default function ActionButtons({ parentRef }) {
                   ? t("articleView.showSummary")
                   : t("articleView.getFullText")}
               </span>
+            </Button>
+          </Tooltip>
+          <Tooltip
+            content={t("articleView.archive")}
+            classNames={{ content: "shadow-custom!" }}
+          >
+            <Button
+              size="sm"
+              radius="full"
+              variant="light"
+              isIconOnly
+              isDisabled={!$activeArticle?.url}
+              onPress={() =>
+                window.open(
+                  `https://archive.ph/submit/?url=${encodeURIComponent($activeArticle?.url)}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
+            >
+              <Archive className="size-4 text-default-500" />
+              <span className="sr-only">{t("articleView.archive")}</span>
             </Button>
           </Tooltip>
           <Tooltip

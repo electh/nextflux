@@ -143,6 +143,7 @@ export default {
     getFullText: "Okuma görünümü",
     showSummary: "Okuma görünümünü gizle",
     saveToThirdParty: "Üçüncü taraf hizmetlerine kaydet",
+    archive: "Web Arşivi",
     attachments: "Ekler",
   },
   player: {
