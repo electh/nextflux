@@ -57,8 +57,28 @@ export default function AddCategoryModal() {
       open={$addCategoryModalOpen}
       onOpenChange={onClose}
       title={t("sidebar.addCategory")}
+      footer={
+        <>
+          <Button variant="tertiary" onPress={onClose} fullWidth>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            type="submit"
+            form="add-category-form"
+            isPending={loading}
+            fullWidth
+          >
+            {loading && <Spinner color="current" size="sm" />}
+            {t("common.save")}
+          </Button>
+        </>
+      }
     >
-      <Form className="w-full px-4 pb-4" onSubmit={handleSubmit}>
+      <Form
+        id="add-category-form"
+        className="w-full px-4 pb-4"
+        onSubmit={handleSubmit}
+      >
         <Fieldset>
           <FieldGroup>
             <TextField isRequired name="title" variant="secondary">
@@ -77,15 +97,6 @@ export default function AddCategoryModal() {
               <CategoryChip key={category.id} category={category} />
             ))}
           </div>
-          <Fieldset.Actions>
-            <Button variant="tertiary" onPress={onClose} fullWidth>
-              {t("common.cancel")}
-            </Button>
-            <Button type="submit" isPending={loading} fullWidth>
-              {loading && <Spinner color="current" size="sm" />}
-              {t("common.save")}
-            </Button>
-          </Fieldset.Actions>
         </Fieldset>
       </Form>
     </CustomModal>

@@ -10,6 +10,7 @@ export const logoutModalOpen = atom(false);
 export const aboutModalOpen = atom(false);
 export const searchDialogOpen = atom(false);
 export const settingsModalOpen = atom(false);
+export const aiModalOpen = atom(false);
 
 // 存储当前操作的 feedId（用于侧边栏右键菜单）
 export const currentFeedId = atom(null);
@@ -28,6 +29,7 @@ export const isModalOpen = computed([
   aboutModalOpen,
   searchDialogOpen,
   settingsModalOpen,
+  aiModalOpen,
 ], (...args) => {
   return args.some(Boolean);
 });

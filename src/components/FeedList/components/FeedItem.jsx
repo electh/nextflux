@@ -55,7 +55,7 @@ const FeedItem = ({ feed }) => {
         className={cn(
           "pl-8 pr-2 h-8",
           parseInt(feedId) === feed.id &&
-            "active-feed bg-default/60 rounded-md",
+            "active-feed bg-default/60 rounded-xl",
         )}
       >
         <Link

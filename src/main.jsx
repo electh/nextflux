@@ -30,7 +30,7 @@ createRoot(document.getElementById("root")).render(
       }}
       toastOptions={{
         classNames: {
-          toast: "rounded-2xl! bg-overlay! shadow-custom! p-4! border-border!",
+          toast: "rounded-2xl! bg-overlay! shadow-custom-md! p-4! border-none!",
           title: "text-foreground!",
           description: "text-default!",
         },

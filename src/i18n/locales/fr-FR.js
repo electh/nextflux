@@ -50,7 +50,8 @@ export default {
     feedCategory: "Catégorie",
     feedCrawler: "Récupérer le contenu original",
     feedHide: "Masquer le flux globalement",
-    feedCrawlerDescription: "Essayer de récupérer automatiquement le contenu original",
+    feedCrawlerDescription:
+      "Essayer de récupérer automatiquement le contenu original",
     feedHideDescription: "Masquer ce flux et ses articles par défaut",
     feedTitlePlaceholder: "Veuillez entrer le titre du flux",
     feedCategoryPlaceholder: "Veuillez sélectionner une catégorie",
@@ -89,7 +90,8 @@ export default {
       settings: "Paramètres",
       openMiniflux: "Ouvrir Miniflux",
       logout: "Déconnexion",
-      logoutConfirmDescription: "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données et paramètres locaux seront supprimés.",
+      logoutConfirmDescription:
+        "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données et paramètres locaux seront supprimés.",
     },
     shortcuts: {
       title: "Raccourcis",
@@ -143,7 +145,11 @@ export default {
     showSummary: "Masquer la vue lecteur",
     saveToThirdParty: "Enregistrer dans des services tiers",
     attachments: "Pièces jointes",
-    audioNotSupported: "Votre navigateur ne prend pas en charge la lecture audio",
+    audioNotSupported:
+      "Votre navigateur ne prend pas en charge la lecture audio",
+    aiSummarize: "Résumé IA",
+    aiSummary: "Résumé IA",
+    aiSummaryGenerating: "Génération du résumé...",
   },
   player: {
     "Current time": "Temps actuel",
@@ -250,14 +256,16 @@ export default {
       themes: {
         light: "Clair",
         stone: "Pierre",
+        leaf: "Feuille",
         dark: "Sombre",
-        "black-dark": "Noir pur",
+        "nord-dark": "Nord",
       },
       display: "AFFICHAGE",
       interfaceDisplay: "Affichage de l'interface",
       moreSpace: "Plus d'espace",
       normal: "Normal",
       LargerText: "Texte plus grand",
+      borderRadius: "Rayon de la bordure",
       favicons: "FAVICONS",
       shape: "Forme",
       circle: "Cercle",
@@ -302,6 +310,18 @@ export default {
       titleAlign: "Alignement",
       titleFontSize: "Taille",
       reset: "Réinitialiser",
+    },
+    ai: {
+      title: "IA",
+      description:
+        "Actuellement, seuls OpenAI et les API compatibles OpenAI sont pris en charge",
+      openai: "Configuration OpenAI",
+      apiKey: "Clé API",
+      apiKeyPlaceholder: "Entrez votre clé API OpenAI",
+      baseUrl: "URL de base",
+      model: "MODÈLE",
+      selectModel: "Sélectionner un modèle",
+      prompt: "Prompt",
     },
   },
   error: {

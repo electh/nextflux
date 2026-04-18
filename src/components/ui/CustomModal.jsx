@@ -7,6 +7,7 @@ export default function CustomModal({
   title,
   fixedHeight = false,
   children,
+  footer,
 }) {
   const { isMedium } = useIsMobile();
   if (isMedium) {
@@ -21,7 +22,12 @@ export default function CustomModal({
               <Drawer.Header className="p-3">
                 <Drawer.Heading>{title}</Drawer.Heading>
               </Drawer.Header>
-              <Drawer.Body>{children}</Drawer.Body>
+              <Drawer.Body className="m-0 p-0">{children}</Drawer.Body>
+              {footer && (
+                <Drawer.Footer className="bg-background dark:bg-transparent border-t p-4 m-0">
+                  {footer}
+                </Drawer.Footer>
+              )}
             </Drawer.Dialog>
           </Drawer.Content>
         </Drawer.Backdrop>
@@ -37,7 +43,12 @@ export default function CustomModal({
             <Modal.Header>
               <Modal.Heading className="p-3">{title}</Modal.Heading>
             </Modal.Header>
-            <Modal.Body className="mt-0">{children}</Modal.Body>
+            <Modal.Body className="m-0 p-0">{children}</Modal.Body>
+            {footer && (
+              <Modal.Footer className="bg-background dark:bg-transparent border-t p-4 m-0">
+                {footer}
+              </Modal.Footer>
+            )}
             <Modal.CloseTrigger />
           </Modal.Dialog>
         </Modal.Container>

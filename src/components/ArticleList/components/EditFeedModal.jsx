@@ -106,9 +106,25 @@ export default function EditFeedModal() {
       open={$editFeedModalOpen}
       onOpenChange={onClose}
       title={t("articleList.editFeed")}
+      footer={
+        <>
+          <Button variant="tertiary" onPress={onClose} fullWidth>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            type="submit"
+            form="edit-feed-form"
+            isPending={loading}
+            fullWidth
+          >
+            {loading && <Spinner color="current" size="sm" />}
+            {t("common.save")}
+          </Button>
+        </>
+      }
     >
       <div className="w-full px-4 pb-4">
-        <Form className="w-full" onSubmit={handleSubmit}>
+        <Form id="edit-feed-form" className="w-full" onSubmit={handleSubmit}>
           <Fieldset>
             <FieldGroup>
               <TextField isRequired name="title" variant="secondary">
@@ -165,7 +181,7 @@ export default function EditFeedModal() {
                       size="sm"
                       isIconOnly
                       isDisabled={isCopied}
-                      variant="tertiary"
+                      variant="ghost"
                       onPress={() => {
                         navigator.clipboard.writeText(feedUrl);
                         setIsCopied(true);
@@ -286,15 +302,6 @@ export default function EditFeedModal() {
                 </Checkbox.Content>
               </Checkbox>
             </FieldGroup>
-            <Fieldset.Actions>
-              <Button variant="tertiary" onPress={onClose} fullWidth>
-                {t("common.cancel")}
-              </Button>
-              <Button type="submit" isPending={loading} fullWidth>
-                {loading && <Spinner color="current" size="sm" />}
-                {t("common.save")}
-              </Button>
-            </Fieldset.Actions>
           </Fieldset>
         </Form>
       </div>

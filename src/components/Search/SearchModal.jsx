@@ -108,8 +108,8 @@ export default function SearchModal() {
         variant="transparent"
       >
         <Modal.Container scroll="inside" size="lg">
-          <Modal.Dialog className="max-h-[80vh] h-[400px] bg-background/80 border backdrop-blur-lg shadow-large p-0">
-            <Modal.Header className="p-3">
+          <Modal.Dialog className="max-h-[80vh] h-[400px] bg-background/90 backdrop-blur-lg border shadow-2xl p-0">
+            <Modal.Header className="p-3 bg-background">
               <InputGroup>
                 <InputGroup.Prefix>
                   <SearchIcon className="size-4 text-muted opacity-60" />
@@ -129,7 +129,7 @@ export default function SearchModal() {
                 />
               </InputGroup>
             </Modal.Header>
-            <Modal.Body className="p-0 m-0">
+            <Modal.Body className="p-0 m-0 bg-background">
               <SearchResults
                 results={
                   searchType === "articles"
@@ -143,7 +143,7 @@ export default function SearchModal() {
               />
             </Modal.Body>
             <Modal.Footer className="p-0 m-0">
-              <div className="w-full p-1.5 border-t flex items-center justify-between">
+              <div className="w-full p-3 border-t flex items-center justify-between">
                 <Tabs
                   selectedKey={searchType}
                   onSelectionChange={(key) => {

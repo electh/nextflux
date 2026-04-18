@@ -25,6 +25,7 @@ import { cn, getHostname } from "@/lib/utils.js";
 import FeedIcon from "@/components/ui/FeedIcon.jsx";
 import { getArticleById } from "@/db/storage";
 import Attachments from "@/components/ArticleView/components/Attachments.jsx";
+import AISummary from "@/components/ArticleView/components/AISummary.jsx";
 
 const ArticleView = () => {
   const { t } = useTranslation();
@@ -243,6 +244,7 @@ const ArticleView = () => {
                     </div>
                   </header>
                   <Separator className="my-4" />
+                  <AISummary articleId={$activeArticle?.id} />
                   {audioEnclosure && (
                     <audio
                       controls

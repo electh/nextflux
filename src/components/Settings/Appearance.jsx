@@ -20,6 +20,7 @@ import {
   LetterText,
   SquareArrowUp,
   PanelLeft,
+  SquareRoundCorner,
 } from "lucide-react";
 import Theme from "./components/Theme";
 import { useTranslation } from "react-i18next";
@@ -33,6 +34,7 @@ export default function Appearance() {
     showFavicon,
     showReadingTime,
     reduceMotion,
+    borderRadius,
     interfaceFontSize,
     textPreviewLines,
     titleLines,
@@ -58,6 +60,20 @@ export default function Appearance() {
             { value: "16", label: t("settings.appearance.normal") },
             { value: "18", label: t("settings.appearance.LargerText") },
           ]}
+        />
+        <Separator />
+        <SliderItem
+          label={t("settings.appearance.borderRadius")}
+          icon={
+            <SettingIcon variant="purple">
+              <SquareRoundCorner />
+            </SettingIcon>
+          }
+          settingName="borderRadius"
+          settingValue={borderRadius}
+          max={0.5}
+          min={0}
+          step={0.1}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.favicons")}>

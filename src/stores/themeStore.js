@@ -12,10 +12,11 @@ export const themes = {
   light: [
     { id: "light", name: "白色", color: "#ffffff" },
     { id: "stone", name: "石灰", color: "#F3F1ED" },
+    { id: "leaf", name: "leaf", color: "#c8e6c9" },
   ],
   dark: [
     { id: "dark", name: "黑色", color: "#1E1E1E" },
-    { id: "black-dark", name: "纯黑", color: "#000000" },
+    { id: "nord-dark", name: "深蓝", color: "#4c566a" },
   ],
 };
 
@@ -31,7 +32,10 @@ export const themeState = persistentAtom("theme", defaultValue, {
 export function setTheme(mode, themeId = null) {
   const root = window.document.documentElement;
   const allThemes = [...themes.light, ...themes.dark].map((t) => t.id);
+
+  // 移除所有主题相关的 class 和 data-theme
   root.classList.remove(...allThemes);
+  root.removeAttribute("data-theme");
 
   if (mode === "system") {
     const systemMode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -41,14 +45,20 @@ export function setTheme(mode, themeId = null) {
       systemMode === "dark"
         ? themeState.get().darkTheme
         : themeState.get().lightTheme;
-    root.classList.add(themeToUse);
+    // 设置 color-scheme class
+    root.classList.add(systemMode);
+    // 设置 data-theme
+    root.setAttribute("data-theme", themeToUse);
   } else {
     const newTheme =
       themeId ||
       (mode === "dark"
         ? themeState.get().darkTheme
         : themeState.get().lightTheme);
-    root.classList.add(newTheme);
+    // 设置 color-scheme class (light 或 dark)
+    root.classList.add(mode);
+    // 设置 data-theme
+    root.setAttribute("data-theme", newTheme);
     if (mode === "dark") {
       themeState.set({ ...themeState.get(), darkTheme: newTheme });
     } else {
@@ -76,7 +86,9 @@ export function initTheme() {
       const root = window.document.documentElement;
       const allThemes = [...themes.light, ...themes.dark].map((t) => t.id);
       root.classList.remove(...allThemes);
-      root.classList.add(themeToUse);
+      root.removeAttribute("data-theme");
+      root.classList.add(systemMode);
+      root.setAttribute("data-theme", themeToUse);
     }
   });
 }

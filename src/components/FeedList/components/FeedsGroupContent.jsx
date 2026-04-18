@@ -77,7 +77,7 @@ const FeedsGroupContent = ({ category }) => {
       <SidebarMenuItem key={`menu-${category.id}`}>
         <SidebarMenuButton
           className={cn(
-            categoryId === category.id && "bg-default/60 rounded-md",
+            categoryId === category.id && "bg-default/60 rounded-xl",
           )}
           asChild
         >

@@ -206,11 +206,57 @@ export default function AddFeedModal() {
     }
   };
 
+  const isDiscoverMode = !formData.feed_url || formData.feed_url === "";
+
   return (
     <CustomModal
       open={$addFeedModalOpen}
       onOpenChange={onClose}
       title={t("sidebar.addFeed")}
+      footer={
+        isDiscoverMode ? (
+          <Button
+            fullWidth
+            isDisabled={searchQuery === "" || searchType === "" || searching}
+            onPress={handleSearch}
+          >
+            {searching ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Search className="size-4" />
+            )}
+            {t("common.search")}
+          </Button>
+        ) : (
+          <div className="flex gap-2 w-full">
+            <Button
+              fullWidth
+              onPress={() => {
+                setFormData({
+                  feed_url: "",
+                  category_id: "",
+                  crawler: false,
+                  keeplist_rules: "",
+                  blocklist_rules: "",
+                  rewrite_rules: "",
+                });
+              }}
+              variant="tertiary"
+            >
+              {t("common.back")}
+            </Button>
+            <Button
+              type="submit"
+              form="add-feed-form"
+              isPending={loading}
+              fullWidth
+            >
+              {loading && <Spinner color="current" size="sm" />}
+              {t("common.save")}
+            </Button>
+          </div>
+        )
+      }
     >
       <ScrollShadow size={10} className="w-full overflow-y-auto px-4 pb-4">
         <AnimatePresence initial={false} mode="wait">
@@ -269,21 +315,6 @@ export default function AddFeedModal() {
                   }}
                 />
               </TextField>
-              <Button
-                fullWidth
-                className="mt-3"
-                isDisabled={
-                  searchQuery === "" || searchType === "" || searching
-                }
-                onPress={handleSearch}
-              >
-                {searching ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Search className="size-4" />
-                )}
-                {t("common.search")}
-              </Button>
               <ResultListbox
                 results={results}
                 searchType={searchType}
@@ -292,6 +323,7 @@ export default function AddFeedModal() {
             </motion.div>
           ) : (
             <motion.form
+              id="add-feed-form"
               key="submit"
               onSubmit={handleSubmit}
               className="w-full flex flex-col gap-4"
@@ -430,28 +462,6 @@ export default function AddFeedModal() {
                   <Description>{t("feed.feedCrawlerDescription")}</Description>
                 </Checkbox.Content>
               </Checkbox>
-              <div className="flex gap-2">
-                <Button
-                  fullWidth
-                  onPress={() => {
-                    setFormData({
-                      feed_url: "",
-                      category_id: "",
-                      crawler: false,
-                      keeplist_rules: "",
-                      blocklist_rules: "",
-                      rewrite_rules: "",
-                    });
-                  }}
-                  variant="tertiary"
-                >
-                  {t("common.back")}
-                </Button>
-                <Button fullWidth type="submit" isPending={loading}>
-                  {loading && <Spinner color="current" size="sm" />}
-                  {t("common.save")}
-                </Button>
-              </div>
             </motion.form>
           )}
         </AnimatePresence>

@@ -32,16 +32,16 @@ export default function CustomAlertDialog({
         onOpenChange={(open) => !open && onClose()}
       >
         <AlertDialog.Container>
-          <AlertDialog.Dialog className="sm:max-w-[400px]">
+          <AlertDialog.Dialog className="sm:max-w-[400px] p-0">
             <AlertDialog.CloseTrigger />
-            <AlertDialog.Header>
+            <AlertDialog.Header className="px-4 pt-4">
               <AlertDialog.Icon status="danger" />
               <AlertDialog.Heading>{title}</AlertDialog.Heading>
             </AlertDialog.Header>
-            <AlertDialog.Body>
+            <AlertDialog.Body className="px-4">
               <p>{content}</p>
             </AlertDialog.Body>
-            <AlertDialog.Footer>
+            <AlertDialog.Footer className="bg-background dark:bg-transparent border-t p-4">
               <Button variant="tertiary" onPress={onClose}>
                 {cancelText}
               </Button>

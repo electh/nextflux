@@ -7,32 +7,174 @@
   :root {
     --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.02),
       0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.3);
-    --shadow-custom-sm: 0 4px 7px 0 rgba(0, 0, 0, 0.12);
-    --shadow-custom-button: 0 1px 2px 0 rgba(0, 0, 0, 0.15),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -1px 1px 0 rgba(255, 255, 255, 0.1);
     --shadow-custom-inner: inset 0 0 2px 0 rgba(0, 0, 0, 0.05),
       inset 0 0 4px 0 rgba(0, 0, 0, 0.05), inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-custom-cursor: 0 3px 6px 0 rgba(0, 0, 0, 0.07), 0 0 0 1px #e1e6ec,
-      inset 0 -5px 1px -1px rgba(0, 0, 0, 0.03);
+    --shadow-custom-md: 0 24px 40px -12px rgb(0 0 0 / 0.08),
+      0 16px 28px -8px rgb(0 0 0 / 0.04), 0 4px 6px -2px rgb(0 0 0 / 0.04),
+      0 0 2px 0 rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.04);
+    --shadow-custom-btn: 0 1px 2px -0.5px rgba(255, 255, 255, 0.12) inset,
+      0 0.5px 0.5px rgba(255, 255, 255, 0.16) inset,
+      0 8px 24px -4px rgba(255, 255, 255, 0.16) inset,
+      0 8px 8px -3px rgba(0, 0, 0, 0.03), 0 5px 5px -2.5px rgba(0, 0, 0, 0.03),
+      0 3px 3px -1.5px rgba(0, 0, 0, 0.03), 0 2px 2px -1px rgba(0, 0, 0, 0.03),
+      0 1px 1px -0.5px rgba(0, 0, 0, 0.03), 0 0.5px 0.5px rgba(0, 0, 0, 0.03);
   }
 
-  .dark,
-  .black-dark {
+  .dark {
     --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.05),
       0 2px 10px 0 rgba(0, 0, 0, 0.2), inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
       0 0 1px 0 rgba(255, 255, 255, 0.6);
-    --shadow-custom-sm: 0 4px 7px 0 rgba(0, 0, 0, 0.12);
-    --shadow-custom-button: 0 1px 2px 0 rgba(0, 0, 0, 0.15),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -1px 1px 0 rgba(255, 255, 255, 0.1);
     --shadow-custom-inner: inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
       inset 0 -0.5px 1px 0 rgba(255, 255, 255, 0.1),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.08),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.1);
-    --shadow-custom-cursor: 0 3px 6px 0 rgba(0, 0, 0, 0.07),
-      0 0 0 1px rgba(0, 0, 0, 0.15),
-      inset 0 -5px 1px -1px rgba(255, 255, 255, 0.01),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+    --shadow-custom-md: 0 1px 3px #ffffff0f inset,
+      0 0.5px 0.5px #ffffff0f inset, 0 16px 56px #0000003d,
+      0 4px 16px #0000003d, 0 1px 2px #0000003d, 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="stone"] {
+    color-scheme: light;
+    /* Primitive Colors (Do not change between light and dark) */
+    --white: oklch(100% 0 0);
+    --black: oklch(0% 0 0);
+    --snow: oklch(0.9911 0 0);
+    --eclipse: rgb(66, 64, 59);
+    /* Base Colors */
+    --background: rgb(227, 224, 219);
+    --foreground: var(--eclipse);
+    /* Surface: Used for non-overlay components */
+    --surface: rgb(243, 241, 235);
+    --surface-foreground: var(--foreground);
+    /* Overlay: Used for floating/overlay components */
+    --overlay: rgb(244, 241, 236);
+    --overlay-foreground: var(--foreground);
+    --muted: rgb(122, 119, 115);
+    --scrollbar: oklch(87.1% 0.006 286.286);
+    --default: rgb(220, 217, 213);
+    --default-foreground: var(--eclipse);
+    /* Ocean accent */
+    --accent: rgb(216, 94.007, 74.996);
+    --accent-foreground: var(--snow);
+    /* Form Field Defaults */
+    --field-background: rgb(244, 241, 236);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --field-border: transparent;
+    /* Status (kept compatible) */
+    --success: oklch(0.7329 0.1935 150.81);
+    --success-foreground: var(--eclipse);
+    --warning: oklch(0.7819 0.1585 72.33);
+    --warning-foreground: var(--eclipse);
+    --danger: rgb(216, 94.007, 74.996);
+    --danger-foreground: var(--snow);
+    /* Component Colors */
+    --segment: var(--white);
+    --segment-foreground: var(--foreground);
+    /* Misc */
+    --border: rgb(197, 195, 190);
+    --separator: rgb(220, 217, 213);
+    --focus: var(--accent);
+    --link: var(--accent);
+  }
+
+  [data-theme="leaf"] {
+    color-scheme: light;
+    /* Primitive Colors */
+    --white: oklch(100% 0 0);
+    --black: oklch(0% 0 0);
+    --snow: oklch(0.9911 0 0);
+    --eclipse: rgb(54, 67, 54);
+    /* Base Colors */
+    --background: rgb(223, 231, 225);
+    --foreground: var(--eclipse);
+    /* Surface: Used for non-overlay components */
+    --surface: rgb(236, 244, 238);
+    --surface-foreground: var(--foreground);
+    /* Overlay: Used for floating/overlay components */
+    --overlay: rgb(236, 244, 238);
+    --overlay-foreground: var(--foreground);
+    --muted: rgb(82, 92, 85);
+    --scrollbar: oklch(80% 0.03 145);
+    --default: rgba(0, 0, 0, 0.05);
+    --default-foreground: var(--eclipse);
+    /* Ocean accent */
+    --accent: rgb(53, 117, 74);
+    --accent-foreground: var(--snow);
+    /* Form Field Defaults */
+    --field-background: rgb(236, 244, 238);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --field-border: transparent;
+    /* Status (kept compatible) */
+    --success: oklch(0.65 0.2 145);
+    --success-foreground: var(--snow);
+    --warning: oklch(0.75 0.18 85);
+    --warning-foreground: var(--eclipse);
+    --danger: oklch(0.55 0.22 25);
+    --danger-foreground: var(--snow);
+    /* Component Colors */
+    --segment: var(--white);
+    --segment-foreground: var(--foreground);
+    /* Misc */
+    --border: rgba(0, 0, 0, 0.05);
+    --separator: rgba(0, 0, 0, 0.07);
+    --focus: var(--accent);
+    --link: var(--accent);
+  }
+
+  [data-theme="nord-dark"] {
+    color-scheme: dark;
+    /* Base Colors */
+    --background: rgb(36.001, 41, 51);
+    --foreground: var(--snow);
+    /* Surface: Used for non-overlay components */
+    --surface: rgb(46.001, 52, 64);
+    --surface-foreground: var(--foreground);
+    /* Overlay: Used for floating/overlay components */
+    --overlay: rgb(46.001, 52, 64);
+    --overlay-foreground: var(--foreground);
+    --muted: rgb(216, 222, 233);
+    --scrollbar: oklch(70.5% 0.015 286.067);
+    --default: rgb(59.001, 65.999, 82.001);
+    --default-foreground: var(--snow);
+    /* Form Field Defaults */
+    --field-background: var(--default);
+    --field-foreground: var(--foreground);
+    /* Ocean accent */
+    --accent: rgb(135, 192, 208);
+    --accent-foreground: var(--snow);
+    /* Status */
+    --success: rgb(163, 190, 140);
+    --success-foreground: var(--eclipse);
+    --warning: rgb(235, 203, 139);
+    --warning-foreground: var(--eclipse);
+    --danger: rgb(191, 97.004, 106);
+    --danger-foreground: var(--snow);
+    /* Component Colors */
+    --segment: rgb(76.001, 85.999, 106);
+    --segment-foreground: var(--foreground);
+    /* Misc */
+    --border: rgb(54.001, 60, 74);
+    --separator: rgb(59.001, 65.999, 82.001);
+    --focus: var(--accent);
+    --link: var(--accent);
+  }
+}
+
+@layer components {
+  .dropdown__popover {
+    @apply shadow-custom-md bg-overlay/90 backdrop-blur-sm;
+  }
+  .button--primary,
+  .button--danger {
+    @apply shadow-custom-btn relative before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:pointer-events-none before:opacity-5 before:bg-gradient-to-b before:from-white before:to-white/50;
+  }
+  .button--tertiary,
+  .close-button {
+    @apply rounded-full dark:shadow-custom-btn;
+  }
+  .button--icon-only {
+    @apply rounded-full;
   }
 }

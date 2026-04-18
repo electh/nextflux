@@ -10,6 +10,7 @@ import { settingsState } from "@/stores/settingsStore.js";
 import { useStore } from "@nanostores/react";
 import Settings from "@/components/Settings/Settings.jsx";
 import Shortcuts from "@/components/Settings/Shortcuts.jsx";
+import AI from "@/components/Settings/AI.jsx";
 import AddFeedModal from "@/components/FeedList/components/AddFeedModal.jsx";
 import AddCategoryModal from "@/components/FeedList/components/AddCategoryModal.jsx";
 import { useHotkeys } from "@/hooks/useHotkeys.js";
@@ -21,6 +22,7 @@ import EditFeedModal from "@/components/ArticleList/components/EditFeedModal.jsx
 import { checkIntegrations } from "@/stores/basicInfoStore.js";
 import SearchModal from "@/components/Search/SearchModal.jsx";
 import { useZoom } from "@/hooks/useZoom.js";
+import { useBorderRadius } from "@/hooks/useBorderRadius.js";
 import {
   shortcutsModalOpen,
   settingsModalOpen,
@@ -32,6 +34,7 @@ import {
   unsubscribeModalOpen,
   editFeedModalOpen,
   searchDialogOpen,
+  aiModalOpen,
 } from "@/stores/modalStore.js";
 
 function App() {
@@ -46,6 +49,7 @@ function App() {
   const $isUnsubscribeOpen = useStore(unsubscribeModalOpen);
   const $isEditFeedOpen = useStore(editFeedModalOpen);
   const $isSearchDialogOpen = useStore(searchDialogOpen);
+  const $isAIOpen = useStore(aiModalOpen);
   useEffect(() => {
     // 检查认证状态并启动自动同步
     const auth = authState.get();
@@ -60,6 +64,7 @@ function App() {
 
   useHotkeys();
   useZoom();
+  useBorderRadius();
   return (
     <SidebarProvider>
       <FeedListSidebar />
@@ -76,6 +81,7 @@ function App() {
       {$isUnsubscribeOpen && <UnsubscribeModal />}
       {$isEditFeedOpen && <EditFeedModal />}
       {$isSearchDialogOpen && <SearchModal />}
+      {$isAIOpen && <AI />}
     </SidebarProvider>
   );
 }

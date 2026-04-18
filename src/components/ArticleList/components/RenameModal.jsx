@@ -76,8 +76,28 @@ export default function RenameModal() {
       open={$renameModalOpen}
       onOpenChange={onClose}
       title={t("articleList.renameCategory.title")}
+      footer={
+        <>
+          <Button variant="tertiary" onPress={onClose} fullWidth>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            type="submit"
+            form="rename-form"
+            isPending={loading}
+            fullWidth
+          >
+            {loading && <Spinner color="current" size="sm" />}
+            {t("common.save")}
+          </Button>
+        </>
+      }
     >
-      <Form className="w-full px-4 pb-4" onSubmit={handleRename}>
+      <Form
+        id="rename-form"
+        className="w-full px-4 pb-4"
+        onSubmit={handleRename}
+      >
         <Fieldset>
           <FieldGroup>
             <TextField isRequired name="title" variant="secondary">
@@ -94,15 +114,6 @@ export default function RenameModal() {
               </FieldError>
             </TextField>
           </FieldGroup>
-          <Fieldset.Actions>
-            <Button variant="tertiary" onPress={onClose} fullWidth>
-              {t("common.cancel")}
-            </Button>
-            <Button type="submit" isPending={loading} fullWidth>
-              {loading && <Spinner color="current" size="sm" />}
-              {t("common.save")}
-            </Button>
-          </Fieldset.Actions>
         </Fieldset>
       </Form>
     </CustomModal>

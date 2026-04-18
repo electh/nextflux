@@ -7,6 +7,7 @@ import {
   Star,
   CloudUpload,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import {
   handleMarkStatus,
@@ -27,6 +28,15 @@ import minifluxAPI from "@/api/miniflux";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { hasIntegrations } from "@/stores/basicInfoStore.js";
+import { settingsState } from "@/stores/settingsStore.js";
+import {
+  aiSummaries,
+  setSummaryLoading,
+  appendSummaryChunk,
+  setSummaryDone,
+  setSummaryError,
+} from "@/stores/aiStore.js";
+import { summarizeArticleStream } from "@/api/openai.js";
 
 export default function ActionButtons() {
   const { t } = useTranslation();
@@ -37,6 +47,9 @@ export default function ActionButtons() {
   const fetchLoading = useStore(loadingOriginContent);
   const [saveLoading, setSaveLoading] = useState(false);
   const $hasIntegrations = useStore(hasIntegrations);
+  const { aiApiKey } = useStore(settingsState);
+  const $aiSummaries = useStore(aiSummaries);
+  const currentSummaryState = $aiSummaries[$activeArticle?.id];
 
   // 获取当前文章在列表中的索引
   const currentIndex = $articles.findIndex((a) => a.id === $activeArticle?.id);
@@ -90,6 +103,42 @@ export default function ActionButtons() {
     }
   };
 
+  // 处理AI总结
+  const handleAISummarize = () => {
+    if (!$activeArticle) return;
+    const articleId = $activeArticle.id;
+    if (currentSummaryState?.loading) return;
+    setSummaryLoading(articleId);
+
+    let rafId = null;
+    let pendingText = "";
+
+    const flush = () => {
+      if (pendingText) {
+        appendSummaryChunk(articleId, pendingText);
+        pendingText = "";
+      }
+      rafId = null;
+    };
+
+    summarizeArticleStream($activeArticle, {
+      onChunk: (chunk) => {
+        pendingText += chunk;
+        if (!rafId) rafId = requestAnimationFrame(flush);
+      },
+      onDone: () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        flush();
+        setSummaryDone(articleId);
+      },
+      onError: (error) => {
+        if (rafId) cancelAnimationFrame(rafId);
+        setSummaryError(articleId, error.message);
+        toast.error(error.message);
+      },
+    });
+  };
+
   // 处理保存到第三方服务
   const handleSaveToThirdParty = async () => {
     if (!$activeArticle) return;
@@ -105,7 +154,7 @@ export default function ActionButtons() {
   };
 
   return (
-    <div className="action-buttons py-2 standalone:pt-safe-or-2.5 bg-background/70 backdrop-blur-lg border-b border-foreground/10 px-2 sticky top-0 z-50">
+    <div className="action-buttons py-2 standalone:pt-safe-or-2.5 bg-background/70 md:bg-overlay/70 backdrop-blur-lg border-b border-foreground/10 px-2 sticky top-0 z-50">
       <div className="flex items-center">
         <Tooltip
           content={t("common.close")}
@@ -194,6 +243,25 @@ export default function ActionButtons() {
               <Tooltip.Content>
                 {t("articleView.saveToThirdParty")}
               </Tooltip.Content>
+            </Tooltip>
+          )}
+          {aiApiKey && (
+            <Tooltip delay={0}>
+              <Button
+                onPress={handleAISummarize}
+                variant="ghost"
+                isIconOnly
+                isPending={currentSummaryState?.loading}
+              >
+                {currentSummaryState?.loading ? (
+                  <Spinner color="current" size="sm" />
+                ) : (
+                  <Sparkles
+                    className={`size-4 ${currentSummaryState?.summary ? "text-accent" : "text-muted"}`}
+                  />
+                )}
+              </Button>
+              <Tooltip.Content>{t("articleView.aiSummarize")}</Tooltip.Content>
             </Tooltip>
           )}
           <Tooltip delay={0}>

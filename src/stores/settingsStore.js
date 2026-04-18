@@ -26,9 +26,15 @@ const defaultValue = {
   defaultExpandCategory: false, // 默认展开分类
   showUnreadByDefault: false,
   reduceMotion: false,
+  borderRadius: 0.4, // 0-0.5rem
   interfaceFontSize: "16",
   showIndicator: true,
   floatingSidebar: false,
+  aiApiKey: "",
+  aiBaseUrl: "https://api.openai.com/v1",
+  aiModel: "gpt-4o-mini",
+  aiPrompt:
+    "You are a helpful assistant that summarizes articles concisely. Provide a clear, structured summary in the same language as the article. Format: just plain text, no markdown.",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {
