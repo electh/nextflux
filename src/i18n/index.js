@@ -5,6 +5,8 @@ import zhCN from "./locales/zh-CN";
 import enUS from "./locales/en-US";
 import trTR from "./locales/tr-TR";
 import frFR from "./locales/fr-FR";
+import ptBR from "./locales/pt-BR";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -21,6 +23,9 @@ i18n
       },
       "fr-FR": {
         translation: frFR,
+      },
+      "pt-BR": {
+        translation: ptBR,
       },
     },
     fallbackLng: "en-US",
