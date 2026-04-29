@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useStore } from "@nanostores/react";
 import {
   filter,
@@ -20,7 +20,7 @@ import Indicator from "@/components/ArticleList/components/Indicator.jsx";
 import { cn } from "@heroui/react";
 
 const ArticleList = () => {
-  const { feedId, categoryId } = useParams();
+  const { feedId, categoryId, articleId } = useParams();
   const $filteredArticles = useStore(filteredArticles);
   const $filter = useStore(filter);
   const $lastSync = useStore(lastSync);
@@ -34,7 +34,17 @@ const ArticleList = () => {
   } = useStore(settingsState);
   const virtuosoRef = useRef(null);
 
+  const defaultFilterKey = useMemo(
+    () => JSON.stringify([feedId, categoryId, articleId, showUnreadByDefault]),
+    [feedId, categoryId, articleId, showUnreadByDefault],
+  );
   const lastSyncTime = useRef(null);
+  const lastDefaultFilterKey = useRef(null);
+  const currentFilterRef = useRef($filter);
+
+  useEffect(() => {
+    currentFilterRef.current = $filter;
+  }, [$filter]);
 
   useEffect(() => {
     // 如果为同步触发刷新且当前文章列表不在顶部，则暂时不刷新列表，防止位置发生位移
@@ -88,10 +98,19 @@ const ArticleList = () => {
 
   // 组件挂载时设置默认过滤器
   useEffect(() => {
-    if (!feedId && !categoryId && showUnreadByDefault) {
+    if (lastDefaultFilterKey.current === defaultFilterKey) {
+      return;
+    }
+    lastDefaultFilterKey.current = defaultFilterKey;
+
+    if (
+      !articleId &&
+      showUnreadByDefault &&
+      currentFilterRef.current === "all"
+    ) {
       filter.set("unread");
     }
-  }, []);
+  }, [articleId, defaultFilterKey, showUnreadByDefault]);
 
   return (
     <div className="main-content flex">
