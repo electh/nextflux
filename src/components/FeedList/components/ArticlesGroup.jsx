@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react";
 import { filter } from "@/stores/articlesStore.js";
 import { totalStarredCount, totalUnreadCount } from "@/stores/feedsStore.js";
-import { CircleDot, Infinity, Star } from "lucide-react";
+import { Infinity as InfinityIcon, Star } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -21,43 +21,45 @@ const ArticlesGroup = () => {
   const $totalStarredCount = useStore(totalStarredCount);
   const { isMobile, setOpenMobile } = useSidebar();
   const { feedId, categoryId } = useParams();
-  // 根据筛选条件获取显示文本和计数
-  const getDisplayInfo = () => {
-    switch ($filter) {
-      case "unread":
-        return {
-          icon: <CircleDot />,
-          text: t("articleList.unread"),
-          count: $totalUnreadCount,
-        };
-      case "starred":
-        return {
-          icon: <Star />,
-          text: t("articleList.starred"),
-          count: $totalStarredCount,
-        };
-      default:
-        return {
-          icon: <Infinity />,
-          text: t("articleList.all"),
-          count: $totalUnreadCount,
-        };
+  const isGlobalView = !feedId && !categoryId;
+
+  const handleItemClick = (nextFilter) => {
+    filter.set(nextFilter);
+    if (isMobile) {
+      setOpenMobile(false);
     }
   };
 
-  const { text, count } = getDisplayInfo();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{t("common.article")}</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild isActive={!feedId && !categoryId}>
-            <Link to="/" onClick={() => isMobile && setOpenMobile(false)}>
-              <span className="font-semibold">{text}</span>
+          <SidebarMenuButton
+            asChild
+            isActive={isGlobalView && $filter === "all"}
+          >
+            <Link to="/" onClick={() => handleItemClick("all")}>
+              <InfinityIcon />
+              <span className="font-semibold">{t("articleList.all")}</span>
             </Link>
           </SidebarMenuButton>
           <SidebarMenuBadge className="text-muted! opacity-60!">
-            {count !== 0 && count}
+            {$totalUnreadCount !== 0 && $totalUnreadCount}
+          </SidebarMenuBadge>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            isActive={isGlobalView && $filter === "starred"}
+          >
+            <Link to="/" onClick={() => handleItemClick("starred")}>
+              <Star />
+              <span className="font-semibold">{t("articleList.starred")}</span>
+            </Link>
+          </SidebarMenuButton>
+          <SidebarMenuBadge className="text-muted! opacity-60!">
+            {$totalStarredCount !== 0 && $totalStarredCount}
           </SidebarMenuBadge>
         </SidebarMenuItem>
       </SidebarMenu>
