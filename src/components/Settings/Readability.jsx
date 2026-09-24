@@ -5,6 +5,7 @@ import {
   AlignJustify,
   AlignLeft,
   AlignStartVertical,
+  BookOpen,
   CaseSensitive,
   ListOrdered,
   SquareCode,
@@ -172,12 +173,24 @@ export default function Readability() {
     titleAlignType,
     showLineNumbers,
     forceDarkCodeTheme,
+    defaultReaderView,
   } = useStore(settingsState);
   const { t } = useTranslation();
 
   return (
     <>
       <ItemWrapper title={t("settings.readability.articleTitle")}>
+        <SwitchItem
+          label={t("settings.readability.defaultReaderView")}
+          icon={
+            <SettingIcon variant="green">
+              <BookOpen />
+            </SettingIcon>
+          }
+          settingName="defaultReaderView"
+          settingValue={defaultReaderView}
+        />
+        <Separator />
         <GroupItem
           label={t("settings.readability.titleAlign")}
           icon={
