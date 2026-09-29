@@ -12,7 +12,7 @@ A modern RSS reader client for [Miniflux](https://github.com/miniflux/v2) built 
 - 🚀 Fast and responsive UI built with HeroUI (Previously NextUI)
 - 🌐 Connect to your Miniflux server
 - 🔄 Automatic background sync with configurable intervals
-- 📱 Mobile-friendly with PWA support
+- 📱 Installable as a desktop web app (PWA, no offline caching)
 - 🌙 Light/Dark mode with multiple theme options
 - 🌍 i18n support (English & Chinese & Turkish & French)
 - 👀 Mark as read on scroll
@@ -62,6 +62,17 @@ The app requires a Miniflux server to function. You'll need to provide:
 
 - Server URL
 - API Token / Username and Password
+
+## 💻 Install as a Desktop App
+
+Nextflux can be installed to your desktop from Chrome or Edge without any offline caching or service worker.
+
+1. Open the deployed app over HTTPS (or `http://localhost` during local development).
+2. Look for the install icon in the address bar, or use the browser menu:
+   - **Chrome / Edge**: `Install app` or `Apps` → `Install this site as an app`
+3. Launch Nextflux from your applications menu or dock like a native app.
+
+Requirements: a valid web app manifest, 192×192 and 512×512 icons, and `display: standalone`. No service worker is required.
 
 ## 🌍 Browser Support
 
