@@ -21,26 +21,39 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const $auth = useStore(authState);
     const {t} = useTranslation();
-    const [authType, setAuthType] = useState("basic");
-    const [serverUrl, setServerUrl] = useState("");
-    const [username, setUsername] = useState("");
+    const [authType, setAuthType] = useState($auth.authType || "basic");
+    const [serverUrl, setServerUrl] = useState($auth.serverUrl || "");
+    const [username, setUsername] = useState($auth.username || "");
     const [password, setPassword] = useState("");
     const [token, setToken] = useState("");
     const [isVisible, setIsVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if ($auth.serverUrl && $auth.username && $auth.password) {
+        const isAuthenticated =
+            $auth.serverUrl &&
+            (($auth.username && $auth.password) ||
+                ($auth.authType === "token" && $auth.token));
+        if (isAuthenticated) {
             navigate("/");
         }
-    }, [$auth.serverUrl, $auth.username, $auth.password, navigate]);
+    }, [
+        $auth.serverUrl,
+        $auth.username,
+        $auth.password,
+        $auth.token,
+        $auth.authType,
+        navigate,
+    ]);
 
     useEffect(() => {
-        if (!localStorage.getItem("refreshed")) {
-            window.location.reload();
-            localStorage.setItem("refreshed", "true");
+        if ($auth.serverUrl && !serverUrl) {
+            setServerUrl($auth.serverUrl);
         }
-    }, []);
+        if ($auth.username && !username) {
+            setUsername($auth.username);
+        }
+    }, [$auth.serverUrl, $auth.username]);
 
     useEffect(() => {
         const url = new URL(window.location.href);

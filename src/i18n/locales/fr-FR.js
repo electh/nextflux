@@ -93,7 +93,7 @@ export default {
       openMiniflux: "Ouvrir Miniflux",
       logout: "Déconnexion",
       logoutConfirmDescription:
-        "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données et paramètres locaux seront supprimés.",
+        "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données locales en cache seront supprimées.",
     },
     shortcuts: {
       title: "Raccourcis",

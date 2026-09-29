@@ -249,6 +249,17 @@ async function setFeedIcon(feedIcon) {
   });
 }
 
+// 清理所有本地缓存数据（文章、订阅源、分类、图标）
+async function clearAllData() {
+  await Promise.all([
+    db.articles.clear(),
+    db.feeds.clear(),
+    db.categories.clear(),
+    db.feedIcons.clear(),
+  ]);
+  localStorage.removeItem("lastSyncTime");
+}
+
 export {
   addFeeds,
   getFeeds,
@@ -273,4 +284,5 @@ export {
   searchArticles,
   getFeedIcon,
   setFeedIcon,
+  clearAllData,
 };

@@ -1,6 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { normalizeServerUrl } from "@/lib/url";
 import { stopAutoSync } from "./syncStore";
+import { clearAllData } from "@/db/storage";
 
 const defaultValue = {
   serverUrl: "",
@@ -14,14 +15,18 @@ const defaultValue = {
 export const authState = persistentAtom("auth", defaultValue, {
   encode: JSON.stringify,
   decode: (str) => {
-    const storedValue = JSON.parse(str);
-    return {
-      ...defaultValue,
-      ...storedValue,
-      serverUrl: storedValue.serverUrl
-        ? normalizeServerUrl(storedValue.serverUrl)
-        : defaultValue.serverUrl,
-    };
+    try {
+      const storedValue = JSON.parse(str);
+      return {
+        ...defaultValue,
+        ...storedValue,
+        serverUrl: storedValue.serverUrl
+          ? normalizeServerUrl(storedValue.serverUrl)
+          : defaultValue.serverUrl,
+      };
+    } catch {
+      return defaultValue;
+    }
   },
 });
 
@@ -33,7 +38,10 @@ export async function login(serverUrl, username, password, token) {
     if (token) {
       headers["X-Auth-Token"] = token;
     } else {
-      headers["Authorization"] = "Basic " + btoa(`${username}:${password}`);
+      const basicToken = btoa(
+        unescape(encodeURIComponent(`${username}:${password}`)),
+      );
+      headers["Authorization"] = "Basic " + basicToken;
     }
 
     const response = await fetch(`${normalizedServerUrl}/v1/me`, {
@@ -66,31 +74,38 @@ export async function login(serverUrl, username, password, token) {
   }
 }
 
+// 处理认证失效（401 等错误），仅清除凭据，保留用户偏好设置及服务器配置
+export function handleAuthError() {
+  try {
+    stopAutoSync();
+    const currentAuth = authState.get();
+    authState.set({
+      ...currentAuth,
+      password: "",
+      token: "",
+    });
+  } catch (error) {
+    console.error("处理认证失效失败:", error);
+  }
+}
+
 // 登出方法
 export async function logout() {
   try {
     // 停止自动同步
     stopAutoSync();
 
-    // 重置所有状态
-    authState.set(defaultValue);
+    const currentAuth = authState.get();
+    // 重置认证状态，保留 serverUrl 和 username 方便下次登录
+    authState.set({
+      ...defaultValue,
+      serverUrl: currentAuth?.serverUrl || "",
+      username: currentAuth?.username || "",
+    });
 
-    // 异步清理存储
-    await Promise.all([
-      // 清理 localStorage
-      new Promise((resolve) => {
-        localStorage.clear();
-        resolve();
-      }),
-      // 清理 indexedDB
-      new Promise((resolve, reject) => {
-        const request = indexedDB.deleteDatabase("minifluxReader");
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject();
-      }),
-    ]);
+    // 清理本地文章和分类缓存数据，绝不清除用户偏好设置 (settings / theme)
+    await clearAllData();
   } catch (error) {
     console.error("登出失败:", error);
-    // 可以选择是否抛出错误
   }
 }

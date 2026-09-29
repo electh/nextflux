@@ -92,7 +92,7 @@ export default {
       openMiniflux: "Miniflux'u Aç",
       logout: "Çıkış",
       logoutConfirmDescription:
-        "Çıkış yapmak istediğinize emin misiniz? Tüm yerel veriler ve ayarlar silinecek.",
+        "Çıkış yapmak istediğinize emin misiniz? Tüm yerel önbellek verileri silinecek.",
     },
     shortcuts: {
       title: "Kısayollar",

@@ -27,7 +27,11 @@ function App() {
   useEffect(() => {
     // 检查认证状态并启动自动同步
     const auth = authState.get();
-    if (auth.username) {
+    const isAuthenticated =
+      auth.serverUrl &&
+      ((auth.username && auth.password) ||
+        (auth.authType === "token" && auth.token));
+    if (isAuthenticated) {
       startAutoSync();
     }
   }, [syncInterval]);

@@ -1,62 +1,44 @@
 import axios from "axios";
-import { authState, logout } from "@/stores/authStore";
+import { authState, handleAuthError } from "@/stores/authStore";
 import { toast } from "sonner";
 
 // 创建 axios 实例
-const createApiClient = () => {
+const apiClient = axios.create();
+
+// 请求拦截器：动态注入最新的 baseURL 和认证头
+apiClient.interceptors.request.use((config) => {
   const auth = authState.get();
-
-  const client = axios.create({
-    baseURL: auth?.serverUrl || "",
-    headers:
-      auth?.authType === "token"
-        ? {
-            "X-Auth-Token": auth.token,
-          }
-        : auth?.username && auth?.password
-          ? {
-              Authorization:
-                "Basic " + btoa(`${auth.username}:${auth.password}`),
-            }
-          : {},
-  });
-
-  // 添加响应拦截器
-  client.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      // 如果响应状态码是 401,执行登出操作
-      if (error.response?.status === 401) {
-        logout();
-      }
-      const errorMessage = error.response?.data?.error_message;
-      if (errorMessage && error.response?.status !== 404) {
-        toast.error(errorMessage);
-      }
-      return Promise.reject(error);
-    },
-  );
-
-  return client;
-};
-
-// 创建 API 客户端实例
-let apiClient = createApiClient();
-
-// 监听认证状态变化
-authState.listen((newAuth) => {
-  apiClient.defaults.baseURL = newAuth?.serverUrl || "";
-  if (newAuth?.authType === "token") {
-    apiClient.defaults.headers["X-Auth-Token"] = newAuth.token;
-    delete apiClient.defaults.headers["Authorization"];
-  } else {
-    apiClient.defaults.headers["Authorization"] =
-      newAuth?.username && newAuth?.password
-        ? "Basic " + btoa(`${newAuth.username}:${newAuth.password}`)
-        : "";
-    delete apiClient.defaults.headers["X-Auth-Token"];
+  if (auth?.serverUrl) {
+    config.baseURL = auth.serverUrl;
   }
+  if (auth?.authType === "token" && auth?.token) {
+    config.headers["X-Auth-Token"] = auth.token;
+    delete config.headers["Authorization"];
+  } else if (auth?.username && auth?.password) {
+    const basicToken = btoa(
+      unescape(encodeURIComponent(`${auth.username}:${auth.password}`)),
+    );
+    config.headers["Authorization"] = `Basic ${basicToken}`;
+    delete config.headers["X-Auth-Token"];
+  }
+  return config;
 });
+
+// 响应拦截器：处理 401 认证失效等错误
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // 如果响应状态码是 401，执行认证失效处理，保留用户偏好和配置
+    if (error.response?.status === 401) {
+      handleAuthError();
+    }
+    const errorMessage = error.response?.data?.error_message;
+    if (errorMessage && error.response?.status !== 404) {
+      toast.error(errorMessage);
+    }
+    return Promise.reject(error);
+  },
+);
 
 // 获取所有订阅源
 export const getFeeds = async () => {

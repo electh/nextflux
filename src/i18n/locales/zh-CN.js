@@ -91,7 +91,7 @@ export default {
       settings: "设置",
       openMiniflux: "访问 Miniflux",
       logout: "注销",
-      logoutConfirmDescription: "确定要注销吗？注销后本地数据及设置将清空。",
+      logoutConfirmDescription: "确定要注销吗？注销后本地缓存数据将清空。",
     },
     shortcuts: {
       title: "快捷键",
