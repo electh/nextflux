@@ -26,6 +26,7 @@ const defaultValue = {
   defaultExpandCategory: false, // 默认展开分类
   showUnreadByDefault: false,
   reduceMotion: false,
+  defaultReaderView: false, // Ouvrir automatiquement la vue lecteur
   borderRadius: 0.4, // 0-0.5rem
   interfaceFontSize: "16",
   showIndicator: true,

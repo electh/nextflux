@@ -307,6 +307,7 @@ export default {
       fontSize: "字体大小",
       maxWidth: "最大宽度",
       articleTitle: "标题",
+      defaultReaderView: "默认打开阅读视图",
       titleAlign: "对齐",
       titleFontSize: "大小",
       reset: "重 置",

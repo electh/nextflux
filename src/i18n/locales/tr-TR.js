@@ -308,6 +308,7 @@ export default {
       fontSize: "Yazı boyutu",
       maxWidth: "Maks genişlik",
       articleTitle: "BAŞLIK",
+      defaultReaderView: "Varsayılan olarak okuma görünümünde aç",
       titleAlign: "Hizalama",
       titleFontSize: "Boyut",
       reset: "Sıfırla",

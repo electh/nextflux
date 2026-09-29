@@ -28,6 +28,7 @@ import Attachments from "@/components/ArticleView/components/Attachments.jsx";
 import AISummary from "@/components/ArticleView/components/AISummary.jsx";
 import Iframe from "@/components/ArticleView/components/Iframe.jsx";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { handleToggleContent } from "@/handlers/articleHandlers.js";
 
 const ArticleView = () => {
   const { t } = useTranslation();
@@ -45,6 +46,7 @@ const ArticleView = () => {
     titleAlignType,
     reduceMotion,
     floatingSidebar,
+    defaultReaderView,
   } = useStore(settingsState);
   const { lightTheme } = useStore(themeState);
   const $currentThemeMode = useStore(currentThemeMode);
@@ -88,6 +90,9 @@ const ArticleView = () => {
             // 保存原始内容
             loadedArticle.originalContent = loadedArticle.content;
             activeArticle.set(loadedArticle);
+            if (defaultReaderView && !loadedArticle.shownOriginal) {
+              handleToggleContent(loadedArticle);
+            }
           } else {
             setError("请选择要阅读的文章");
           }
@@ -99,7 +104,7 @@ const ArticleView = () => {
     };
 
     loadArticleByArticleId();
-  }, [articleId, $filteredArticles]);
+  }, [articleId, $filteredArticles, defaultReaderView]);
 
   const handleLinkWithImg = (domNode) => {
     const imgNodes = domNode.children.filter(

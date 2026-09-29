@@ -308,6 +308,7 @@ export default {
       fontSize: "Font size",
       maxWidth: "Max width",
       articleTitle: "TITLE",
+      defaultReaderView: "Open in reader view by default",
       titleAlign: "Alignment",
       titleFontSize: "Size",
       reset: "Reset",
