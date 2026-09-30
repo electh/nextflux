@@ -1,48 +1,68 @@
 import { updateSettings } from "@/stores/settingsStore.js";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  Button,
-  Dropdown,
-  Label,
-  Kbd,
-  Slider,
-  Switch,
-  Tabs,
   Tooltip,
-} from "@heroui/react";
-
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Field, FieldLabel, FieldTitle } from "@/components/ui/field";
 import { ChevronsUpDown, Info } from "lucide-react";
 
-const bgColor = "bg-default/60 dark:bg-default/30";
+const rowClass = "bg-default/60 px-2.5 py-3";
+const keySymbols = {
+  command: "⌘",
+  cmd: "⌘",
+  ctrl: "Ctrl",
+  shift: "⇧",
+  alt: "⌥",
+  option: "⌥",
+  enter: "↵",
+  up: "↑",
+  down: "↓",
+  escape: "Esc",
+};
 
-const DescriptionTip = ({ description }) => {
+function DescriptionTip({ description }) {
   if (!description) return null;
   return (
-    <Tooltip delay={0}>
-      <Button
-        isIconOnly
-        variant="ghost"
-        size="sm"
-        className="size-5 min-w-5 p-0 bg-transparent hover:bg-transparent border-none shadow-none"
+    <Tooltip>
+      <TooltipTrigger
+        delay={0}
+        render={
+          <Button variant="ghost" size="icon-xs" aria-label={description} />
+        }
       >
-        <Info className="size-3.5 text-muted opacity-60 shrink-0" />
-      </Button>
-      <Tooltip.Content>
-        <p>{description}</p>
-      </Tooltip.Content>
+        <Info />
+      </TooltipTrigger>
+      <TooltipContent>{description}</TooltipContent>
     </Tooltip>
   );
-};
+}
 
-export const ItemWrapper = ({ title, children }) => {
+export function ItemWrapper({ title, children }) {
   return (
-    <div className="settings-group">
-      <div className="text-xs text-muted font-medium ml-2.5 mb-1">{title}</div>
-      <div className="rounded-xl overflow-hidden shadow-custom">{children}</div>
-    </div>
+    <section className="settings-group">
+      <h3 className="mb-1 ml-2.5 text-xs font-medium text-muted-foreground">
+        {title}
+      </h3>
+      <div className="overflow-hidden rounded-xl shadow-custom">{children}</div>
+    </section>
   );
-};
+}
 
-export const SliderItem = ({
+export function SliderItem({
   label,
   icon,
   settingName,
@@ -51,67 +71,63 @@ export const SliderItem = ({
   min,
   step,
   description,
-}) => {
+}) {
   return (
-    <div className={`grid gap-2 ${bgColor} px-2.5 py-2`}>
+    <Field className={cn(rowClass, "gap-2")}>
       <div className="flex items-center gap-2">
         {icon}
-        <Slider
-          aria-label="slider"
-          className="w-full"
-          value={[settingValue]}
-          onChange={(value) => updateSettings({ [settingName]: value[0] })}
-          maxValue={max}
-          minValue={min}
-          step={step}
+        <FieldLabel id={settingName + "-label"}>{label}</FieldLabel>
+        <DescriptionTip description={description} />
+        <output
+          className="ml-auto text-sm text-muted-foreground"
+          aria-live="off"
         >
-          <div className="flex items-center gap-1">
-            <div className="text-sm text-foreground line-clamp-1">{label}</div>
-            <DescriptionTip description={description} />
-          </div>
-          <Slider.Output className="text-muted" />
-          <Slider.Track className="h-1.5 mt-0.5">
-            <Slider.Fill />
-            <Slider.Thumb className="bg-transparent after:rounded-full" />
-          </Slider.Track>
-        </Slider>
+          {settingValue}
+        </output>
       </div>
-    </div>
+      <Slider
+        aria-labelledby={settingName + "-label"}
+        value={[settingValue]}
+        min={min}
+        max={max}
+        step={step}
+        onValueChange={(value) =>
+          updateSettings({
+            [settingName]: Array.isArray(value) ? value[0] : value,
+          })
+        }
+      />
+    </Field>
   );
-};
+}
 
-export const SwitchItem = ({
+export function SwitchItem({
   label,
   icon,
   settingName,
   settingValue,
   disabled = false,
   description,
-}) => {
+}) {
   return (
-    <div
-      className={`flex justify-between items-center gap-2 ${bgColor} px-2.5 py-3`}
-    >
-      <div className="flex items-center gap-2">
+    <Field orientation="horizontal" className={rowClass} disabled={disabled}>
+      <div className="flex flex-1 items-center gap-2">
         {icon}
-        <div className="flex items-center gap-1">
-          <div className="text-sm text-foreground line-clamp-1">{label}</div>
-          <DescriptionTip description={description} />
-        </div>
+        <FieldLabel htmlFor={settingName}>{label}</FieldLabel>
+        <DescriptionTip description={description} />
       </div>
       <Switch
-        size="lg"
-        isSelected={settingValue}
-        isDisabled={disabled}
-        onChange={(value) => updateSettings({ [settingName]: value })}
-      >
-        <Switch.Control className="rounded-full">
-          <Switch.Thumb className="rounded-full" />
-        </Switch.Control>
-      </Switch>
-    </div>
+        id={settingName}
+        aria-label={label}
+        checked={settingValue}
+        disabled={disabled}
+        onCheckedChange={(checked) =>
+          updateSettings({ [settingName]: checked })
+        }
+      />
+    </Field>
   );
-};
+}
 
 export function SelItem({
   label,
@@ -122,46 +138,43 @@ export function SelItem({
   description,
 }) {
   return (
-    <div
-      className={`flex justify-between items-center gap-2 ${bgColor} px-2.5 py-2`}
-    >
-      <div className="flex items-center gap-2">
+    <Field orientation="horizontal" className={rowClass}>
+      <div className="flex flex-1 items-center gap-2">
         {icon}
-        <div className="flex items-center gap-1">
-          <div className="text-sm text-foreground line-clamp-1">{label}</div>
-          <DescriptionTip description={description} />
-        </div>
+        <FieldTitle id={settingName + "-label"}>{label}</FieldTitle>
+        <DescriptionTip description={description} />
       </div>
-      <Dropdown>
-        <Button variant="tertiary" size="sm" className="text-muted h-8">
-          {options.find((opt) => opt.value === settingValue.toString())
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="secondary"
+              size="sm"
+              aria-labelledby={settingName + "-label"}
+            />
+          }
+        >
+          {options.find((option) => option.value === String(settingValue))
             ?.label || settingValue}
-          <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-        </Button>
-
-        <Dropdown.Popover>
-          <Dropdown.Menu
-            aria-label="Single selection"
-            selectedKeys={new Set([settingValue.toString()])}
-            selectionMode="single"
-            onSelectionChange={(values) =>
-              updateSettings({ [settingName]: values.currentKey })
-            }
+          <ChevronsUpDown data-icon="inline-end" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuRadioGroup
+            value={String(settingValue)}
+            onValueChange={(value) => updateSettings({ [settingName]: value })}
           >
             {options.map((option) => (
-              <Dropdown.Item
-                id={option.value.toString()}
+              <DropdownMenuRadioItem
                 key={option.value}
-                textValue={option.label}
+                value={String(option.value)}
               >
-                <Dropdown.ItemIndicator />
-                <Label>{option.label}</Label>
-              </Dropdown.Item>
+                {option.label}
+              </DropdownMenuRadioItem>
             ))}
-          </Dropdown.Menu>
-        </Dropdown.Popover>
-      </Dropdown>
-    </div>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Field>
   );
 }
 
@@ -174,60 +187,43 @@ export function GroupItem({
   description,
 }) {
   return (
-    <div
-      className={`flex justify-between items-center gap-2 ${bgColor} px-2.5 h-12`}
-    >
-      <div className="flex items-center gap-2">
+    <Field orientation="horizontal" className={rowClass}>
+      <div className="flex flex-1 items-center gap-2">
         {icon}
-        <div className="flex items-center gap-1">
-          <div className="text-sm text-foreground">{label}</div>
-          <DescriptionTip description={description} />
-        </div>
+        <FieldTitle id={settingName + "-label"}>{label}</FieldTitle>
+        <DescriptionTip description={description} />
       </div>
-      <Tabs
-        aria-label={settingName}
-        variant="primary"
-        selectedKey={settingValue}
-        onSelectionChange={(value) => {
-          updateSettings({ [settingName]: value });
+      <ToggleGroup
+        size="sm"
+        spacing={0}
+        value={[settingValue]}
+        aria-labelledby={settingName + "-label"}
+        onValueChange={(values) => {
+          if (values.length) updateSettings({ [settingName]: values[0] });
         }}
       >
-        <Tabs.ListContainer>
-          <Tabs.List
-            aria-label={settingName}
-            className="bg-default-100/90 backdrop-blur-md shadow-custom-inner p-px gap-0 rounded-small overflow-visible"
+        {options.map((option) => (
+          <ToggleGroupItem
+            key={option.value}
+            value={option.value}
+            aria-label={option.label || String(option.value)}
           >
-            {options.map((option) => (
-              <Tabs.Tab
-                key={option.value}
-                id={option.value}
-                className="py-1 h-7"
-              >
-                <div className="flex items-center space-x-2">
-                  {option.icon}
-                  {option.label && <span>{option.label}</span>}
-                </div>
-                <Tabs.Indicator />
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs.ListContainer>
-      </Tabs>
-    </div>
+            {option.icon}
+            {option.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </Field>
   );
 }
 
 export function KeyboardItem({ desc, kbdKey, keyStr }) {
   return (
-    <div
-      className={`flex justify-between items-center gap-2 ${bgColor} px-2.5 py-3`}
-    >
-      <div className="flex items-center gap-2">
-        <div className="text-sm text-foreground">{desc}</div>
-      </div>
+    <div className={cn(rowClass, "flex items-center justify-between gap-2")}>
+      <span className="text-sm">{desc}</span>
       <Kbd>
-        {kbdKey && <Kbd.Abbr keyValue={kbdKey} />}
-        <Kbd.Content>{keyStr}</Kbd.Content>
+        {kbdKey && (keySymbols[kbdKey] || kbdKey)}
+        {keyStr}
       </Kbd>
     </div>
   );

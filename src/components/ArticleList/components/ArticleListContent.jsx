@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { memo, useEffect } from "react";
 import ArticleCard from "./ArticleCard";
 import { useParams } from "react-router-dom";
@@ -11,7 +12,6 @@ import {
 import { useStore } from "@nanostores/react";
 import { Virtuoso } from "react-virtuoso";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
-import { Button } from "@heroui/react";
 import { CheckCheck, Loader2 } from "lucide-react";
 import { handleMarkAllRead } from "@/handlers/articleHandlers";
 import { isSyncing } from "@/stores/syncStore.js";
@@ -19,7 +19,6 @@ import { useTranslation } from "react-i18next";
 import { loadArticles } from "@/stores/articlesStore";
 import { cn } from "@/lib/utils.js";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
-
 const ArticleItem = memo(({ article, isLast }) => (
   <div className="mx-2">
     <ArticleCard article={article} />
@@ -27,7 +26,6 @@ const ArticleItem = memo(({ article, isLast }) => (
   </div>
 ));
 ArticleItem.displayName = "ArticleItem";
-
 export default function ArticleListContent({
   articles,
   setVisibleRange,
@@ -46,7 +44,6 @@ export default function ArticleListContent({
   const $loading = useStore(loading);
   const $loadingMore = useStore(loadingMore);
   const reduceMotion = useReducedMotion();
-
   useEffect(() => {
     if (isMedium) {
       return;
@@ -58,10 +55,8 @@ export default function ArticleListContent({
       });
     }
   }, [isMedium, index, reduceMotion, virtuosoRef]);
-
   const handleEndReached = async () => {
     if (!$hasMore || $loadingMore) return;
-
     try {
       loadingMore.set(true);
       const nextPage = $currentPage + 1;
@@ -76,7 +71,6 @@ export default function ArticleListContent({
       loadingMore.set(false);
     }
   };
-
   return (
     <div className="h-full">
       {$loading ? (
@@ -93,7 +87,10 @@ export default function ArticleListContent({
           <Virtuoso
             ref={virtuosoRef}
             className="v-list h-full"
-            overscan={{ main: 2, reverse: 0 }}
+            overscan={{
+              main: 2,
+              reverse: 0,
+            }}
             data={articles}
             rangeChanged={setVisibleRange}
             context={{
@@ -119,11 +116,8 @@ export default function ArticleListContent({
                 <div className="vlist-footer h-24 pt-2 px-2">
                   <Button
                     size="sm"
-                    variant="tertiary"
-                    className="text-muted"
-                    isDisabled={$filter === "starred"}
-                    fullWidth
-                    onPress={() => {
+                    variant="secondary"
+                    onClick={() => {
                       if (feedId) {
                         handleMarkAllRead("feed", feedId);
                       } else if (categoryId) {
@@ -132,6 +126,8 @@ export default function ArticleListContent({
                         handleMarkAllRead();
                       }
                     }}
+                    disabled={$filter === "starred"}
+                    className={cn("w-full", "text-muted-foreground")}
                   >
                     {$isSyncing || $loadingMore ? (
                       <Loader2 className="size-4 animate-spin" />

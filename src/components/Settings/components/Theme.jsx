@@ -1,4 +1,13 @@
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
   ChevronsUpDown,
   Monitor,
   MoonStar,
@@ -7,36 +16,30 @@ import {
 } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import { ItemWrapper } from "@/components/ui/settingItem";
-import { Button, Dropdown, Label } from "@heroui/react";
 import { setTheme, themeState, themes } from "@/stores/themeStore";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
-import { Separator } from "@heroui/react";
-
 export default function Theme() {
   const { t } = useTranslation();
   const { themeMode, lightTheme, darkTheme } = useStore(themeState);
-
   const mode = [
     {
       id: "system",
       name: t("settings.appearance.system"),
-      icon: <Monitor className="shrink-0 size-4 text-muted" />,
+      icon: <Monitor className="shrink-0 size-4 text-muted-foreground" />,
     },
     {
       id: "light",
       name: t("settings.appearance.light"),
-      icon: <Sun className="shrink-0 size-4 text-muted" />,
+      icon: <Sun className="shrink-0 size-4 text-muted-foreground" />,
     },
     {
       id: "dark",
       name: t("settings.appearance.dark"),
-      icon: <MoonStar className="shrink-0 size-4 text-muted" />,
+      icon: <MoonStar className="shrink-0 size-4 text-muted-foreground" />,
     },
   ];
-
   const bgColor = "bg-default/60 dark:bg-default/30";
-
   return (
     <ItemWrapper title={t("settings.appearance.theme")}>
       <div
@@ -50,28 +53,34 @@ export default function Theme() {
             {t("settings.appearance.mode")}
           </div>
         </div>
-        <Dropdown>
-          <Button size="sm" variant="tertiary" className="text-muted h-8">
-            {mode.find((item) => item.id === themeMode)?.name}
-            <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                size="sm"
+                variant="secondary"
+                className="text-muted-foreground h-8"
+              >
+                {mode.find((item) => item.id === themeMode)?.name}
+                <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent>
+            <DropdownMenuRadioGroup
               aria-label="theme"
-              selectedKeys={new Set([themeMode])}
-              selectionMode="single"
-              onSelectionChange={(values) => setTheme(values.currentKey)}
+              value={Array.from(new Set([themeMode]))[0]}
+              onValueChange={(values) => setTheme(values)}
             >
               {mode.map((item) => (
-                <Dropdown.Item id={item.id} key={item.id} textValue={item.name}>
+                <DropdownMenuRadioItem key={item.id} value={item.id}>
                   {item.icon}
-                  <Label>{item.name}</Label>
-                  <Dropdown.ItemIndicator />
-                </Dropdown.Item>
+                  <span>{item.name}</span>
+                </DropdownMenuRadioItem>
               ))}
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <Separator />
       <div
@@ -85,43 +94,47 @@ export default function Theme() {
             {t("settings.appearance.lightTheme")}
           </div>
         </div>
-        <Dropdown>
-          <Button size="sm" variant="tertiary" className="text-muted h-8">
-            {t(
-              `settings.appearance.themes.${themes.light.find((item) => item.id === lightTheme)?.id}`,
-            )}
-            <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                size="sm"
+                variant="secondary"
+                className="text-muted-foreground h-8"
+              >
+                {t(
+                  `settings.appearance.themes.${themes.light.find((item) => item.id === lightTheme)?.id}`,
+                )}
+                <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent>
+            <DropdownMenuRadioGroup
               aria-label="theme"
-              selectedKeys={new Set([lightTheme])}
-              selectionMode="single"
-              onSelectionChange={(values) => {
+              value={Array.from(new Set([lightTheme]))[0]}
+              onValueChange={(values) => {
                 themeState.set({
                   ...themeState.get(),
-                  lightTheme: values.currentKey,
+                  lightTheme: values,
                 });
-                themeMode !== "dark" && setTheme(themeMode, values.currentKey);
+                themeMode !== "dark" && setTheme(themeMode, values);
               }}
             >
               {themes.light.map((item) => (
-                <Dropdown.Item
-                  id={item.id}
-                  key={item.id}
-                  textValue={t(`settings.appearance.themes.${item.id}`)}
-                >
+                <DropdownMenuRadioItem key={item.id} value={item.id}>
                   <div
                     className="size-4 border rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{
+                      backgroundColor: item.color,
+                    }}
                   />
-                  <Label>{t(`settings.appearance.themes.${item.id}`)}</Label>
-                  <Dropdown.ItemIndicator />
-                </Dropdown.Item>
+                  <span>{t(`settings.appearance.themes.${item.id}`)}</span>
+                </DropdownMenuRadioItem>
               ))}
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <Separator />
       <div
@@ -135,44 +148,47 @@ export default function Theme() {
             {t("settings.appearance.darkTheme")}
           </div>
         </div>
-        <Dropdown>
-          <Button size="sm" variant="tertiary" className="text-muted h-8">
-            {t(
-              `settings.appearance.themes.${themes.dark.find((item) => item.id === darkTheme)?.id}`,
-            )}
-            <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu
-              disallowEmptySelection
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                size="sm"
+                variant="secondary"
+                className="text-muted-foreground h-8"
+              >
+                {t(
+                  `settings.appearance.themes.${themes.dark.find((item) => item.id === darkTheme)?.id}`,
+                )}
+                <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent>
+            <DropdownMenuRadioGroup
               aria-label="theme"
-              selectedKeys={new Set([darkTheme])}
-              selectionMode="single"
-              onSelectionChange={(values) => {
+              value={Array.from(new Set([darkTheme]))[0]}
+              onValueChange={(values) => {
                 themeState.set({
                   ...themeState.get(),
-                  darkTheme: values.currentKey,
+                  darkTheme: values,
                 });
-                themeMode !== "light" && setTheme(themeMode, values.currentKey);
+                themeMode !== "light" && setTheme(themeMode, values);
               }}
             >
               {themes.dark.map((item) => (
-                <Dropdown.Item
-                  id={item.id}
-                  key={item.id}
-                  textValue={t(`settings.appearance.themes.${item.id}`)}
-                >
+                <DropdownMenuRadioItem key={item.id} value={item.id}>
                   <div
                     className="size-4 border rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{
+                      backgroundColor: item.color,
+                    }}
                   />
-                  <Label>{t(`settings.appearance.themes.${item.id}`)}</Label>
-                  <Dropdown.ItemIndicator />
-                </Dropdown.Item>
+                  <span>{t(`settings.appearance.themes.${item.id}`)}</span>
+                </DropdownMenuRadioItem>
               ))}
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </ItemWrapper>
   );

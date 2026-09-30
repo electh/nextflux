@@ -1,6 +1,7 @@
+import { ArrowUpRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { lazy, Suspense } from "react";
 import parse from "html-react-parser";
-import { Chip, Link } from "@heroui/react";
 import { PhotoProvider } from "react-photo-view";
 import { useTranslation } from "react-i18next";
 import ArticleImage from "./ArticleImage.jsx";
@@ -13,22 +14,19 @@ import {
   hasImageContent,
   normalizeCode,
 } from "@/domain/articles/articleHtml.js";
-
 const CodeBlock = lazy(() => import("./CodeBlock.jsx"));
-
 function renderLinkedImages(node) {
   const images = node.children.filter(
     (child) => child.type === "tag" && child.name === "img",
   );
   if (images.length === 0) return node;
-
   return (
     <>
       {images.map((image, index) => (
         <ArticleImage imgNode={image} key={image.attribs?.src || index} />
       ))}
       <div className="flex justify-center">
-        <Chip color="accent" variant="soft" className="cursor-pointer my-2">
+        <Badge className="cursor-pointer my-2" variant="secondary">
           <a
             href={node.attribs.href}
             className="border-none!"
@@ -37,16 +35,14 @@ function renderLinkedImages(node) {
           >
             {getHostname(node.attribs.href)}
           </a>
-          <Link.Icon />
-        </Chip>
+          <ArrowUpRight />
+        </Badge>
       </div>
     </>
   );
 }
-
 function replaceArticleNode(node) {
   if (node.type !== "tag") return undefined;
-
   if (node.name === "img") return <ArticleImage imgNode={node} />;
   if (node.name === "a" && node.children.length > 0) {
     return renderLinkedImages(node);
@@ -57,13 +53,11 @@ function replaceArticleNode(node) {
   }
   if (node.name === "iframe") return <Iframe domNode={node} />;
   if (node.name !== "pre") return undefined;
-
   const codeNode = node.children.find(
     (child) => child.type === "tag" && child.name === "code",
   );
   const code = normalizeCode(codeNode || node);
   if (!code) return node;
-
   return (
     <Suspense
       fallback={
@@ -79,7 +73,6 @@ function replaceArticleNode(node) {
     </Suspense>
   );
 }
-
 export default function ArticleContent({
   article,
   alignJustify,
@@ -91,7 +84,6 @@ export default function ArticleContent({
   const audioEnclosure = article.enclosures?.find((enclosure) =>
     enclosure.mime_type?.startsWith("audio/"),
   );
-
   return (
     <>
       {audioEnclosure && (
@@ -119,7 +111,9 @@ export default function ArticleContent({
             textAlign: alignJustify ? "justify" : "left",
           }}
         >
-          {parse(article.content, { replace: replaceArticleNode })}
+          {parse(article.content, {
+            replace: replaceArticleNode,
+          })}
           <Attachments article={article} />
         </div>
       </PhotoProvider>

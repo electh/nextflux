@@ -1,23 +1,30 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
-import { Button, Spinner, Tooltip } from "@heroui/react";
 import { CloudUpload, Share } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { saveToThirdParty } from "@/api/resources/integrations.js";
 import { hasIntegrations } from "@/stores/basicInfoStore.js";
 import { reportError } from "@/lib/errors.js";
-
 export default function ArticleExternalActions({ article }) {
   const { t } = useTranslation();
   const integrationsEnabled = useStore(hasIntegrations);
   const [saving, setSaving] = useState(false);
-
   const share = async () => {
     if (!article) return;
     try {
       if (navigator.share) {
-        await navigator.share({ title: article.title, url: article.url });
+        await navigator.share({
+          title: article.title,
+          url: article.url,
+        });
       } else {
         await navigator.clipboard.writeText(article.url);
       }
@@ -25,7 +32,6 @@ export default function ArticleExternalActions({ article }) {
       reportError(error, "article.share");
     }
   };
-
   const save = async () => {
     if (!article) return;
     setSaving(true);
@@ -38,38 +44,47 @@ export default function ArticleExternalActions({ article }) {
       setSaving(false);
     }
   };
-
   return (
     <>
       {integrationsEnabled && (
-        <Tooltip delay={0}>
-          <Button
-            variant="ghost"
-            isIconOnly
-            size="sm"
-            onPress={save}
-            isPending={saving}
-          >
-            {saving ? (
-              <Spinner color="current" size="sm" />
-            ) : (
-              <CloudUpload className="size-4 text-muted" />
-            )}
-          </Button>
-          <Tooltip.Content showArrow>
-            <Tooltip.Arrow />
-            {t("articleView.saveToThirdParty")}
-          </Tooltip.Content>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                aria-label={t("articleView.saveToThirdParty")}
+                onClick={save}
+                disabled={saving}
+                aria-busy={saving}
+                size="icon-sm"
+              >
+                {saving ? (
+                  <Spinner />
+                ) : (
+                  <CloudUpload className="size-4 text-muted-foreground" />
+                )}
+              </Button>
+            }
+            delay={0}
+          />
+          <TooltipContent>{t("articleView.saveToThirdParty")}</TooltipContent>
         </Tooltip>
       )}
-      <Tooltip delay={0}>
-        <Button variant="ghost" isIconOnly size="sm" onPress={share}>
-          <Share className="size-4 text-muted" />
-        </Button>
-        <Tooltip.Content showArrow>
-          <Tooltip.Arrow />
-          {t("common.share")}
-        </Tooltip.Content>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              aria-label={t("common.share")}
+              onClick={share}
+              size="icon-sm"
+            >
+              <Share className="size-4 text-muted-foreground" />
+            </Button>
+          }
+          delay={0}
+        />
+        <TooltipContent>{t("common.share")}</TooltipContent>
       </Tooltip>
     </>
   );

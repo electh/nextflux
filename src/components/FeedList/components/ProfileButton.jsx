@@ -1,84 +1,123 @@
-import { Button, Dropdown, Label, Link } from "@heroui/react";
+import { ArrowUpRight } from "lucide-react";
 import {
-  ChevronsUpDown,
-  Cog,
-  LogOut,
-  CircleUser,
-} from "lucide-react";
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronsUpDown, Cog, LogOut, CircleUser } from "lucide-react";
 import { authState } from "@/stores/authStore.js";
 import { settingsModalOpen } from "@/stores/modalStore.js";
-import {
-  logoutModalOpen,
-} from "@/stores/modalStore.js";
+import { logoutModalOpen } from "@/stores/modalStore.js";
 import { useSidebar } from "@/components/ui/sidebar.jsx";
 import { useTranslation } from "react-i18next";
-
 export default function ProfileButton() {
   const { t } = useTranslation();
   const { username, serverUrl } = authState.get();
   const { isMobile, setOpenMobile } = useSidebar();
-
   return (
     <div className="profile-button standalone:pb-safe flex items-center gap-4">
-      <Dropdown>
-        <Button size="sm" variant="ghost" className="h-auto py-2 px-3 w-full">
-          <div className="flex items-center w-full gap-2">
-            <CircleUser className="size-4 text-muted" />
-            <div className="flex flex-col items-start flex-1 min-w-0">
-              <div className="font-semibold truncate">{username}</div>
-            </div>
-            <ChevronsUpDown className="size-4 text-muted" />
-          </div>
-        </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-auto py-2 px-3 w-full"
+            >
+              <div className="flex items-center w-full gap-2">
+                <CircleUser className="size-4 text-muted-foreground" />
+                <div className="flex flex-col items-start flex-1 min-w-0">
+                  <div className="font-semibold truncate">{username}</div>
+                </div>
+                <ChevronsUpDown className="size-4 text-muted-foreground" />
+              </div>
+            </Button>
+          }
+        />
 
-        <Dropdown.Popover placement="top left">
-          <Dropdown.Menu
-            aria-label="Profile Actions"
-            onAction={(key) => {
-              if (key === "settings") {
-                settingsModalOpen.set(true);
-                isMobile && setOpenMobile(false);
+        <DropdownMenuContent side="top" align="start">
+          <DropdownMenuGroup aria-label="Profile Actions">
+            <DropdownMenuItem
+              onClick={() =>
+                ((key) => {
+                  if (key === "settings") {
+                    settingsModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                  if (key === "open_miniflux") {
+                    window.open(serverUrl, "_blank");
+                  }
+                  if (key === "logout") {
+                    logoutModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                })("settings")
               }
-              if (key === "open_miniflux") {
-                window.open(serverUrl, "_blank");
+            >
+              <Cog className="size-4 text-muted-foreground" />
+              <span>{t("sidebar.profile.settings")}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                ((key) => {
+                  if (key === "settings") {
+                    settingsModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                  if (key === "open_miniflux") {
+                    window.open(serverUrl, "_blank");
+                  }
+                  if (key === "logout") {
+                    logoutModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                })("open_miniflux")
               }
-              if (key === "logout") {
-                logoutModalOpen.set(true);
-                isMobile && setOpenMobile(false);
-              }
-            }}
-          >
-            <Dropdown.Item id="settings" textValue="settings">
-              <Cog className="size-4 text-muted" />
-              <Label>{t("sidebar.profile.settings")}</Label>
-            </Dropdown.Item>
-            <Dropdown.Item id="open_miniflux" textValue="open_miniflux">
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 viewBox="0 78.9 512 354.1"
-                className="size-4 text-muted"
+                className="size-4 text-muted-foreground"
               >
                 <path
                   fill="currentColor"
                   d="M166.8 96.2c16.6-8.8 35.2-13.2 54-13.1 39.9 0 65.2 17.3 76.2 52 12.6-14.8 27.7-27.3 44.6-36.9 17.5-10.1 37-15.1 58.6-15.1 29.9 0 51.3 9.1 64.1 27.4s19.3 45.7 19.2 82.3v206.6c0 5.2.7 8.7 2.2 10.5 1.4 1.9 4.6 3.6 9.4 4.9l16.9 5.6V433H411.7c-8.7 0-15-3.3-18.8-9.8-3.8-6.6-5.8-16.4-5.8-29.5V180.1c0-21.1-2.3-36.1-7-45s-12.5-13.3-23.4-13.4c-17.4 0-35.8 10.3-55.4 30.9 2.1 13.3 3 26.7 2.9 40.1v206.6c0 5.2.7 8.7 2.2 10.5s4.6 3.6 9.4 4.9l16.9 5.6v12.6H232.4c-8.7 0-15-3.3-18.8-9.8s-5.8-16.4-5.8-29.5V180.1c0-21.1-2.3-36.1-7-45s-12.4-13.3-23.4-13.4c-17 0-34.6 9.4-52.5 28.1v249.4c0 5.2.7 8.8 2.2 10.9 1.4 2.1 4.4 3.9 8.9 5.3l16.4 4.9v12.6H0v-12.6l16.9-5.6c4.8-1.4 8-3 9.4-4.9s2.2-5.4 2.2-10.5V133.7c0-5.2-.7-8.7-2.2-10.5-1.4-1.9-4.6-3.5-9.4-4.9L0 112.7V100l115.7-21.1h8.2v49.2c12.5-12.8 27-23.6 42.9-31.9"
                 />
               </svg>
-              <Label>
-                <Link className="no-underline">
-                  {t("sidebar.profile.openMiniflux")}
-                  <Link.Icon className="text-muted opacity-60" />
-                </Link>
-              </Label>
-            </Dropdown.Item>
+              <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                {t("sidebar.profile.openMiniflux")}
+                <ArrowUpRight className="text-muted-foreground opacity-60" />
+              </span>
+            </DropdownMenuItem>
 
-            <Dropdown.Item id="logout" textValue="logout" variant="danger">
+            <DropdownMenuItem
+              variant="danger"
+              onClick={() =>
+                ((key) => {
+                  if (key === "settings") {
+                    settingsModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                  if (key === "open_miniflux") {
+                    window.open(serverUrl, "_blank");
+                  }
+                  if (key === "logout") {
+                    logoutModalOpen.set(true);
+                    isMobile && setOpenMobile(false);
+                  }
+                })("logout")
+              }
+            >
               <LogOut className="size-4 text-danger" />
-              <Label>{t("sidebar.profile.logout")}</Label>
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown.Popover>
-      </Dropdown>
+              <span>{t("sidebar.profile.logout")}</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

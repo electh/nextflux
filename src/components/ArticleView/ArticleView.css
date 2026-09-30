@@ -1,7 +1,7 @@
 @reference "../../index.css";
 
-
-.article-content, .article-title {
+.article-content,
+.article-title {
   @apply break-words;
   word-break: break-word;
 }
@@ -16,31 +16,31 @@
 
 .article-content li,
 .article-content p {
-  @apply my-4!
+  @apply my-4!;
 }
 
 .article-content img {
-  @apply my-0!
+  @apply my-0!;
 }
 
 /* 文章标题链接样式 */
 .article-title a {
-  @apply text-foreground font-medium no-underline
+  @apply text-foreground font-medium no-underline;
 }
 
 /* 文章内容链接样式 */
 .article-content a {
-  @apply border-b-[1px] border-dotted border-accent no-underline transition-colors text-accent
+  @apply border-b-[1px] border-dotted border-accent no-underline transition-colors text-accent;
 }
 
 /*表格*/
 .article-content td {
-  @apply text-foreground text-sm
+  @apply text-foreground text-sm;
 }
 
 /*code 相关样式 */
 .article-content code:not(pre code) {
-  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono dark:text-muted rounded text-muted bg-background dark:bg-background/80 px-1.5 py-0.5
+  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono dark:text-muted-foreground rounded text-muted-foreground bg-background dark:bg-background/80 px-1.5 py-0.5;
 }
 
 .article-content pre {
@@ -50,7 +50,6 @@
 .article-content pre code {
   @apply whitespace-pre;
 }
-
 
 /*https://github.com/shikijs/shiki/issues/3*/
 .line-numbers code {
@@ -74,28 +73,28 @@
 }
 
 .article-content blockquote > p {
-  @apply before:content-none after:content-none
+  @apply before:content-none after:content-none;
 }
 
 .article-content figure {
-  @apply my-4 w-auto!
+  @apply my-4 w-auto!;
 }
 
 iframe {
-  @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5
+  @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5;
 }
 
 blockquote {
-  @apply not-italic!
+  @apply not-italic!;
 }
 
 figcaption {
-  @apply italic!
+  @apply italic!;
 }
 
 /*代码主题跟随系统当前使用主题*/
 .shiki {
-  @apply shadow-custom
+  @apply shadow-custom;
 }
 
 html[class$="dark"] .shiki,
@@ -108,7 +107,7 @@ div.force-dark-code-theme .shiki span {
 
 /*image gallery*/
 .PhotoView-Slider__BannerWrap {
-  @apply pt-safe-or-4 px-safe-or-4 h-auto flex-row-reverse
+  @apply pt-safe-or-4 px-safe-or-4 h-auto flex-row-reverse;
 }
 
 /*图片计数显示*/
@@ -127,15 +126,17 @@ div.force-dark-code-theme .shiki span {
 }
 
 .PhotoView-Slider__BannerRight svg {
-  @apply size-8
+  @apply size-8;
 }
 
 /*导航按钮容器*/
-.PhotoView-Slider__ArrowLeft, .PhotoView-Slider__ArrowRight {
-  @apply hidden w-auto px-safe-offset-4 md:flex animate-in fade-in zoom-in
+.PhotoView-Slider__ArrowLeft,
+.PhotoView-Slider__ArrowRight {
+  @apply hidden w-auto px-safe-offset-4 md:flex animate-in fade-in zoom-in;
 }
 
 /*导航按钮*/
-.PhotoView-Slider__ArrowLeft svg, .PhotoView-Slider__ArrowRight svg {
+.PhotoView-Slider__ArrowLeft svg,
+.PhotoView-Slider__ArrowRight svg {
   @apply bg-black/50 rounded-full p-2 size-4;
 }

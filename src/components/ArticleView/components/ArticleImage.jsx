@@ -21,7 +21,7 @@ function ArticleImage({ imgNode, type = "article" }) {
           type === "article" ? "max-w-[calc(100%+2.5rem)]! -mx-5" : "",
         )}
       >
-        <div className="flex flex-col items-center gap-2 text-muted">
+        <div className="flex flex-col items-center gap-2 text-muted-foreground">
           <ImageOff className="size-5" />
           <span className="text-sm">{t("articleView.imageError")}</span>
         </div>

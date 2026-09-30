@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import { loadFeeds } from "@/stores/feedsStore.js";
@@ -11,7 +12,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ScrollShadow } from "@heroui/react";
 import { formatLastSync } from "@/lib/format";
 import { settingsState } from "@/stores/settingsStore.js";
 import ArticlesGroup from "@/components/FeedList/components/ArticlesGroup.jsx";
@@ -26,7 +26,6 @@ import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useParams, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { isModalOpen } from "@/stores/modalStore";
-
 const FeedListSidebar = () => {
   const { t } = useTranslation();
   const $lastSync = useStore(lastSync);
@@ -49,15 +48,12 @@ const FeedListSidebar = () => {
       }
     },
   });
-
   useEffect(() => {
     lastSync.set(getLastSyncTime());
   }, []);
-
   useEffect(() => {
     loadFeeds();
   }, [$lastSync, showHiddenFeeds]);
-
   return (
     <Sidebar
       variant={floatingSidebar ? "floating" : "sidebar"}
@@ -70,7 +66,7 @@ const FeedListSidebar = () => {
               <img src={logo} alt="logo" className="size-8" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Nextflux</span>
-                <span className="truncate text-xs text-muted opacity-60">
+                <span className="truncate text-xs text-muted-foreground opacity-60">
                   {$isSyncing ? t("common.syncing") : formatLastSync($lastSync)}
                 </span>
               </div>
@@ -81,10 +77,10 @@ const FeedListSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <ScrollShadow className="h-full" size={10}>
+        <div className={cn("overflow-y-auto", "h-full")}>
           <ArticlesGroup />
           <FeedsGroup />
-        </ScrollShadow>
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <ProfileButton />
@@ -92,5 +88,4 @@ const FeedListSidebar = () => {
     </Sidebar>
   );
 };
-
 export default FeedListSidebar;

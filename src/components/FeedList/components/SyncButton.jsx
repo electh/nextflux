@@ -1,13 +1,12 @@
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { useStore } from "@nanostores/react";
-import { Button, Spinner } from "@heroui/react";
 import { forceSync, isOnline, isSyncing } from "@/stores/syncStore.js";
 import { RefreshCw } from "lucide-react";
 import { reportError } from "@/lib/errors.js";
-
 const SyncButton = () => {
   const $isOnline = useStore(isOnline);
   const $isSyncing = useStore(isSyncing);
-
   const handleForceSync = async () => {
     try {
       await forceSync();
@@ -15,23 +14,20 @@ const SyncButton = () => {
       reportError(err, "sync.force");
     }
   };
-
   return (
     <Button
-      onPress={handleForceSync}
-      isDisabled={$isSyncing || !$isOnline}
-      isPending={$isSyncing}
       variant="ghost"
-      isIconOnly
-      size="sm"
+      onClick={handleForceSync}
+      disabled={$isSyncing || !$isOnline || $isSyncing}
+      aria-busy={$isSyncing}
+      size="icon-sm"
     >
       {$isSyncing ? (
-        <Spinner color="current" size="sm" />
+        <Spinner />
       ) : (
-        <RefreshCw className="size-4 text-muted" />
+        <RefreshCw className="size-4 text-muted-foreground" />
       )}
     </Button>
   );
 };
-
 export default SyncButton;

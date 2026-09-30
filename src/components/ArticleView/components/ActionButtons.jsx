@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@nanostores/react";
-import { cn } from "@heroui/react";
 import { handleMarkStatus } from "@/handlers/articleHandlers.js";
 import { activeArticle, filteredArticles } from "@/stores/articlesStore.js";
 import { settingsState } from "@/stores/settingsStore.js";
@@ -10,7 +10,6 @@ import {
 } from "@/domain/articles/articleNavigation.js";
 import ArticleNavigationControls from "./ArticleNavigationControls.jsx";
 import ArticleStateActions from "./ArticleStateActions.jsx";
-
 export default function ActionButtons() {
   const navigate = useNavigate();
   const articles = useStore(filteredArticles);
@@ -19,13 +18,11 @@ export default function ActionButtons() {
   const basePath = getArticleBasePath(window.location.pathname);
   const previous = getAdjacentArticle(articles, article?.id, "previous");
   const next = getAdjacentArticle(articles, article?.id, "next");
-
   const openArticle = async (target) => {
     if (!target) return;
     navigate(`${basePath === "/" ? "" : basePath}/article/${target.id}`);
     if (target.status !== "read") await handleMarkStatus(target);
   };
-
   return (
     <div
       className={cn(

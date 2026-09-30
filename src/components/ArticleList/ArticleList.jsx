@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { useStore } from "@nanostores/react";
 import {
@@ -16,14 +17,11 @@ import ArticleListContent from "./components/ArticleListContent";
 import ArticleListFooter from "./components/ArticleListFooter";
 import { settingsState } from "@/stores/settingsStore.js";
 import Indicator from "@/components/ArticleList/components/Indicator.jsx";
-import { cn } from "@heroui/react";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
 import { reportError } from "@/lib/errors.js";
-
 const ArticleView = lazy(
   () => import("@/components/ArticleView/ArticleView.jsx"),
 );
-
 const ArticleList = () => {
   const { feedId, categoryId, articleId } = useParams();
   const $filteredArticles = useStore(filteredArticles);
@@ -41,9 +39,7 @@ const ArticleList = () => {
   const { isMedium } = useIsMobile();
   // 判断是否在移动端且正在查看文章详情
   const isArticleDetailOpen = isMedium && !!articleId;
-
   const lastSyncTime = useRef(null);
-
   useEffect(() => {
     // 如果为同步触发刷新且当前文章列表不在顶部，则暂时不刷新列表，防止位置发生位移
     if (
@@ -65,11 +61,9 @@ const ArticleList = () => {
           feedId || categoryId,
           feedId ? "feed" : categoryId ? "category" : null,
         );
-
         if (ignore) {
           return;
         }
-
         filteredArticles.set(res.articles);
         hasMore.set(res.isMore);
         currentPage.set(1);
@@ -80,7 +74,6 @@ const ArticleList = () => {
       }
     };
     handleFetchArticles(ignore);
-
     return () => {
       ignore = true;
     };
@@ -100,7 +93,6 @@ const ArticleList = () => {
       filter.set("unread");
     }
   }, [categoryId, feedId, showUnreadByDefault]);
-
   return (
     <div className="main-content flex">
       <div
@@ -128,5 +120,4 @@ const ArticleList = () => {
     </div>
   );
 };
-
 export default ArticleList;

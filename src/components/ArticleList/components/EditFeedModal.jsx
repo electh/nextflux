@@ -1,21 +1,33 @@
 import {
-  Button,
-  Checkbox,
-  Input,
-  Link,
-  Select,
-  Label,
-  ListBox,
-  TextArea,
-  Form,
-  Fieldset,
-  Description,
-  FieldGroup,
-  TextField,
-  FieldError,
-  Spinner,
   InputGroup,
-} from "@heroui/react";
+  InputGroupInput,
+  InputGroupAddon,
+} from "@/components/ui/input-group";
+import { Form } from "@base-ui/react/form";
+import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Field,
+  FieldSet,
+  FieldGroup,
+  FieldLabel,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+} from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { categories, feeds } from "@/stores/feedsStore";
@@ -32,7 +44,6 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-
 export default function EditFeedModal() {
   const { t } = useTranslation();
   const { feedId: routeFeedId } = useParams();
@@ -56,7 +67,6 @@ export default function EditFeedModal() {
     blocklist_rules: "",
     rewrite_rules: "",
   });
-
   useEffect(() => {
     if (feedId) {
       const feed = $feeds.find((f) => f.id === parseInt(feedId));
@@ -75,7 +85,6 @@ export default function EditFeedModal() {
       }
     }
   }, [feedId, $feeds]);
-
   const onClose = () => {
     editFeedModalOpen.set(false);
     currentFeedId.set(null); // 清除 store 中的 feedId
@@ -96,7 +105,6 @@ export default function EditFeedModal() {
       }
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -110,7 +118,6 @@ export default function EditFeedModal() {
       setLoading(false);
     }
   };
-
   return (
     <CustomModal
       open={$editFeedModalOpen}
@@ -118,16 +125,17 @@ export default function EditFeedModal() {
       title={t("articleList.editFeed")}
       footer={
         <>
-          <Button variant="tertiary" onPress={onClose} fullWidth>
+          <Button variant="secondary" onClick={onClose} className="w-full">
             {t("common.cancel")}
           </Button>
           <Button
             type="submit"
             form="edit-feed-form"
-            isPending={loading}
-            fullWidth
+            disabled={loading}
+            aria-busy={loading}
+            className="w-full"
           >
-            {loading && <Spinner color="current" size="sm" />}
+            {loading && <Spinner />}
             {t("common.save")}
           </Button>
         </>
@@ -135,107 +143,127 @@ export default function EditFeedModal() {
     >
       <div className="w-full px-4 pb-4">
         <Form id="edit-feed-form" className="w-full" onSubmit={handleSubmit}>
-          <Fieldset>
+          <FieldSet>
             <FieldGroup>
-              <TextField isRequired name="title" variant="secondary">
-                <Label>{t("feed.feedTitle")}</Label>
+              <Field>
+                <FieldLabel htmlFor="title">{t("feed.feedTitle")}</FieldLabel>
                 <Input
                   placeholder={t("feed.feedTitlePlaceholder")}
                   value={formData.title}
                   onChange={(event) =>
-                    setFormData({ ...formData, title: event.target.value })
+                    setFormData({
+                      ...formData,
+                      title: event.target.value,
+                    })
                   }
+                  required={true}
+                  name="title"
+                  id="title"
                 />
                 <FieldError>{t("feed.feedTitlePlaceholder")}</FieldError>
-              </TextField>
-              <Select
-                isRequired
-                variant="secondary"
-                placeholder={t("feed.feedCategoryPlaceholder")}
-                value={
-                  formData.category_id === "" ? null : formData.category_id
-                }
-                onChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    category_id: value == null ? "" : Number(value),
-                  })
-                }
-              >
-                <Label>{t("feed.feedCategory")}</Label>
-                <Select.Trigger>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox>
-                    {$categories.map((category) => (
-                      <ListBox.Item
-                        key={category.id}
-                        id={category.id}
-                        textValue={category.title}
-                      >
-                        {category.title}
-                        <ListBox.ItemIndicator />
-                      </ListBox.Item>
-                    ))}
-                  </ListBox>
-                </Select.Popover>
-              </Select>
-              <TextField fullWidth variant="secondary" name="feedUrl">
-                <Label>{t("feed.feedUrl")}</Label>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="edit-category">
+                  {t("feed.feedCategory")}
+                </FieldLabel>
+                <Select
+                  value={
+                    formData.category_id === "" ? null : formData.category_id
+                  }
+                  items={[
+                    {
+                      value: null,
+                      label: t("feed.feedCategoryPlaceholder"),
+                    },
+                    ...$categories.map((item) => ({
+                      value: item.id,
+                      label: item.title,
+                    })),
+                  ]}
+                  onValueChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      category_id: value == null ? "" : Number(value),
+                    })
+                  }
+                  required={true}
+                >
+                  <SelectTrigger className="w-full" id="edit-category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {$categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="feedUrl">{t("feed.feedUrl")}</FieldLabel>
                 <InputGroup>
-                  <InputGroup.Input placeholder={feedUrl} disabled />
-                  <InputGroup.Suffix className="pr-0.5">
+                  <InputGroupInput
+                    placeholder={feedUrl}
+                    disabled
+                    name="feedUrl"
+                    id="feedUrl"
+                  />
+                  <InputGroupAddon className="pr-0.5" align="inline-end">
                     <Button
-                      size="sm"
-                      isIconOnly
-                      isDisabled={isCopied}
                       variant="ghost"
                       className="rounded-field"
-                      onPress={() => {
+                      onClick={() => {
                         navigator.clipboard.writeText(feedUrl);
                         setIsCopied(true);
                         setTimeout(() => setIsCopied(false), 3000);
                       }}
+                      disabled={isCopied}
+                      size="icon-sm"
                     >
                       {isCopied ? (
-                        <Check className="size-3 shrink-0 text-muted" />
+                        <Check className="size-3 shrink-0 text-muted-foreground" />
                       ) : (
-                        <Copy className="size-3 shrink-0 text-muted" />
+                        <Copy className="size-3 shrink-0 text-muted-foreground" />
                       )}
                     </Button>
-                  </InputGroup.Suffix>
+                  </InputGroupAddon>
                 </InputGroup>
-              </TextField>
+              </Field>
               <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    fullWidth
-                    className="flex justify-between rounded-field px-3 text-muted"
-                  >
-                    {t("feed.advancedOptions")}
-                    <ChevronDown
-                      className={`size-4 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
-                    />
-                  </Button>
-                </CollapsibleTrigger>
+                <CollapsibleTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full",
+                        "flex justify-between rounded-field px-3 text-muted-foreground",
+                      )}
+                    >
+                      {t("feed.advancedOptions")}
+                      <ChevronDown
+                        className={`size-4 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
+                      />
+                    </Button>
+                  }
+                />
                 <CollapsibleContent className="overflow-visible">
                   <div className="flex flex-col gap-4 pt-2">
-                    <TextField name="scraper_rules" variant="secondary">
-                      <Label>
+                    <Field>
+                      <FieldLabel htmlFor="scraper_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#scraper-rules"
                             target="_blank"
                           >
                             {t("feed.feedScraperRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedScraperRulesPlaceholder")}
                         value={formData.scraper_rules}
@@ -245,21 +273,23 @@ export default function EditFeedModal() {
                             scraper_rules: event.target.value,
                           })
                         }
+                        name="scraper_rules"
+                        id="scraper_rules"
                       />
-                    </TextField>
-                    <TextField name="keeplist_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="keeplist_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#feed-filtering-rules"
                             target="_blank"
                           >
                             {t("feed.feedKeeplistRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedKeeplistRulesPlaceholder")}
                         value={formData.keeplist_rules}
@@ -269,21 +299,23 @@ export default function EditFeedModal() {
                             keeplist_rules: event.target.value,
                           })
                         }
+                        name="keeplist_rules"
+                        id="keeplist_rules"
                       />
-                    </TextField>
-                    <TextField name="blocklist_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="blocklist_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#feed-filtering-rules"
                             target="_blank"
                           >
                             {t("feed.feedBlocklistRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedBlocklistRulesPlaceholder")}
                         value={formData.blocklist_rules}
@@ -293,22 +325,24 @@ export default function EditFeedModal() {
                             blocklist_rules: event.target.value,
                           })
                         }
+                        name="blocklist_rules"
+                        id="blocklist_rules"
                       />
-                    </TextField>
-                    <TextField name="rewrite_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="rewrite_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#rewrite-rules"
                             target="_blank"
                           >
                             {t("feed.feedRewriteRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
-                      <TextArea
+                      </FieldLabel>
+                      <Textarea
                         placeholder={t("feed.feedRewriteRulesPlaceholder")}
                         value={formData.rewrite_rules}
                         onChange={(event) =>
@@ -317,49 +351,57 @@ export default function EditFeedModal() {
                             rewrite_rules: event.target.value,
                           })
                         }
+                        name="rewrite_rules"
+                        id="rewrite_rules"
                       />
-                    </TextField>
-                    <Checkbox
-                      value="crawler"
-                      variant="secondary"
-                      isSelected={formData.crawler}
-                      onChange={(value) =>
-                        setFormData({ ...formData, crawler: value })
-                      }
-                    >
-                      <Checkbox.Control>
-                        <Checkbox.Indicator />
-                      </Checkbox.Control>
-                      <Checkbox.Content>
-                        <Label>{t("feed.feedCrawler")}</Label>
-                        <Description>
+                    </Field>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        value="crawler"
+                        checked={formData.crawler}
+                        onCheckedChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            crawler: value,
+                          })
+                        }
+                        id="crawler"
+                      />
+                      <FieldContent>
+                        <FieldLabel htmlFor="crawler">
+                          {t("feed.feedCrawler")}
+                        </FieldLabel>
+                        <FieldDescription>
                           {t("feed.feedCrawlerDescription")}
-                        </Description>
-                      </Checkbox.Content>
-                    </Checkbox>
-                    <Checkbox
-                      value="hide_globally"
-                      variant="secondary"
-                      isSelected={formData.hide_globally}
-                      onChange={(value) =>
-                        setFormData({ ...formData, hide_globally: value })
-                      }
-                    >
-                      <Checkbox.Control>
-                        <Checkbox.Indicator />
-                      </Checkbox.Control>
-                      <Checkbox.Content>
-                        <Label>{t("feed.feedHide")}</Label>
-                        <Description>
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        value="hide_globally"
+                        checked={formData.hide_globally}
+                        onCheckedChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            hide_globally: value,
+                          })
+                        }
+                        id="hide_globally"
+                      />
+                      <FieldContent>
+                        <FieldLabel htmlFor="hide_globally">
+                          {t("feed.feedHide")}
+                        </FieldLabel>
+                        <FieldDescription>
                           {t("feed.feedHideDescription")}
-                        </Description>
-                      </Checkbox.Content>
-                    </Checkbox>
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
                   </div>
                 </CollapsibleContent>
               </Collapsible>
             </FieldGroup>
-          </Fieldset>
+          </FieldSet>
         </Form>
       </div>
     </CustomModal>

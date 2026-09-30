@@ -1,3 +1,4 @@
+import { Separator } from "@/components/ui/separator";
 import { settingsState } from "@/stores/settingsStore";
 import {
   CircleCheck,
@@ -15,11 +16,9 @@ import {
   SelItem,
   SwitchItem,
 } from "@/components/ui/settingItem.jsx";
-import { Separator } from "@heroui/react";
 import Language from "@/components/Settings/components/Language.jsx";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
-
 export default function General() {
   const {
     sortDirection,
@@ -45,11 +44,26 @@ export default function General() {
           settingName="syncInterval"
           settingValue={syncInterval}
           options={[
-            { value: "0", label: t("settings.general.syncOff") },
-            { value: "5", label: t("settings.general.sync5min") },
-            { value: "15", label: t("settings.general.sync15min") },
-            { value: "30", label: t("settings.general.sync30min") },
-            { value: "60", label: t("settings.general.sync1hour") },
+            {
+              value: "0",
+              label: t("settings.general.syncOff"),
+            },
+            {
+              value: "5",
+              label: t("settings.general.sync5min"),
+            },
+            {
+              value: "15",
+              label: t("settings.general.sync15min"),
+            },
+            {
+              value: "30",
+              label: t("settings.general.sync30min"),
+            },
+            {
+              value: "60",
+              label: t("settings.general.sync1hour"),
+            },
           ]}
         />
       </ItemWrapper>
@@ -87,8 +101,14 @@ export default function General() {
           settingName="sortDirection"
           settingValue={sortDirection}
           options={[
-            { value: "desc", label: t("settings.general.sortDesc") },
-            { value: "asc", label: t("settings.general.sortAsc") },
+            {
+              value: "desc",
+              label: t("settings.general.sortDesc"),
+            },
+            {
+              value: "asc",
+              label: t("settings.general.sortAsc"),
+            },
           ]}
         />
         <Separator />

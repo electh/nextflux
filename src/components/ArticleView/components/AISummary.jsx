@@ -1,12 +1,13 @@
+import { X } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { aiSummaries, clearSummary } from "@/stores/aiStore.js";
-import { CloseButton, Spinner } from "@heroui/react";
 import { Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BorderBeam from "border-beam";
 import { currentThemeMode } from "@/stores/themeStore.js";
-
 const TICK_MS = 16; // ~60fps
 const CHARS_STREAMING = 5; // 流式输出中每帧显示字符数
 const CHARS_CATCHUP = 24; // 输出结束后快速追赶
@@ -16,7 +17,6 @@ export default function AISummary({ articleId }) {
   const $aiSummaries = useStore(aiSummaries);
   const $currentThemeMode = useStore(currentThemeMode);
   const state = $aiSummaries[articleId];
-
   const [displayedText, setDisplayedText] = useState("");
   const stateRef = useRef(state);
 
@@ -29,7 +29,6 @@ export default function AISummary({ articleId }) {
   useEffect(() => {
     setDisplayedText("");
   }, [articleId]);
-
   useEffect(() => {
     if (state?.loading && state?.summary === "") {
       setDisplayedText("");
@@ -50,13 +49,10 @@ export default function AISummary({ articleId }) {
     }, TICK_MS);
     return () => clearInterval(timer);
   }, [articleId]);
-
   if (!state) return null;
-
   const isTyping =
     state.loading || displayedText.length < (state.summary?.length ?? 0);
   const isWaiting = state.loading && !state.summary;
-
   return (
     <BorderBeam
       active={isWaiting || isTyping}
@@ -72,16 +68,21 @@ export default function AISummary({ articleId }) {
             </span>
           </div>
           {!isTyping && (
-            <CloseButton
-              onPress={() => clearSummary(articleId)}
+            <Button
               className="ml-auto"
-            />
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Close"
+              onClick={() => clearSummary(articleId)}
+            >
+              <X />
+            </Button>
           )}
         </div>
 
         {isWaiting && (
-          <div className="flex items-center gap-2 text-sm text-muted py-2">
-            <Spinner size="sm" color="current" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+            <Spinner />
             <span>{t("articleView.aiSummaryGenerating")}</span>
           </div>
         )}
@@ -89,7 +90,7 @@ export default function AISummary({ articleId }) {
         {state.error && <p className="text-sm text-danger">{state.error}</p>}
 
         {displayedText && (
-          <div className="text-sm text-muted leading-relaxed">
+          <div className="text-sm text-muted-foreground leading-relaxed">
             {displayedText}
             {isTyping && (
               <span className="inline-block w-0.5 h-4 bg-accent ml-0.5 animate-pulse align-middle" />

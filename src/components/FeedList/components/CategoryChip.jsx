@@ -1,4 +1,4 @@
-import { Chip } from "@heroui/react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils.js";
 import { Loader2, X } from "lucide-react";
 import { feeds, categories } from "@/stores/feedsStore.js";
@@ -9,14 +9,12 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { deleteCategory } from "@/db/storage";
 import { reportError } from "@/lib/errors.js";
-
 export default function CategoryChip({ category }) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const $feeds = useStore(feeds);
   const $categories = useStore(categories);
   const hasFeeds = $feeds.some((feed) => feed.categoryId === category.id);
-
   const handleDeleteCategory = async (categoryId) => {
     try {
       setLoading(true);
@@ -32,10 +30,9 @@ export default function CategoryChip({ category }) {
       setLoading(false);
     }
   };
-
   return (
-    <Chip key={category.id}>
-      <Chip.Label>{category.title}</Chip.Label>
+    <Badge key={category.id} variant="secondary">
+      <span>{category.title}</span>
       {!hasFeeds ? (
         <span
           className={cn(
@@ -55,6 +52,6 @@ export default function CategoryChip({ category }) {
           )}
         </span>
       ) : null}
-    </Chip>
+    </Badge>
   );
 }

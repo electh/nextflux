@@ -20,13 +20,13 @@ export default {
             opacity: "0.3",
           },
           to: {
-            height: "var(--radix-collapsible-content-height)",
+            height: "var(--collapsible-panel-height)",
             opacity: "1",
           },
         },
         "collapsible-up": {
           from: {
-            height: "var(--radix-collapsible-content-height)",
+            height: "var(--collapsible-panel-height)",
             opacity: "1",
           },
           to: {

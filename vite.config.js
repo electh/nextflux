@@ -19,7 +19,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": ["@heroui/react", "lucide-react"],
+          "vendor-ui": ["@base-ui/react", "lucide-react"],
           "vendor-motion": ["framer-motion"],
           "vendor-data": ["axios", "dexie", "nanostores"],
           "vendor-i18n": ["i18next", "react-i18next"],

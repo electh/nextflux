@@ -6,6 +6,7 @@ import { router } from "@/routes/index.jsx";
 import { RouterProvider } from "react-router";
 import SplashScreen from "@/components/SplashScreen";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Info,
   CircleCheck,
@@ -18,7 +19,7 @@ import {
 initTheme();
 
 createRoot(document.getElementById("root")).render(
-  <>
+  <TooltipProvider>
     <SplashScreen />
     <Toaster
       icons={{
@@ -47,5 +48,5 @@ createRoot(document.getElementById("root")).render(
         v7_skipActionErrorRevalidation: true,
       }}
     />
-  </>,
+  </TooltipProvider>,
 );

@@ -26,8 +26,8 @@ function ArticleCardCover({ imageUrl }) {
             : "w-20 h-20 shrink-0",
         )}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-2 text-muted">
-          <ImageOff className="size-5 text-muted" />
+        <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground">
+          <ImageOff className="size-5 text-muted-foreground" />
         </div>
       </div>
     );

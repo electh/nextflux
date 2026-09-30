@@ -1,3 +1,15 @@
+import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useEffect, Fragment } from "react";
 import { settingsState } from "@/stores/settingsStore";
 import {
@@ -19,7 +31,6 @@ import {
   SliderItem,
   SwitchItem,
 } from "@/components/ui/settingItem.jsx";
-import { Button, Separator, Dropdown, Header, Label } from "@heroui/react";
 import { resetSettings } from "@/stores/settingsStore.js";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
@@ -72,95 +83,90 @@ function FontSelector({ label, icon, settingName, settingValue }) {
     }
     return "Aa";
   };
-
   const handleSelectionChange = (keys) => {
-    const value = keys.currentKey;
+    const value = keys;
     if (value) {
       setSelected(new Set([value]));
-      updateSettings({ [settingName]: value });
+      updateSettings({
+        [settingName]: value,
+      });
     }
   };
-
   return (
     <div className="flex justify-between items-center gap-2 bg-default/60 dark:bg-default/30 px-2.5 py-2">
       <div className="flex items-center gap-2">
         {icon}
         <div className="text-sm text-foreground">{label}</div>
       </div>
-      <Dropdown>
-        <Button
-          variant="tertiary"
-          size="sm"
-          className="text-muted h-8 min-w-[100px]"
-        >
-          <span className="truncate">{getSelectedFontName()}</span>
-          <span
-            className="text-muted/60 ml-1"
-            style={{
-              fontFamily: `${settingValue}, system-ui, sans-serif`,
-            }}
-          >
-            {getSelectedFontPreview()}
-          </span>
-          <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-        </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="secondary"
+              size="sm"
+              className="text-muted-foreground h-8 min-w-[100px]"
+            >
+              <span className="truncate">{getSelectedFontName()}</span>
+              <span
+                className="text-muted-foreground/60 ml-1"
+                style={{
+                  fontFamily: `${settingValue}, system-ui, sans-serif`,
+                }}
+              >
+                {getSelectedFontPreview()}
+              </span>
+              <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
+            </Button>
+          }
+        />
 
-        <Dropdown.Popover className="max-h-[300px] overflow-y-auto">
-          <Dropdown.Menu
+        <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
+          <DropdownMenuRadioGroup
             aria-label="Font selection"
-            selectedKeys={selected}
-            selectionMode="single"
-            onSelectionChange={handleSelectionChange}
+            value={Array.from(selected)[0]}
+            onValueChange={handleSelectionChange}
           >
-            <Dropdown.Section>
-              <Header>System</Header>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>System</DropdownMenuLabel>
               {SYSTEM_FONTS.map((font) => (
-                <Dropdown.Item
-                  key={font.value}
-                  id={font.value}
-                  textValue={font.name}
-                >
-                  <Dropdown.ItemIndicator />
-                  <Label>{font.name}</Label>
-                </Dropdown.Item>
+                <DropdownMenuRadioItem key={font.value} value={font.value}>
+                  <span>{font.name}</span>
+                </DropdownMenuRadioItem>
               ))}
-            </Dropdown.Section>
+            </DropdownMenuGroup>
             <Separator />
             {Object.entries(FONT_CATEGORIES).map(
               ([categoryKey, category], index) => (
                 <Fragment key={categoryKey}>
-                  <Dropdown.Section>
-                    <Header>{category.label}</Header>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>{category.label}</DropdownMenuLabel>
                     {category.fonts.map((font) => (
-                      <Dropdown.Item
+                      <DropdownMenuRadioItem
                         key={font.value}
-                        id={font.value}
-                        textValue={font.name}
+                        value={font.value}
                       >
-                        <Dropdown.ItemIndicator />
-                        <Label
+                        <span
                           style={{
                             fontFamily: `${font.value}, system-ui, sans-serif`,
                           }}
                         >
                           {font.name}
-                        </Label>
-                      </Dropdown.Item>
+                        </span>
+                      </DropdownMenuRadioItem>
                     ))}
-                  </Dropdown.Section>
+                  </DropdownMenuGroup>
                   {index < Object.keys(FONT_CATEGORIES).length - 1 && (
                     <Separator />
                   )}
                 </Fragment>
               ),
             )}
-          </Dropdown.Menu>
-        </Dropdown.Popover>
-      </Dropdown>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
-
 export default function Readability() {
   const {
     lineHeight,
@@ -174,7 +180,6 @@ export default function Readability() {
     forceDarkCodeTheme,
   } = useStore(settingsState);
   const { t } = useTranslation();
-
   return (
     <>
       <ItemWrapper title={t("settings.readability.articleTitle")}>
@@ -188,8 +193,14 @@ export default function Readability() {
           settingName="titleAlignType"
           settingValue={titleAlignType}
           options={[
-            { value: "left", icon: <AlignLeft className="size-4" /> },
-            { value: "center", icon: <AlignCenter className="size-4" /> },
+            {
+              value: "left",
+              icon: <AlignLeft className="size-4" />,
+            },
+            {
+              value: "center",
+              icon: <AlignCenter className="size-4" />,
+            },
           ]}
         />
         <Separator />
@@ -296,10 +307,9 @@ export default function Readability() {
         />
       </ItemWrapper>
       <Button
-        fullWidth
-        variant="danger"
-        onPress={resetSettings}
-        className="shrink-0"
+        variant="destructive"
+        onClick={resetSettings}
+        className={cn("w-full", "shrink-0")}
       >
         {t("settings.readability.reset")}
       </Button>

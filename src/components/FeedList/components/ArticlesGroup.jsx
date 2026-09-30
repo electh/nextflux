@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/sidebar.jsx";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 const ArticlesGroup = () => {
   const { t } = useTranslation();
   const $filter = useStore(filter);
@@ -44,19 +43,22 @@ const ArticlesGroup = () => {
         };
     }
   };
-
   const { text, count } = getDisplayInfo();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{t("common.article")}</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild isActive={!feedId && !categoryId}>
-            <Link to="/" onClick={() => isMobile && setOpenMobile(false)}>
-              <span className="font-semibold">{text}</span>
-            </Link>
-          </SidebarMenuButton>
-          <SidebarMenuBadge className="text-muted! opacity-60!">
+          <SidebarMenuButton
+            isActive={!feedId && !categoryId}
+            render={
+              <Link to="/" onClick={() => isMobile && setOpenMobile(false)}>
+                <span className="font-semibold">{text}</span>
+              </Link>
+            }
+            nativeButton={false}
+          />
+          <SidebarMenuBadge className="text-muted-foreground! opacity-60!">
             {count !== 0 && count}
           </SidebarMenuBadge>
         </SidebarMenuItem>
@@ -64,5 +66,4 @@ const ArticlesGroup = () => {
     </SidebarGroup>
   );
 };
-
 export default ArticlesGroup;

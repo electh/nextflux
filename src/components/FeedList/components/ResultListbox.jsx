@@ -1,53 +1,50 @@
-import { Description, Label, ListBox, Separator } from "@heroui/react";
+import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import FeedIcon from "@/components/ui/FeedIcon";
 import { Image } from "@/components/ui/Image.jsx";
+
 export default function ResultListbox({ results, searchType, handleSelect }) {
-  const ListboxWrapper = ({ children }) => (
-    <div
-      className={cn(
-        "w-full bg-default/60 h-auto overflow-y-auto p-1 rounded-2xl shadow-surface max-h-60",
-        results.length === 0 ? "hidden" : "opacity-100",
-      )}
-    >
-      {children}
-    </div>
-  );
+  if (!results.length) return null;
   return (
     <>
-      <Separator
-        className={cn("my-1", results.length === 0 ? "hidden" : "opacity-100")}
-      />
-      <ListboxWrapper>
-        <ListBox
-          aria-label="results"
-          selectionMode="single"
-          onSelectionChange={(keys) => {
-            handleSelect(keys);
-          }}
-        >
-          {results.map((item) => (
-            <ListBox.Item key={item.url} id={item.url} textValue={item.url}>
-              {searchType === "podcast" ? (
-                <Image
-                  src={item.icon_url}
-                  alt={item.title}
-                  className={cn(
-                    "size-8 object-cover aspect-square rounded-sm shadow-custom shrink-0",
-                  )}
-                />
-              ) : (
-                <FeedIcon feedId={null} url={item.url} />
-              )}
-              <div className="flex flex-col">
-                <Label className="line-clamp-1">{item.title || item.url}</Label>
-                <Description className="line-clamp-1">{item.title}</Description>
-              </div>
-              <ListBox.ItemIndicator />
-            </ListBox.Item>
-          ))}
-        </ListBox>
-      </ListboxWrapper>
+      <Separator className="my-1" />
+      <ToggleGroup
+        orientation="vertical"
+        spacing={1}
+        aria-label="results"
+        className="max-h-60 w-full items-stretch overflow-y-auto rounded-xl bg-default/60 p-1"
+        onValueChange={(values) => {
+          if (values.length) handleSelect(values);
+        }}
+      >
+        {results.map((item) => (
+          <ToggleGroupItem
+            key={item.url}
+            value={item.url}
+            aria-label={item.title || item.url}
+            className="h-auto w-full justify-start py-2"
+          >
+            {searchType === "podcast" ? (
+              <Image
+                src={item.icon_url}
+                alt={item.title}
+                className="size-8 shrink-0 rounded-sm object-cover shadow-custom"
+              />
+            ) : (
+              <FeedIcon feedId={null} url={item.url} />
+            )}
+            <span className="flex min-w-0 flex-col items-start">
+              <span className="line-clamp-1">{item.title || item.url}</span>
+              <span
+                className={cn("line-clamp-1 text-xs text-muted-foreground")}
+              >
+                {item.url}
+              </span>
+            </span>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
     </>
   );
 }

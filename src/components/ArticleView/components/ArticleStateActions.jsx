@@ -1,6 +1,13 @@
+import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { useStore } from "@nanostores/react";
-import { Button, cn, Spinner, Tooltip } from "@heroui/react";
 import { Circle, CircleDot, FileText, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Confetti from "@/components/ui/Confetti";
@@ -12,79 +19,102 @@ import {
 import { loadingOriginContent } from "@/stores/articlesStore.js";
 import ArticleAiAction from "./ArticleAiAction.jsx";
 import ArticleExternalActions from "./ArticleExternalActions.jsx";
-
 export default function ArticleStateActions({ article }) {
   const { t } = useTranslation();
   const starButtonRef = useRef(null);
   const fetchLoading = useStore(loadingOriginContent);
-
   return (
     <div className="flex gap-1 ml-auto">
-      <Tooltip delay={0}>
-        <Button
-          onPress={() => handleMarkStatus(article)}
-          variant="ghost"
-          isIconOnly
-          size="sm"
-        >
-          {article?.status === "unread" ? (
-            <CircleDot className="size-4 text-muted p-0.5 fill-current" />
-          ) : (
-            <Circle className="size-4 text-muted p-0.5" />
-          )}
-        </Button>
-        <Tooltip.Content showArrow>
-          <Tooltip.Arrow />
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              aria-label={
+                article?.status === "read"
+                  ? t("common.unread")
+                  : t("common.read")
+              }
+              onClick={() => handleMarkStatus(article)}
+              size="icon-sm"
+            >
+              {article?.status === "unread" ? (
+                <CircleDot className="size-4 text-muted-foreground p-0.5 fill-current" />
+              ) : (
+                <Circle className="size-4 text-muted-foreground p-0.5" />
+              )}
+            </Button>
+          }
+          delay={0}
+        />
+        <TooltipContent>
           {article?.status === "read" ? t("common.unread") : t("common.read")}
-        </Tooltip.Content>
+        </TooltipContent>
       </Tooltip>
-      <Tooltip delay={0}>
-        <Button
-          ref={starButtonRef}
-          variant="ghost"
-          isIconOnly
-          size="sm"
-          onPress={() => {
-            if (article?.starred === 0) Confetti(starButtonRef);
-            handleToggleStar(article);
-          }}
-        >
-          <Star
-            className={`size-4 text-muted ${article?.starred === 1 ? "fill-current" : ""}`}
-          />
-        </Button>
-        <Tooltip.Content showArrow>
-          <Tooltip.Arrow />
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              ref={starButtonRef}
+              variant="ghost"
+              aria-label={
+                article?.starred === 1 ? t("common.unstar") : t("common.star")
+              }
+              onClick={() => {
+                if (article?.starred === 0) Confetti(starButtonRef);
+                handleToggleStar(article);
+              }}
+              size="icon-sm"
+            >
+              <Star
+                className={`size-4 text-muted-foreground ${article?.starred === 1 ? "fill-current" : ""}`}
+              />
+            </Button>
+          }
+          delay={0}
+        />
+        <TooltipContent>
           {article?.starred === 1 ? t("common.unstar") : t("common.star")}
-        </Tooltip.Content>
+        </TooltipContent>
       </Tooltip>
       <ArticleExternalActions article={article} />
       <ArticleAiAction article={article} />
-      <Tooltip delay={0}>
-        <Button
-          onPress={() => handleToggleContent(article)}
-          variant="ghost"
-          isIconOnly
-          size="sm"
-          isPending={fetchLoading}
-        >
-          {fetchLoading ? (
-            <Spinner color="current" size="sm" />
-          ) : (
-            <FileText
-              className={cn(
-                "size-4",
-                article?.shownOriginal ? "text-accent" : "text-muted",
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              aria-label={
+                article?.shownOriginal
+                  ? t("articleView.showSummary")
+                  : t("articleView.getFullText")
+              }
+              onClick={() => handleToggleContent(article)}
+              disabled={fetchLoading}
+              aria-busy={fetchLoading}
+              size="icon-sm"
+            >
+              {fetchLoading ? (
+                <Spinner />
+              ) : (
+                <FileText
+                  className={cn(
+                    "size-4",
+                    article?.shownOriginal
+                      ? "text-accent"
+                      : "text-muted-foreground",
+                  )}
+                />
               )}
-            />
-          )}
-        </Button>
-        <Tooltip.Content showArrow>
-          <Tooltip.Arrow />
+            </Button>
+          }
+          delay={0}
+        />
+        <TooltipContent>
           {article?.shownOriginal
             ? t("articleView.showSummary")
             : t("articleView.getFullText")}
-        </Tooltip.Content>
+        </TooltipContent>
       </Tooltip>
     </div>
   );

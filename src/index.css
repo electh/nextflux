@@ -1,5 +1,50 @@
 @import "tailwindcss";
-@import "@heroui/styles";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--overlay);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-foreground);
+  --color-secondary: var(--default);
+  --color-secondary-foreground: var(--default-foreground);
+  --color-muted: var(--default);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--danger-foreground);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--focus);
+  --color-overlay: var(--overlay);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--foreground);
+  --color-default: var(--default);
+  --color-default-foreground: var(--default-foreground);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-separator: var(--separator);
+  --color-divider: var(--separator);
+  --color-focus: var(--focus);
+  --color-field: var(--field-background);
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+  --radius-4xl: calc(var(--radius) * 4);
+  --radius-field: calc(var(--radius) * 1.5);
+  --shadow-surface: var(--shadow-custom);
+}
 
 @config '../tailwind.config.js';
 
@@ -11,14 +56,48 @@
 
 @layer base {
   :root {
-    --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.02),
-      0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.3);
-    --shadow-custom-inner: inset 0 0 2px 0 rgba(0, 0, 0, 0.05),
-      inset 0 0 4px 0 rgba(0, 0, 0, 0.05), inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-custom-md: 0 24px 40px -12px rgb(0 0 0 / 0.08),
-      0 16px 28px -8px rgb(0 0 0 / 0.04), 0 4px 6px -2px rgb(0 0 0 / 0.04),
-      0 0 2px 0 rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.04);
-    --shadow-custom-btn: 0 1px 2px -0.5px rgba(255, 255, 255, 0.12) inset,
+    color-scheme: light;
+    --radius: 0.5rem;
+    --white: oklch(1 0 0);
+    --snow: oklch(0.9911 0 0);
+    --eclipse: oklch(0.2103 0.0059 285.89);
+    --background: oklch(0.9702 0 0);
+    --foreground: var(--eclipse);
+    --surface: var(--white);
+    --overlay: var(--white);
+    --muted: oklch(0.5517 0.0138 285.94);
+    --default: oklch(0.94 0.001 286.375);
+    --default-foreground: var(--foreground);
+    --accent: oklch(0.6204 0.195 253.83);
+    --accent-foreground: var(--snow);
+    --danger: oklch(0.6532 0.2328 25.74);
+    --danger-foreground: var(--snow);
+    --success: oklch(0.7329 0.1935 150.81);
+    --warning: oklch(0.7819 0.1585 72.33);
+    --border: oklch(0.9 0.004 286.32);
+    --separator: oklch(0.92 0.004 286.32);
+    --focus: var(--accent);
+    --field-background: var(--surface);
+    --primary: var(--accent);
+    --primary-foreground: var(--accent-foreground);
+    --secondary: var(--default);
+    --secondary-foreground: var(--default-foreground);
+    --popover: var(--overlay);
+    --popover-foreground: var(--foreground);
+    --ring: var(--focus);
+    --input: var(--border);
+    --shadow-custom:
+      0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07),
+      0 0 1px 0 rgba(0, 0, 0, 0.3);
+    --shadow-custom-inner:
+      inset 0 0 2px 0 rgba(0, 0, 0, 0.05), inset 0 0 4px 0 rgba(0, 0, 0, 0.05),
+      inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-custom-md:
+      0 24px 40px -12px rgb(0 0 0 / 0.08), 0 16px 28px -8px rgb(0 0 0 / 0.04),
+      0 4px 6px -2px rgb(0 0 0 / 0.04), 0 0 2px 0 rgb(0 0 0 / 0.04),
+      0 0 0 1px rgb(0 0 0 / 0.04);
+    --shadow-custom-btn:
+      0 1px 2px -0.5px rgba(255, 255, 255, 0.12) inset,
       0 0.5px 0.5px rgba(255, 255, 255, 0.16) inset,
       0 8px 24px -4px rgba(255, 255, 255, 0.16) inset,
       0 8px 8px -3px rgba(0, 0, 0, 0.03), 0 5px 5px -2.5px rgba(0, 0, 0, 0.03),
@@ -27,16 +106,29 @@
   }
 
   .dark {
-    --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.05),
-      0 2px 10px 0 rgba(0, 0, 0, 0.2), inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
+    color-scheme: dark;
+    --background: oklch(0.12 0.005 285.823);
+    --foreground: var(--snow);
+    --surface: oklch(0.2103 0.0059 285.89);
+    --overlay: var(--surface);
+    --muted: oklch(0.705 0.015 286.067);
+    --default: oklch(0.274 0.006 286.033);
+    --danger: oklch(0.594 0.1967 24.63);
+    --border: oklch(0.28 0.006 286.033);
+    --separator: oklch(0.25 0.006 286.033);
+    --shadow-custom:
+      0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
+      inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
       0 0 1px 0 rgba(255, 255, 255, 0.6);
-    --shadow-custom-inner: inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
+    --shadow-custom-inner:
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
       inset 0 -0.5px 1px 0 rgba(255, 255, 255, 0.1),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.08),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.1);
-    --shadow-custom-md: 0 1px 3px #ffffff0f inset,
-      0 0.5px 0.5px #ffffff0f inset, 0 16px 56px #0000003d,
-      0 4px 16px #0000003d, 0 1px 2px #0000003d, 0 0 0 1px rgba(0, 0, 0, 0.1);
+    --shadow-custom-md:
+      0 1px 3px #ffffff0f inset, 0 0.5px 0.5px #ffffff0f inset,
+      0 16px 56px #0000003d, 0 4px 16px #0000003d, 0 1px 2px #0000003d,
+      0 0 0 1px rgba(0, 0, 0, 0.1);
   }
 
   [data-theme="stone"] {
@@ -166,27 +258,19 @@
 }
 
 @layer components {
-  .dropdown__popover {
-    @apply min-w-40 shadow-custom-md bg-overlay/90 backdrop-blur-sm max-h-80!;
+  [data-slot="overlay-body"] {
+    @apply min-h-0 flex-1 overflow-y-auto;
   }
-  .button--primary,
-  .button--danger {
-    @apply shadow-custom-btn relative before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:pointer-events-none before:opacity-5 before:bg-linear-to-b before:from-white before:to-white/50;
+  * {
+    @apply border-border;
   }
-  .button--primary {
-    @apply border border-accent;
+  body {
+    @apply bg-background text-foreground;
   }
-  .button--danger {
-    @apply border border-danger;
-  }
-  .close-button {
-    @apply rounded-full dark:shadow-custom-btn;
-  }
-  .button--icon-only {
-    @apply rounded-full;
-  }
-  .tooltip {
-    @apply shadow-custom-md py-1 rounded-full;
+  button:not(:disabled),
+  [role="menuitem"],
+  [role="menuitemradio"] {
+    cursor: pointer;
   }
 
   /* Page Slide Transition for Settings Drawer */
@@ -228,9 +312,10 @@
 
 /* iOS 风格文章列表移动动画 */
 .main-content > div:first-child {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, filter, background-color;
 }
 
@@ -240,12 +325,14 @@
   filter: brightness(0.7);
 }
 
-
 /* 侧边栏动画 */
 .sidebar {
   transition-property: transform, filter, background-color, left, width;
   transition-duration: 0.5s, 0.5s, 0.5s, 0.2s, 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);
+  transition-timing-function:
+    cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1),
+    cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0, 0, 1, 1),
+    cubic-bezier(0, 0, 1, 1);
   transform: translateX(0);
 }
 

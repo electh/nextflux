@@ -1,19 +1,25 @@
+import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
-  Button,
-  Checkbox,
-  Input,
-  Link,
-  ScrollShadow,
   Select,
-  Label,
-  ListBox,
-  ListBoxItem,
-  TextArea,
-  TextField,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Field,
+  FieldLabel,
+  FieldContent,
+  FieldDescription,
   FieldError,
-  Description,
-  Spinner,
-} from "@heroui/react";
+} from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
@@ -40,7 +46,6 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-
 export default function AddFeedModal() {
   const { t } = useTranslation();
   const $categories = useStore(categories);
@@ -62,7 +67,6 @@ export default function AddFeedModal() {
     blocklist_rules: "",
     rewrite_rules: "",
   });
-
   const supportedTypes = [
     {
       id: "feed",
@@ -119,15 +123,12 @@ export default function AddFeedModal() {
       placeholder: t("feed.glassPlaceholder"),
     },
   ];
-
   const handleSearch = async () => {
     if (!searchQuery) return;
-
     try {
       setSearching(true);
       const type = supportedTypes.find((type) => type.id === searchType);
       if (!type) return;
-
       let feeds;
       if (searchType === "podcast") {
         // 调用播客搜索API
@@ -146,7 +147,6 @@ export default function AddFeedModal() {
         const url = `${type.prefix}${searchQuery}${type.suffix}`;
         feeds = await minifluxAPI.discoverFeeds(url);
       }
-
       setResults(feeds);
       // 如果搜索结果唯一，则自动添加
       if (feeds.length === 1) {
@@ -165,7 +165,6 @@ export default function AddFeedModal() {
       setSearching(false);
     }
   };
-
   const handleSelect = (key) => {
     setFormData({
       ...formData,
@@ -174,7 +173,6 @@ export default function AddFeedModal() {
         .rewrite_rules,
     });
   };
-
   const onClose = () => {
     addFeedModalOpen.set(false);
     setSearchType("feed");
@@ -190,7 +188,6 @@ export default function AddFeedModal() {
       rewrite_rules: "",
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -216,9 +213,7 @@ export default function AddFeedModal() {
       setLoading(false);
     }
   };
-
   const isDiscoverMode = !formData.feed_url || formData.feed_url === "";
-
   return (
     <CustomModal
       open={$addFeedModalOpen}
@@ -227,9 +222,9 @@ export default function AddFeedModal() {
       footer={
         isDiscoverMode ? (
           <Button
-            fullWidth
-            isDisabled={searchQuery === "" || searchType === "" || searching}
-            onPress={handleSearch}
+            onClick={handleSearch}
+            disabled={searchQuery === "" || searchType === "" || searching}
+            className="w-full"
           >
             {searching ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -241,8 +236,8 @@ export default function AddFeedModal() {
         ) : (
           <div className="flex gap-2 w-full">
             <Button
-              fullWidth
-              onPress={() => {
+              variant="secondary"
+              onClick={() => {
                 setFormData({
                   feed_url: "",
                   category_id: "",
@@ -253,68 +248,88 @@ export default function AddFeedModal() {
                   rewrite_rules: "",
                 });
               }}
-              variant="tertiary"
+              className="w-full"
             >
               {t("common.back")}
             </Button>
             <Button
               type="submit"
               form="add-feed-form"
-              isPending={loading}
-              fullWidth
+              disabled={loading}
+              aria-busy={loading}
+              className="w-full"
             >
-              {loading && <Spinner color="current" size="sm" />}
+              {loading && <Spinner />}
               {t("common.save")}
             </Button>
           </div>
         )
       }
     >
-      <ScrollShadow size={10} className="w-full overflow-y-auto px-4 pb-4">
+      <div
+        className={cn("overflow-y-auto", "w-full overflow-y-auto px-4 pb-4")}
+      >
         <AnimatePresence initial={false} mode="wait">
           {!formData.feed_url || formData.feed_url === "" ? (
             <motion.div
               key="discover"
               className="flex flex-col gap-3"
-              initial={{ opacity: 0, x: "-100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.2 }}
+              initial={{
+                opacity: 0,
+                x: "-100%",
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                type: "spring",
+                bounce: 0,
+                duration: 0.2,
+              }}
             >
-              <Select
-                isRequired
-                variant="secondary"
-                placeholder={t("feed.feedTypePlaceholder")}
-                value={searchType}
-                onChange={(value) => {
-                  setSearchType(value);
-                  setSearchQuery("");
-                  setResults([]);
-                }}
-              >
-                <Label>{t("feed.feedType")}</Label>
-                <Select.Trigger>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox>
-                    {supportedTypes.map((type) => (
-                      <ListBoxItem
-                        key={type.id}
-                        id={type.id}
-                        textValue={type.label}
-                      >
-                        <div className="flex items-center gap-2">
-                          {type.icon}
-                          <span>{type.label}</span>
-                        </div>
-                      </ListBoxItem>
-                    ))}
-                  </ListBox>
-                </Select.Popover>
-              </Select>
-              <TextField isRequired variant="secondary">
-                <Label>{t("feed.searchQuery")}</Label>
+              <Field>
+                <FieldLabel htmlFor="add-type">{t("feed.feedType")}</FieldLabel>
+                <Select
+                  value={searchType}
+                  items={[
+                    {
+                      value: null,
+                      label: t("feed.feedTypePlaceholder"),
+                    },
+                    ...supportedTypes.map((item) => ({
+                      value: item.id,
+                      label: item.label,
+                    })),
+                  ]}
+                  onValueChange={(value) => {
+                    setSearchType(value);
+                    setSearchQuery("");
+                    setResults([]);
+                  }}
+                  required={true}
+                >
+                  <SelectTrigger className="w-full" id="add-type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {supportedTypes.map((type) => (
+                        <SelectItem key={type.id} value={type.id}>
+                          <div className="flex items-center gap-2">
+                            {type.icon}
+                            <span>{type.label}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="field-9238">
+                  {t("feed.searchQuery")}
+                </FieldLabel>
                 <Input
                   placeholder={
                     supportedTypes.find((type) => type.id === searchType)
@@ -333,8 +348,10 @@ export default function AddFeedModal() {
                       handleSearch();
                     }
                   }}
+                  required={true}
+                  id="field-9238"
                 />
-              </TextField>
+              </Field>
               <ResultListbox
                 results={results}
                 searchType={searchType}
@@ -347,81 +364,109 @@ export default function AddFeedModal() {
               key="submit"
               onSubmit={handleSubmit}
               className="w-full flex flex-col gap-4"
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.2 }}
+              initial={{
+                opacity: 0,
+                x: "100%",
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                type: "spring",
+                bounce: 0,
+                duration: 0.2,
+              }}
             >
-              <TextField isRequired name="feed_url" variant="secondary">
-                <Label>{t("feed.feedUrl")}</Label>
+              <Field>
+                <FieldLabel htmlFor="feed_url">{t("feed.feedUrl")}</FieldLabel>
                 <Input
                   placeholder={t("feed.feedUrlPlaceholder")}
                   value={formData.feed_url}
                   onChange={(event) =>
-                    setFormData({ ...formData, feed_url: event.target.value })
+                    setFormData({
+                      ...formData,
+                      feed_url: event.target.value,
+                    })
                   }
+                  required={true}
+                  name="feed_url"
+                  id="feed_url"
                 />
                 <FieldError>{t("feed.feedUrlRequired")}</FieldError>
-              </TextField>
-              <Select
-                isRequired
-                variant="secondary"
-                placeholder={t("feed.feedCategoryPlaceholder")}
-                value={formData.category_id ?? null}
-                onChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    category_id: value == null ? "" : Number(value),
-                  })
-                }
-              >
-                <Label>{t("feed.feedCategory")}</Label>
-                <Select.Trigger>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox>
-                    {$categories.map((category) => (
-                      <ListBox.Item
-                        key={category.id}
-                        id={category.id}
-                        textValue={category.title}
-                      >
-                        {category.title}
-                        <ListBox.ItemIndicator />
-                      </ListBox.Item>
-                    ))}
-                  </ListBox>
-                </Select.Popover>
-              </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="add-category">
+                  {t("feed.feedCategory")}
+                </FieldLabel>
+                <Select
+                  value={
+                    formData.category_id === "" ? null : formData.category_id
+                  }
+                  items={[
+                    {
+                      value: null,
+                      label: t("feed.feedCategoryPlaceholder"),
+                    },
+                    ...$categories.map((item) => ({
+                      value: item.id,
+                      label: item.title,
+                    })),
+                  ]}
+                  onValueChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      category_id: value == null ? "" : Number(value),
+                    })
+                  }
+                  required={true}
+                >
+                  <SelectTrigger className="w-full" id="add-category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {$categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
               <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    fullWidth
-                    className="flex justify-between rounded-field px-3 text-muted"
-                  >
-                    {t("feed.advancedOptions")}
-                    <ChevronDown
-                      className={`size-4 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
-                    />
-                  </Button>
-                </CollapsibleTrigger>
+                <CollapsibleTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full",
+                        "flex justify-between rounded-field px-3 text-muted-foreground",
+                      )}
+                    >
+                      {t("feed.advancedOptions")}
+                      <ChevronDown
+                        className={`size-4 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
+                      />
+                    </Button>
+                  }
+                />
                 <CollapsibleContent className="overflow-visible">
                   <div className="flex flex-col gap-4 pt-2">
-                    <TextField name="scraper_rules" variant="secondary">
-                      <Label>
+                    <Field>
+                      <FieldLabel htmlFor="scraper_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#scraper-rules"
                             target="_blank"
                           >
                             {t("feed.feedScraperRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedScraperRulesPlaceholder")}
                         value={formData.scraper_rules}
@@ -431,21 +476,23 @@ export default function AddFeedModal() {
                             scraper_rules: event.target.value,
                           })
                         }
+                        name="scraper_rules"
+                        id="scraper_rules"
                       />
-                    </TextField>
-                    <TextField name="keeplist_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="keeplist_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#feed-filtering-rules"
                             target="_blank"
                           >
                             {t("feed.feedKeeplistRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedKeeplistRulesPlaceholder")}
                         value={formData.keeplist_rules}
@@ -455,21 +502,23 @@ export default function AddFeedModal() {
                             keeplist_rules: event.target.value,
                           })
                         }
+                        name="keeplist_rules"
+                        id="keeplist_rules"
                       />
-                    </TextField>
-                    <TextField name="blocklist_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="blocklist_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#feed-filtering-rules"
                             target="_blank"
                           >
                             {t("feed.feedBlocklistRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
+                      </FieldLabel>
                       <Input
                         placeholder={t("feed.feedBlocklistRulesPlaceholder")}
                         value={formData.blocklist_rules}
@@ -479,22 +528,24 @@ export default function AddFeedModal() {
                             blocklist_rules: event.target.value,
                           })
                         }
+                        name="blocklist_rules"
+                        id="blocklist_rules"
                       />
-                    </TextField>
-                    <TextField name="rewrite_rules" variant="secondary">
-                      <Label>
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="rewrite_rules">
                         {
-                          <Link
-                            className="no-underline hover:underline"
+                          <a
+                            className="inline-flex items-center gap-1 no-underline hover:underline"
                             href="https://miniflux.app/docs/rules.html#rewrite-rules"
                             target="_blank"
                           >
                             {t("feed.feedRewriteRules")}
-                            <Link.Icon />
-                          </Link>
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
                         }
-                      </Label>
-                      <TextArea
+                      </FieldLabel>
+                      <Textarea
                         placeholder={t("feed.feedRewriteRulesPlaceholder")}
                         value={formData.rewrite_rules}
                         onChange={(event) =>
@@ -503,33 +554,38 @@ export default function AddFeedModal() {
                             rewrite_rules: event.target.value,
                           })
                         }
+                        name="rewrite_rules"
+                        id="rewrite_rules"
                       />
-                    </TextField>
-                    <Checkbox
-                      value="crawler"
-                      variant="secondary"
-                      isSelected={formData.crawler}
-                      onChange={(value) =>
-                        setFormData({ ...formData, crawler: value })
-                      }
-                    >
-                      <Checkbox.Control>
-                        <Checkbox.Indicator />
-                      </Checkbox.Control>
-                      <Checkbox.Content>
-                        <Label>{t("feed.feedCrawler")}</Label>
-                        <Description>
+                    </Field>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        value="crawler"
+                        checked={formData.crawler}
+                        onCheckedChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            crawler: value,
+                          })
+                        }
+                        id="crawler"
+                      />
+                      <FieldContent>
+                        <FieldLabel htmlFor="crawler">
+                          {t("feed.feedCrawler")}
+                        </FieldLabel>
+                        <FieldDescription>
                           {t("feed.feedCrawlerDescription")}
-                        </Description>
-                      </Checkbox.Content>
-                    </Checkbox>
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
                   </div>
                 </CollapsibleContent>
               </Collapsible>
             </motion.form>
           )}
         </AnimatePresence>
-      </ScrollShadow>
+      </div>
     </CustomModal>
   );
 }

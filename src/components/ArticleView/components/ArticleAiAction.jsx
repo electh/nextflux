@@ -1,5 +1,11 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
-import { Button, Spinner, Tooltip } from "@heroui/react";
 import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -12,15 +18,12 @@ import {
   setSummaryLoading,
 } from "@/stores/aiStore.js";
 import { settingsState } from "@/stores/settingsStore.js";
-
 export default function ArticleAiAction({ article }) {
   const { t } = useTranslation();
   const { aiApiKey } = useStore(settingsState);
   const summaries = useStore(aiSummaries);
   const state = summaries[article?.id];
-
   if (!aiApiKey) return null;
-
   const summarize = () => {
     if (!article || state?.loading) return;
     setSummaryLoading(article.id);
@@ -31,7 +34,6 @@ export default function ArticleAiAction({ article }) {
       pendingText = "";
       frame = null;
     };
-
     summarizeArticleStream(article, {
       onChunk: (chunk) => {
         pendingText += chunk;
@@ -49,28 +51,30 @@ export default function ArticleAiAction({ article }) {
       },
     });
   };
-
   return (
-    <Tooltip delay={0}>
-      <Button
-        onPress={summarize}
-        variant="ghost"
-        isIconOnly
-        size="sm"
-        isPending={state?.loading}
-      >
-        {state?.loading ? (
-          <Spinner color="current" size="sm" />
-        ) : (
-          <Sparkles
-            className={`size-4 ${state?.summary ? "text-accent" : "text-muted"}`}
-          />
-        )}
-      </Button>
-      <Tooltip.Content showArrow>
-        <Tooltip.Arrow />
-        {t("articleView.aiSummarize")}
-      </Tooltip.Content>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="ghost"
+            aria-label={t("articleView.aiSummarize")}
+            onClick={summarize}
+            disabled={state?.loading}
+            aria-busy={state?.loading}
+            size="icon-sm"
+          >
+            {state?.loading ? (
+              <Spinner />
+            ) : (
+              <Sparkles
+                className={`size-4 ${state?.summary ? "text-accent" : "text-muted-foreground"}`}
+              />
+            )}
+          </Button>
+        }
+        delay={0}
+      />
+      <TooltipContent>{t("articleView.aiSummarize")}</TooltipContent>
     </Tooltip>
   );
 }
