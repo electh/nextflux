@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")).render(
     <SplashScreen />
     <Toaster
       icons={{
-        loading: <Loader2 className="size-4! animate-spin! text-accent!" />,
+        loading: <Loader2 className="size-4! animate-spin! text-primary!" />,
         success: <CircleCheck className="size-4! text-green-500" />,
         info: <Info className="size-4! text-blue-500" />,
         warning: <TriangleAlert className="size-4! text-yellow-500" />,
@@ -31,9 +31,9 @@ createRoot(document.getElementById("root")).render(
       }}
       toastOptions={{
         classNames: {
-          toast: "rounded-2xl! bg-overlay! shadow-custom-md! p-4! border-none!",
+          toast: "rounded-2xl! bg-popover! shadow-custom-md! p-4! border-none!",
           title: "text-foreground!",
-          description: "text-default!",
+          description: "text-muted-foreground!",
         },
       }}
     />

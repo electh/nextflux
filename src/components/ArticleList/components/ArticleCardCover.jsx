@@ -20,7 +20,7 @@ function ArticleCardCover({ imageUrl }) {
     return (
       <div
         className={cn(
-          "card-image bg-default rounded-lg shadow-custom overflow-hidden",
+          "card-image bg-secondary rounded-lg shadow-custom overflow-hidden",
           cardImageSize === "large"
             ? "aspect-video w-full"
             : "w-20 h-20 shrink-0",
@@ -37,7 +37,7 @@ function ArticleCardCover({ imageUrl }) {
     <div
       ref={imgRef}
       className={cn(
-        "card-image bg-default rounded-lg shadow-custom overflow-hidden",
+        "card-image bg-secondary rounded-lg shadow-custom overflow-hidden",
         loading && "animate-pulse!",
         cardImageSize === "large"
           ? "aspect-video w-full"

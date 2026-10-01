@@ -1,57 +1,105 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import "react-photo-view/dist/react-photo-view.css";
 import "./ArticleView.css";
 import ActionButtons from "./components/ActionButtons.jsx";
-import ArticleContent from "./components/ArticleContent.jsx";
+import ArticleBody from "./components/ArticleBody.jsx";
 import ArticleHeader from "./components/ArticleHeader.jsx";
-import AISummary from "./components/AISummary.jsx";
+import { articleMotion, reducedArticleMotion } from "./articleMotion.js";
 import EmptyPlaceholder from "@/components/ArticleList/components/EmptyPlaceholder";
-import { activeArticle, filteredArticles } from "@/stores/articlesStore.js";
+import {
+  activeArticle,
+  filteredArticles,
+  pendingArticleMutations,
+} from "@/stores/articlesStore.js";
 import { settingsState } from "@/stores/settingsStore";
 import { currentThemeMode, themeState } from "@/stores/themeStore.js";
 import { getArticleById } from "@/db/storage";
+import { useLiveQuery } from "dexie-react-hooks";
+import { sameRecord } from "@/domain/sync/reconcileRecords.js";
+import { getArticleQueryState } from "@/domain/articles/articleQueryState.js";
+import { getArticleTransitionDirection } from "@/domain/articles/articleNavigation.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils.js";
+import ArticleLoading from "./components/ArticleLoading.jsx";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
-function useActiveArticle(articleId, articlesVersion) {
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    let cancelled = false;
-    async function loadArticle() {
-      if (!articleId) {
-        activeArticle.set(null);
-        return;
-      }
-      setError(null);
-      try {
-        const article = await getArticleById(articleId);
-        if (cancelled) return;
-        if (!article) {
-          setError("请选择要阅读的文章");
-          return;
-        }
-        activeArticle.set({
-          ...article,
-          originalContent: article.content,
-        });
-      } catch (loadError) {
-        if (!cancelled) setError(loadError.message);
-      }
+function useActiveArticle(articleId) {
+  const result = useLiveQuery(async () => {
+    if (!articleId) return { articleId, article: null };
+    try {
+      return { articleId, article: await getArticleById(articleId) };
+    } catch (error) {
+      return { articleId, error: error.message, article: null };
     }
-    loadArticle();
-    return () => {
-      cancelled = true;
-    };
-  }, [articleId, articlesVersion]);
-  return error;
+  }, [articleId]);
+  useEffect(() => {
+    const current = activeArticle.get();
+    if (current && current.id !== Number(articleId)) activeArticle.set(null);
+    if (!result || result.articleId !== articleId) return;
+    const article = result.article;
+    if (!article) {
+      activeArticle.set(null);
+      return;
+    }
+    // Preserve fetched original content and AI state when only status changes.
+    const next =
+      current?.id === article.id
+        ? {
+            ...current,
+            ...article,
+            content: current.shownOriginal ? current.content : article.content,
+            originalContent: article.content,
+          }
+        : { ...article, originalContent: article.content };
+    // A database notification for one field must not erase another pending edit.
+    const pending = pendingArticleMutations.get();
+    for (const field of ["status", "starred"]) {
+      const key = `${article.id}:${field}`;
+      if (key in pending) next[field] = pending[key];
+    }
+    if (!sameRecord(current, next)) activeArticle.set(next);
+  }, [articleId, result]);
+  return getArticleQueryState(articleId, result);
 }
 export default function ArticleView() {
   const { articleId } = useParams();
-  const article = useStore(activeArticle);
-  const articles = useStore(filteredArticles);
+  const { t } = useTranslation();
+  const storedArticle = useStore(activeArticle);
+  const cachedArticles = useStore(filteredArticles);
+  const previousNavigation = useRef({
+    articleId,
+    articles: cachedArticles,
+    direction: 1,
+  });
+  const previous = previousNavigation.current;
+  const direction =
+    previous.articleId === articleId
+      ? previous.direction
+      : (getArticleTransitionDirection(
+          cachedArticles,
+          previous.articleId,
+          articleId,
+        ) ??
+        getArticleTransitionDirection(
+          previous.articles,
+          previous.articleId,
+          articleId,
+        ) ??
+        1);
+  useLayoutEffect(() => {
+    previousNavigation.current = {
+      articleId,
+      articles: cachedArticles,
+      direction,
+    };
+  }, [articleId, cachedArticles, direction]);
+  const article =
+    storedArticle?.id === Number(articleId)
+      ? storedArticle
+      : cachedArticles.find(({ id }) => id === Number(articleId));
   const {
     lineHeight,
     fontSize,
@@ -67,138 +115,121 @@ export default function ArticleView() {
   const themeMode = useStore(currentThemeMode);
   const scrollAreaRef = useRef(null);
   const { isMedium } = useIsMobile();
-  const error = useActiveArticle(articleId, articles);
+  const { error, loading } = useActiveArticle(articleId);
   const isStoneTheme = lightTheme === "stone" && themeMode === "light";
   useEffect(() => {
     const viewport = scrollAreaRef.current;
     if (!viewport) return undefined;
-    const timer = setTimeout(
-      () =>
-        viewport.scrollTo({
-          top: 0,
-          behavior: "instant",
-        }),
-      reduceMotion ? 1 : 300,
-    );
-    return () => clearTimeout(timer);
-  }, [articleId, reduceMotion]);
+    viewport.scrollTo({ top: 0, behavior: "instant" });
+  }, [articleId]);
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
-      <AnimatePresence mode={isMedium ? "wait" : "popLayout"} initial={false}>
-        <motion.div
-          key={articleId ? "content" : "empty"}
-          className={cn(
-            "motion-sensitive flex-1 p-0 h-screen fixed md:static inset-0 z-20",
-            !articleId && "hidden md:flex md:flex-1",
-            !floatingSidebar && "md:pr-2 md:py-2",
-          )}
-          initial={
-            articleId
-              ? {
-                  opacity: 1,
-                  x: "100vw",
+      <div
+        className={cn(
+          "motion-sensitive flex-1 min-w-0 w-full p-0 h-screen fixed md:static inset-0 z-20",
+          !articleId && "pointer-events-none md:pointer-events-auto",
+          !floatingSidebar && "md:pr-2 md:py-2",
+        )}
+      >
+        <div className="relative h-full w-full min-w-0">
+          <AnimatePresence mode="popLayout" initial={false}>
+            {(articleId || !isMedium) && (
+              <motion.div
+                key={articleId ? "reader" : "empty"}
+                className="h-full w-full min-w-0"
+                initial={
+                  reduceMotion
+                    ? false
+                    : articleId
+                      ? { x: "100%", opacity: 1, scale: 1 }
+                      : { x: 0, opacity: 0, scale: 0.8 }
                 }
-              : {
-                  opacity: 0,
-                  x: 0,
-                  scale: 0.8,
+                animate={{ x: 0, opacity: 1, scale: 1 }}
+                exit={
+                  reduceMotion
+                    ? { opacity: 0, transition: { duration: 0 } }
+                    : articleId
+                      ? { x: "100%", opacity: 1, scale: 1 }
+                      : { x: 0, opacity: 0, scale: 0.8 }
                 }
-          }
-          animate={{
-            opacity: 1,
-            x: 0,
-            scale: 1,
-          }}
-          exit={
-            !articleId && isMedium
-              ? false
-              : articleId
-                ? {
-                    opacity: 1,
-                    x: "100vw",
-                    scale: 1,
-                  }
-                : {
-                    opacity: 0,
-                    x: 0,
-                    scale: 0.8,
-                  }
-          }
-          transition={{
-            duration: 0.5,
-            type: "spring",
-            bounce: 0,
-            ease: "easeInOut",
-          }}
-        >
-          {!article || error ? (
-            <EmptyPlaceholder />
-          ) : (
-            <div
-              ref={scrollAreaRef}
-              className={cn(
-                "overflow-y-auto",
-                cn(
-                  "article-scroll-area h-full bg-background md:bg-transparent relative",
-                  !floatingSidebar &&
-                    "md:bg-overlay md:shadow-custom md:rounded-2xl",
-                ),
-              )}
-            >
-              <ActionButtons />
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={articleId}
-                  initial={
-                    reduceMotion
-                      ? {}
-                      : {
-                          y: 12,
-                          opacity: 0,
+                transition={{
+                  duration: reduceMotion ? 0 : 0.5,
+                  type: "spring",
+                  bounce: 0,
+                }}
+              >
+                {!articleId ? (
+                  <EmptyPlaceholder />
+                ) : (
+                  <div
+                    ref={scrollAreaRef}
+                    className={cn(
+                      "overflow-y-auto w-full min-w-0",
+                      cn(
+                        "article-scroll-area h-full bg-popover relative",
+                        !floatingSidebar &&
+                          "md:bg-popover md:shadow-custom md:rounded-2xl",
+                      ),
+                    )}
+                  >
+                    <ActionButtons />
+                    <AnimatePresence mode="wait" custom={direction}>
+                      <motion.div
+                        key={articleId}
+                        custom={direction}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={
+                          reduceMotion ? reducedArticleMotion : articleMotion
                         }
-                  }
-                  animate={{
-                    y: 0,
-                    opacity: 1,
-                  }}
-                  exit={
-                    reduceMotion
-                      ? {}
-                      : {
-                          y: -12,
-                          opacity: 0,
-                        }
-                  }
-                  transition={{
-                    duration: 0.18,
-                    ease: "easeOut",
-                  }}
-                  className="article-view-content px-5 pt-5 pb-20 w-full mx-auto"
-                  style={{
-                    maxWidth: `${maxWidth}ch`,
-                    fontFamily,
-                  }}
-                >
-                  <ArticleHeader
-                    article={article}
-                    fontSize={fontSize}
-                    titleAlignType={titleAlignType}
-                    titleFontSize={titleFontSize}
-                  />
-                  <AISummary articleId={article.id} />
-                  <ArticleContent
-                    article={article}
-                    alignJustify={alignJustify}
-                    fontSize={fontSize}
-                    isStoneTheme={isStoneTheme}
-                    lineHeight={lineHeight}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+                        className="w-full min-w-0 min-h-[calc(100dvh-4rem)]"
+                      >
+                        {error ? (
+                          <div
+                            role="alert"
+                            className="p-5 text-muted-foreground"
+                          >
+                            {error}
+                          </div>
+                        ) : article ? (
+                          <div
+                            className="article-view-content px-5 pt-5 pb-20 w-full mx-auto"
+                            style={{
+                              maxWidth: `${maxWidth}ch`,
+                              fontFamily,
+                            }}
+                          >
+                            <ArticleHeader
+                              article={article}
+                              fontSize={fontSize}
+                              titleAlignType={titleAlignType}
+                              titleFontSize={titleFontSize}
+                            />
+                            <ArticleBody
+                              article={article}
+                              alignJustify={alignJustify}
+                              fontSize={fontSize}
+                              isStoneTheme={isStoneTheme}
+                              lineHeight={lineHeight}
+                            />
+                          </div>
+                        ) : loading ? (
+                          <ArticleLoading />
+                        ) : (
+                          <div className="flex min-h-40 items-center justify-center text-sm text-muted-foreground">
+                            {t("common.noData")}
+                          </div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </MotionConfig>
   );
 }

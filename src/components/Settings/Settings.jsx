@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { CloseButton } from "@/components/ui/close-button";
 import {
   Drawer,
   DrawerContent,
@@ -82,9 +82,9 @@ function MenuList({ onSelect }) {
               onClick={() => handleSelect(item.id)}
               data-active={isActive}
               className={cn(
-                "flex items-center text-foreground gap-3 w-full px-3 py-2 rounded-xl text-sm outline-hidden ring-accent transition-[width,height,padding] cursor-pointer",
-                "hover:bg-default/60 hover:text-foreground focus-visible:ring-2",
-                "data-[active=true]:bg-default data-[active=true]:text-foreground",
+                "flex items-center text-foreground gap-3 w-full px-3 py-2 rounded-xl text-sm outline-hidden ring-primary transition-[width,height,padding] cursor-pointer",
+                "hover:bg-secondary/60 hover:text-foreground focus-visible:ring-2",
+                "data-[active=true]:bg-secondary data-[active=true]:text-foreground",
               )}
             >
               <Icon className="size-4 shrink-0 text-muted-foreground" />
@@ -98,7 +98,7 @@ function MenuList({ onSelect }) {
 }
 
 // 内容区域
-function ContentArea({ activeTab, showTitle = false }) {
+function ContentArea({ activeTab, showTitle = false, className }) {
   const { t } = useTranslation();
   const currentMenuItem = menuItems.find((item) => item.id === activeTab);
   const renderContent = () => {
@@ -124,7 +124,12 @@ function ContentArea({ activeTab, showTitle = false }) {
     }
   };
   return (
-    <div className="flex flex-col h-full bg-overlay md:shadow-custom md:rounded-2xl">
+    <div
+      className={cn(
+        "flex flex-col h-full bg-popover md:shadow-custom md:rounded-2xl",
+        className,
+      )}
+    >
       {showTitle && (
         <div className="px-4 pt-4 pb-2">
           <h3 className="text-base font-medium">
@@ -210,17 +215,8 @@ function MobileSettings() {
           </div>
         </div>
         <DrawerClose
-          render={
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="absolute top-3 right-3"
-            />
-          }
-        >
-          <X />
-          <span className="sr-only">Close</span>
-        </DrawerClose>
+          render={<CloseButton className="absolute top-3 right-3" />}
+        />
       </DrawerContent>
     </Drawer>
   );
@@ -239,7 +235,7 @@ function DesktopSettings() {
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden  bg-background/90 backdrop-blur-sm border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]">
+      <DialogContent className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden  bg-sidebar backdrop-blur-sm border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]">
         <div className="flex h-full">
           {/* 左侧导航栏 */}
           <div className="flex flex-col w-52">
@@ -265,8 +261,8 @@ function DesktopSettings() {
                     }}
                     data-active={isActive}
                     className={cn(
-                      "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm outline-hidden ring-accent transition-[width,height,padding] cursor-pointer",
-                      "data-[active=true]:bg-overlay data-[active=true]:shadow-custom data-[active=true]:text-foreground",
+                      "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm outline-hidden ring-primary transition-[width,height,padding] cursor-pointer",
+                      "data-[active=true]:bg-popover data-[active=true]:shadow-custom data-[active=true]:text-foreground",
                       "hover:cursor-pointer",
                     )}
                   >
@@ -280,7 +276,12 @@ function DesktopSettings() {
 
           {/* 右侧内容区域 */}
           <div className="flex-1 flex flex-col min-w-0 py-2 pr-2">
-            <ContentArea activeTab={activeTab} showTitle={true} />
+            {/* Match the shell radius minus the 8px inset and 1px border. */}
+            <ContentArea
+              activeTab={activeTab}
+              showTitle={true}
+              className="md:rounded-[max(0px,calc(var(--radius-2xl)-var(--spacing)*2-1px))]"
+            />
           </div>
         </div>
       </DialogContent>

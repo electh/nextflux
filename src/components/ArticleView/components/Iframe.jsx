@@ -49,7 +49,7 @@ const Iframe = ({ domNode }) => {
     <div className="relative w-full my-4">
       {/* 加载占位符 */}
       {isLoading && (
-        <div className="absolute inset-0 bg-default w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5" />
+        <div className="absolute inset-0 bg-secondary w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5" />
       )}
       {/* iframe */}
       <iframe

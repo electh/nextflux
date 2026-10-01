@@ -1,7 +1,6 @@
 import {
   getIncrementalSyncStart,
   mapRemoteFeed,
-  mergeRemoteEntries,
 } from "../domain/sync/syncData.js";
 
 export function createSyncService({
@@ -9,74 +8,140 @@ export function createSyncService({
   repository,
   mapEntry,
   now = () => new Date(),
-  batchSize = 1000,
-  historyWindowHours = 24,
+  batchSize = 200,
+  firstPageSize = 30,
+  yieldToUI = () => new Promise((resolve) => setTimeout(resolve, 0)),
 }) {
-  async function syncFeeds() {
-    const [serverFeeds, serverCategories, localFeeds] = await Promise.all([
-      api.getFeeds(),
-      api.getCategories(),
-      repository.getFeeds(),
-    ]);
+  let inFlight = null;
 
-    const serverFeedIds = new Set(serverFeeds.map((feed) => feed.id));
-    const removedFeeds = localFeeds.filter(
-      (feed) => !serverFeedIds.has(feed.id),
-    );
-    await Promise.all(
-      removedFeeds.map((feed) => repository.deleteArticlesByFeedId(feed.id)),
-    );
-    await Promise.all([
-      repository.deleteAllFeeds(),
-      repository.deleteAllCategory(),
+  async function syncFeeds({ signal } = {}) {
+    const [serverFeeds, serverCategories] = await Promise.all([
+      api.getFeeds({ signal }),
+      api.getCategories({ signal }),
     ]);
-    await Promise.all(
-      serverCategories.map((category) =>
-        repository.addCategory({ id: category.id, title: category.title }),
-      ),
+    signal?.throwIfAborted();
+    return repository.reconcileFeeds(
+      serverFeeds.map(mapRemoteFeed),
+      serverCategories.map(({ id, title, hide_globally }) => ({
+        id,
+        title,
+        hide_globally,
+      })),
     );
-    await repository.addFeeds(serverFeeds.map(mapRemoteFeed));
   }
 
-  async function syncInitialEntries() {
-    let offset = 0;
-    const { total } = await api.getUnreadEntriesByPage(0, 1);
-
-    while (offset < total) {
-      const { entries } = await api.getUnreadEntriesByPage(offset, batchSize);
-      await repository.addArticles(entries.map(mapEntry));
-      offset += batchSize;
+  // ID keyset pagination remains stable when entries change status between pages.
+  // Do not rely on limit=0: recent Miniflux releases cap oversized responses.
+  async function pullEntries(
+    params,
+    { signal, onBatch, initial = false, checkpoint, state } = {},
+  ) {
+    let beforeId = checkpoint?.beforeId;
+    if (checkpoint?.done) return;
+    let first = true;
+    while (true) {
+      signal?.throwIfAborted();
+      const { entries = [], total } = await api.getEntriesPage(
+        {
+          ...params,
+          order: "id",
+          direction: "desc",
+          limit: first && initial ? firstPageSize : batchSize,
+          ...(beforeId ? { before_entry_id: beforeId } : {}),
+        },
+        { signal },
+      );
+      signal?.throwIfAborted();
+      if (!entries.length) {
+        if (checkpoint) {
+          checkpoint.done = true;
+          repository.setSyncBootstrap(state);
+        }
+        break;
+      }
+      const nextId = Math.min(...entries.map(({ id }) => id));
+      if (beforeId !== undefined && nextId >= beforeId) {
+        throw new Error("Miniflux entry cursor did not advance");
+      }
+      const changed = await repository.mergeArticles(entries.map(mapEntry));
+      if (changed.length) await onBatch?.({ articles: changed, first });
+      beforeId = nextId;
+      const complete = Number.isInteger(total) && total === entries.length;
+      if (checkpoint) {
+        checkpoint.beforeId = beforeId;
+        checkpoint.done = complete;
+        repository.setSyncBootstrap(state);
+      }
+      if (complete) break;
+      first = false;
+      // A short response may be a server-side cap; only an empty page ends traversal.
+      await yieldToUI();
     }
-
-    const starredEntries = await api.getAllStarredEntries();
-    await repository.addArticles(starredEntries.map(mapEntry));
   }
 
-  async function syncIncrementalEntries(lastSyncTime) {
-    const since = getIncrementalSyncStart(lastSyncTime, historyWindowHours);
-    const [changedEntries, newEntries] = await Promise.all([
-      api.getChangedEntries(since),
-      api.getNewEntries(since),
-    ]);
-    const entries = mergeRemoteEntries(changedEntries, newEntries);
-    if (entries.length > 0) {
-      await repository.addArticles(entries.map(mapEntry));
-    }
-  }
-
-  async function syncEntries() {
+  async function syncEntries(options = {}) {
     const lastSyncTime = repository.getLastSyncTime();
-    return lastSyncTime
-      ? syncIncrementalEntries(lastSyncTime)
-      : syncInitialEntries();
+    if (lastSyncTime && repository.isHistorySyncComplete()) {
+      await pullEntries(
+        {
+          status: ["read", "unread"],
+          changed_after: Math.floor(
+            getIncrementalSyncStart(lastSyncTime).getTime() / 1000,
+          ),
+        },
+        options,
+      );
+    } else {
+      const saved = repository.getSyncBootstrap();
+      // Migrate the earlier unread/starred-only bootstrap by traversing all retained history.
+      const state = saved?.entries
+        ? saved
+        : {
+            startedAt: saved?.startedAt || now().toISOString(),
+            entries: {},
+          };
+      repository.setSyncBootstrap(state);
+      await pullEntries(
+        { status: ["read", "unread"] },
+        { ...options, initial: true, checkpoint: state.entries, state },
+      );
+      // Replay state changes/new entries that occurred during bootstrap or an interruption.
+      await pullEntries(
+        {
+          status: ["read", "unread"],
+          changed_after: Math.floor(
+            getIncrementalSyncStart(state.startedAt).getTime() / 1000,
+          ),
+        },
+        options,
+      );
+    }
   }
 
-  async function synchronize() {
-    await syncFeeds();
-    await syncEntries();
-    const completedAt = now();
-    repository.setLastSyncTime(completedAt);
-    return completedAt;
+  function synchronize(options = {}) {
+    if (inFlight) return inFlight;
+    inFlight = (async () => {
+      // Save the START of the successful run so changes during traversal are replayed.
+      // The small overlap covers the API's strict, second-resolution time boundary.
+      const startedAt = now();
+      const results = await Promise.allSettled([
+        syncFeeds(options).then(async (feedsChanged) => {
+          if (feedsChanged)
+            await options.onBatch?.({ feedsChanged: true, articles: [] });
+        }),
+        syncEntries(options),
+      ]);
+      const failed = results.find((result) => result.status === "rejected");
+      if (failed) throw failed.reason;
+      options.signal?.throwIfAborted();
+      repository.setLastSyncTime(startedAt);
+      repository.setHistorySyncComplete();
+      repository.setSyncBootstrap(null);
+      return startedAt;
+    })().finally(() => {
+      inFlight = null;
+    });
+    return inFlight;
   }
 
   return { synchronize, syncEntries, syncFeeds };

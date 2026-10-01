@@ -10,7 +10,7 @@ export default function EmptyPlaceholder() {
     <div
       className={cn(
         "h-full w-full",
-        floatingSidebar ? "" : "shadow-custom rounded-2xl bg-overlay",
+        floatingSidebar ? "" : "shadow-custom rounded-2xl bg-sidebar",
       )}
     >
       <div className="flex flex-col items-center gap-2 w-full justify-center h-full text-muted-foreground opacity-60">

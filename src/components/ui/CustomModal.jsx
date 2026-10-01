@@ -1,7 +1,6 @@
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { CloseButton } from "@/components/ui/close-button";
 import {
   Dialog,
   DialogContent,
@@ -39,21 +38,12 @@ export default function CustomModal({
           <DrawerHeader className="px-4 pb-4 text-left">
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerClose
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  className="absolute top-3 right-3"
-                />
-              }
-            >
-              <X />
-              <span className="sr-only">Close</span>
-            </DrawerClose>
+              render={<CloseButton className="absolute top-3 right-3" />}
+            />
           </DrawerHeader>
           <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
           {footer && (
-            <DrawerFooter className="grid grid-flow-col auto-cols-fr border-t p-4 pb-safe-or-4">
+            <DrawerFooter className="grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal border-t p-4 pb-safe-or-4">
               {footer}
             </DrawerFooter>
           )}
@@ -74,7 +64,7 @@ export default function CustomModal({
         </DialogHeader>
         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
         {footer && (
-          <DialogFooter className="m-0 grid grid-flow-col auto-cols-fr rounded-none border-t p-4">
+          <DialogFooter className="m-0 grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal rounded-none border-t p-4">
             {footer}
           </DialogFooter>
         )}

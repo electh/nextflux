@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar.jsx";
 import FeedListSidebar from "@/components/FeedList/FeedListSidebar.jsx";
 import { authState } from "@/stores/authStore.js";
-import { startAutoSync } from "@/stores/syncStore.js";
+import { startAutoSync, stopAutoSync } from "@/stores/syncStore.js";
 import { settingsState } from "@/stores/settingsStore.js";
 import { useStore } from "@nanostores/react";
 import SettingsModal from "@/components/Settings/Settings.jsx";
@@ -31,6 +31,7 @@ function App() {
     if (auth.username) {
       startAutoSync();
     }
+    return stopAutoSync;
   }, [syncInterval]);
   // 检查第三方集成状态
   useEffect(() => {
@@ -43,9 +44,9 @@ function App() {
   useFontLoader(); // 按需加载字体
   useApplyReducedMotionPreference();
   return (
-    <SidebarProvider>
+    <SidebarProvider className="bg-sidebar">
       <FeedListSidebar />
-      <SidebarInset>
+      <SidebarInset className="min-w-0 bg-sidebar">
         <Outlet />
       </SidebarInset>
       <SettingsModal />

@@ -93,7 +93,7 @@ function FontSelector({ label, icon, settingName, settingValue }) {
     }
   };
   return (
-    <div className="flex justify-between items-center gap-2 bg-default/60 dark:bg-default/30 px-2.5 py-2">
+    <div className="flex justify-between items-center gap-2 bg-secondary/60 dark:bg-secondary/30 px-2.5 py-2">
       <div className="flex items-center gap-2">
         {icon}
         <div className="text-sm text-foreground">{label}</div>

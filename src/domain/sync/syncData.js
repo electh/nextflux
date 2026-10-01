@@ -5,8 +5,8 @@ export function mapRemoteFeed(feed) {
     url: feed.feed_url,
     site_url: feed.site_url,
     crawler: feed.crawler,
-    hide_globally: feed.hide_globally,
-    categoryId: feed.category.id,
+    hide_globally: Boolean(feed.hide_globally || feed.category?.hide_globally),
+    categoryId: feed.category?.id,
     parsing_error_count: feed.parsing_error_count,
     scraper_rules: feed.scraper_rules,
     keeplist_rules: feed.keeplist_rules,
@@ -15,15 +15,6 @@ export function mapRemoteFeed(feed) {
   };
 }
 
-export function mergeRemoteEntries(changedEntries, newEntries) {
-  const entriesById = new Map();
-  changedEntries.forEach((entry) => entriesById.set(entry.id, entry));
-  newEntries.forEach((entry) => entriesById.set(entry.id, entry));
-  return [...entriesById.values()];
-}
-
-export function getIncrementalSyncStart(lastSyncTime, historyWindowHours) {
-  const since = new Date(lastSyncTime);
-  since.setHours(since.getHours() - historyWindowHours);
-  return since;
+export function getIncrementalSyncStart(lastSyncTime, overlapSeconds = 2) {
+  return new Date(new Date(lastSyncTime).getTime() - overlapSeconds * 1000);
 }

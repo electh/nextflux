@@ -234,7 +234,7 @@ export default function AddFeedModal() {
             {t("common.search")}
           </Button>
         ) : (
-          <div className="flex gap-2 w-full">
+          <>
             <Button
               variant="secondary"
               onClick={() => {
@@ -262,7 +262,7 @@ export default function AddFeedModal() {
               {loading && <Spinner />}
               {t("common.save")}
             </Button>
-          </div>
+          </>
         )
       }
     >

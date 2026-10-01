@@ -12,7 +12,7 @@ export default function About() {
       {/* Made with love section */}
       <div className="text-center text-muted-foreground px-3">
         Made with{" "}
-        <span className="text-danger">
+        <span className="text-destructive">
           <Heart className="size-3 fill-current inline-block" />
         </span>{" "}
         by{" "}

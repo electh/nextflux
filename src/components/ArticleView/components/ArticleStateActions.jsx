@@ -16,13 +16,19 @@ import {
   handleToggleContent,
   handleToggleStar,
 } from "@/handlers/articleHandlers.js";
-import { loadingOriginContent } from "@/stores/articlesStore.js";
+import {
+  loadingOriginContent,
+  pendingArticleMutations,
+} from "@/stores/articlesStore.js";
 import ArticleAiAction from "./ArticleAiAction.jsx";
 import ArticleExternalActions from "./ArticleExternalActions.jsx";
 export default function ArticleStateActions({ article }) {
   const { t } = useTranslation();
   const starButtonRef = useRef(null);
   const fetchLoading = useStore(loadingOriginContent);
+  const pending = useStore(pendingArticleMutations);
+  const statusPending = article ? `${article.id}:status` in pending : false;
+  const starPending = article ? `${article.id}:starred` in pending : false;
   return (
     <div className="flex gap-1 ml-auto">
       <Tooltip>
@@ -36,6 +42,8 @@ export default function ArticleStateActions({ article }) {
                   : t("common.read")
               }
               onClick={() => handleMarkStatus(article)}
+              disabled={!article || statusPending}
+              aria-busy={statusPending}
               size="icon-sm"
             >
               {article?.status === "unread" ? (
@@ -56,11 +64,14 @@ export default function ArticleStateActions({ article }) {
           render={
             <Button
               ref={starButtonRef}
+              disabled={!article || starPending}
+              aria-busy={starPending}
               variant="ghost"
               aria-label={
                 article?.starred === 1 ? t("common.unstar") : t("common.star")
               }
               onClick={() => {
+                if (starPending) return;
                 if (article?.starred === 0) Confetti(starButtonRef);
                 handleToggleStar(article);
               }}
@@ -90,7 +101,7 @@ export default function ArticleStateActions({ article }) {
                   : t("articleView.getFullText")
               }
               onClick={() => handleToggleContent(article)}
-              disabled={fetchLoading}
+              disabled={!article || fetchLoading}
               aria-busy={fetchLoading}
               size="icon-sm"
             >
@@ -101,7 +112,7 @@ export default function ArticleStateActions({ article }) {
                   className={cn(
                     "size-4",
                     article?.shownOriginal
-                      ? "text-accent"
+                      ? "text-primary"
                       : "text-muted-foreground",
                   )}
                 />

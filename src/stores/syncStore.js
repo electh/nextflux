@@ -1,73 +1,124 @@
 import { atom } from "nanostores";
-import { getLastSyncTime } from "@/db/storage.js";
+import { getLastSyncTime, isHistorySyncComplete } from "@/db/storage.js";
 import { reportError } from "@/lib/errors.js";
 import { syncService } from "@/services/syncService.js";
 import { settingsState } from "@/stores/settingsStore.js";
 
 export const isOnline = atom(navigator.onLine);
 export const isSyncing = atom(false);
-export const lastSync = atom(null);
+export const lastSync = atom(getLastSyncTime());
 export const error = atom(null);
+export const syncProgress = atom({ phase: "idle", received: 0 });
 
 let syncInterval = null;
+let controller = null;
+let inFlight = null;
+let running = false;
+let failures = 0;
+let retryAfter = 0;
 
-if (typeof window !== "undefined") {
-  window.addEventListener("online", () => isOnline.set(true));
-  window.addEventListener("offline", () => isOnline.set(false));
-  window.addEventListener("nextflux:logout", stopAutoSync);
-}
-
-export async function sync() {
-  if (!isOnline.get() || isSyncing.get()) return;
-
+export function sync() {
+  if (inFlight) return inFlight;
+  if (!isOnline.get()) return Promise.resolve();
+  controller = new AbortController();
+  const signal = controller.signal;
   isSyncing.set(true);
   error.set(null);
-  try {
-    lastSync.set(await syncService.synchronize());
-  } catch (syncError) {
-    error.set(reportError(syncError, "sync.run"));
-  } finally {
-    isSyncing.set(false);
-  }
+  syncProgress.set({ phase: "loading", received: 0 });
+  const synchronize = async () => {
+    signal.throwIfAborted();
+    const result = await syncService.synchronize({
+      signal,
+      onBatch: ({ articles }) => {
+        const progress = syncProgress.get();
+        syncProgress.set({
+          phase: "background",
+          received: progress.received + articles.length,
+        });
+      },
+    });
+    lastSync.set(result);
+    failures = 0;
+    retryAfter = 0;
+    return result;
+  };
+  // Serialize browser tabs sharing the same IndexedDB and synchronization watermark.
+  inFlight = (
+    navigator.locks
+      ? navigator.locks.request("nextflux:sync", { signal }, synchronize)
+      : synchronize()
+  )
+    .catch((syncError) => {
+      if (signal.aborted) return;
+      failures += 1;
+      retryAfter =
+        Date.now() + Math.min(30 * 60_000, 30_000 * 2 ** (failures - 1));
+      error.set(reportError(syncError, "sync.run"));
+    })
+    .finally(() => {
+      isSyncing.set(false);
+      syncProgress.set({ ...syncProgress.get(), phase: "idle" });
+      inFlight = null;
+      controller = null;
+    });
+  return inFlight;
 }
 
 async function performSync() {
-  if (!isOnline.get() || isSyncing.get()) return;
-
-  try {
-    const lastSyncTime = getLastSyncTime();
-    const interval = Number.parseInt(settingsState.get().syncInterval, 10);
-    if (!interval) return;
-
-    if (!lastSyncTime || Date.now() - lastSyncTime > interval * 60 * 1000) {
-      await sync();
-    }
-  } catch (syncError) {
-    error.set(reportError(syncError, "sync.auto"));
+  if (
+    !running ||
+    document.visibilityState === "hidden" ||
+    !isOnline.get() ||
+    inFlight ||
+    Date.now() < retryAfter
+  )
+    return;
+  const lastSyncTime = getLastSyncTime();
+  const interval = Number.parseInt(settingsState.get().syncInterval, 10);
+  // Disabling periodic sync must not prevent a new account from loading its first page.
+  if (
+    !lastSyncTime ||
+    !isHistorySyncComplete() ||
+    (interval > 0 && Date.now() - lastSyncTime >= interval * 60_000)
+  ) {
+    await sync();
   }
 }
 
-function resetSyncInterval() {
-  if (syncInterval) clearInterval(syncInterval);
-  syncInterval = null;
-
-  const interval = Number.parseInt(settingsState.get().syncInterval, 10);
-  if (interval) {
-    syncInterval = setInterval(performSync, interval * 60 * 1000);
-  }
+function onOnline() {
+  isOnline.set(true);
+  performSync();
+}
+function onOffline() {
+  isOnline.set(false);
 }
 
 export function startAutoSync() {
-  if (typeof window === "undefined") return;
+  stopAutoSync();
+  running = true;
+  isOnline.set(navigator.onLine);
+  window.addEventListener("online", onOnline);
+  window.addEventListener("offline", onOffline);
+  document.addEventListener("visibilitychange", performSync);
+  window.addEventListener("nextflux:logout", cancelSync);
+  syncInterval = setInterval(performSync, 30_000);
   performSync();
-  resetSyncInterval();
-  window.addEventListener("beforeunload", stopAutoSync);
 }
 
 export function stopAutoSync() {
+  running = false;
   if (syncInterval) clearInterval(syncInterval);
   syncInterval = null;
-  window.removeEventListener("beforeunload", stopAutoSync);
+  window.removeEventListener("online", onOnline);
+  window.removeEventListener("offline", onOffline);
+  document.removeEventListener("visibilitychange", performSync);
+  // Keep logout cancellation registered even if App unmounts during a request.
+}
+
+function cancelSync() {
+  stopAutoSync();
+  controller?.abort();
+  window.removeEventListener("nextflux:logout", cancelSync);
 }
 
 export function forceSync() {

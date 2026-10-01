@@ -42,7 +42,7 @@ export const Image = ({
     return (
       <div className="relative">
         {isLoading && (
-          <div className={cn("absolute inset-0 bg-default", className)} />
+          <div className={cn("absolute inset-0 bg-secondary", className)} />
         )}
         {imageElement}
       </div>

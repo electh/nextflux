@@ -7,11 +7,10 @@ import {
 } from "@/components/ui/context-menu";
 import { useStore } from "@nanostores/react";
 import {
-  getCategoryCount,
+  createCategoryCountStore,
   categoryExpandedState,
   updateCategoryExpandState,
 } from "@/stores/feedsStore.js";
-import { cn } from "@/lib/utils";
 import { ChevronRight, FolderPen } from "lucide-react";
 import {
   Collapsible,
@@ -28,13 +27,17 @@ import {
 } from "@/components/ui/sidebar";
 import { useSidebar } from "@/components/ui/sidebar.jsx";
 import { settingsState } from "@/stores/settingsStore";
-import { useEffect } from "react";
+import { memo, useEffect, useMemo } from "react";
 import FeedItem from "./FeedItem";
 import { renameModalOpen, currentCategoryId } from "@/stores/modalStore.js";
 import { useTranslation } from "react-i18next";
 const FeedsGroupContent = ({ category }) => {
   const { t } = useTranslation();
-  const $getCategoryCount = useStore(getCategoryCount);
+  const countStore = useMemo(
+    () => createCategoryCountStore(category.id),
+    [category.id],
+  );
+  const count = useStore(countStore);
   const { isMobile, setOpenMobile } = useSidebar();
   const { categoryId, feedId } = useParams();
   const { defaultExpandCategory } = useStore(settingsState);
@@ -69,9 +72,7 @@ const FeedsGroupContent = ({ category }) => {
           <ContextMenuTrigger
             render={
               <SidebarMenuButton
-                className={cn(
-                  categoryId === category.id && "bg-default/60 rounded-xl",
-                )}
+                isActive={Number(categoryId) === Number(category.id)}
                 render={
                   <Link
                     to={`/category/${category.id}`}
@@ -87,14 +88,13 @@ const FeedsGroupContent = ({ category }) => {
 
           <CollapsibleTrigger
             render={
-              <SidebarMenuAction className="left-2 hover:bg-default/60 text-muted-foreground data-panel-open:rotate-90">
+              <SidebarMenuAction className="left-2 hover:bg-secondary/60 text-muted-foreground data-panel-open:rotate-90">
                 <ChevronRight />
               </SidebarMenuAction>
             }
           />
           <SidebarMenuBadge className="justify-end">
-            {$getCategoryCount(category.id) !== 0 &&
-              $getCategoryCount(category.id)}
+            {count !== 0 && count}
           </SidebarMenuBadge>
           <CollapsibleContent>
             <SidebarMenuSub className="m-0 px-0 border-none">
@@ -125,4 +125,4 @@ const FeedsGroupContent = ({ category }) => {
     </Collapsible>
   );
 };
-export default FeedsGroupContent;
+export default memo(FeedsGroupContent);

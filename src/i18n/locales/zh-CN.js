@@ -1,5 +1,7 @@
 export default {
   common: {
+    newArticles: "{{count}} 篇新文章",
+    backgroundSync: "后台同步 · 已缓存 {{count}} 篇",
     cancel: "取消",
     confirm: "确定",
     save: "保存",

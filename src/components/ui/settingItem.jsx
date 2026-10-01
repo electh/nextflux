@@ -20,7 +20,7 @@ import {
 import { Field, FieldLabel, FieldTitle } from "@/components/ui/field";
 import { ChevronsUpDown, Info } from "lucide-react";
 
-const rowClass = "bg-default/60 px-2.5 py-3";
+const rowClass = "bg-secondary/60 min-h-12 px-2.5 py-2";
 const keySymbols = {
   command: "⌘",
   cmd: "⌘",
@@ -136,19 +136,22 @@ export function SelItem({
   settingValue,
   options,
   description,
+  onValueChange = (value) => updateSettings({ [settingName]: value }),
 }) {
   return (
     <Field orientation="horizontal" className={rowClass}>
       <div className="flex flex-1 items-center gap-2">
         {icon}
-        <FieldTitle id={settingName + "-label"}>{label}</FieldTitle>
+        <FieldTitle variant="setting" id={settingName + "-label"}>
+          {label}
+        </FieldTitle>
         <DescriptionTip description={description} />
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
             <Button
-              variant="secondary"
+              variant="setting"
               size="sm"
               aria-labelledby={settingName + "-label"}
             />
@@ -161,7 +164,7 @@ export function SelItem({
         <DropdownMenuContent>
           <DropdownMenuRadioGroup
             value={String(settingValue)}
-            onValueChange={(value) => updateSettings({ [settingName]: value })}
+            onValueChange={onValueChange}
           >
             {options.map((option) => (
               <DropdownMenuRadioItem
@@ -190,7 +193,9 @@ export function GroupItem({
     <Field orientation="horizontal" className={rowClass}>
       <div className="flex flex-1 items-center gap-2">
         {icon}
-        <FieldTitle id={settingName + "-label"}>{label}</FieldTitle>
+        <FieldTitle variant="setting" id={settingName + "-label"}>
+          {label}
+        </FieldTitle>
         <DescriptionTip description={description} />
       </div>
       <ToggleGroup

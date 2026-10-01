@@ -54,7 +54,7 @@ export default function ArticleExternalActions({ article }) {
                 variant="ghost"
                 aria-label={t("articleView.saveToThirdParty")}
                 onClick={save}
-                disabled={saving}
+                disabled={!article || saving}
                 aria-busy={saving}
                 size="icon-sm"
               >
@@ -77,6 +77,7 @@ export default function ArticleExternalActions({ article }) {
               variant="ghost"
               aria-label={t("common.share")}
               onClick={share}
+              disabled={!article}
               size="icon-sm"
             >
               <Share className="size-4 text-muted-foreground" />

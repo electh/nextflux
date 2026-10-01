@@ -3,7 +3,7 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
+import { CloseButton } from "@/components/ui/close-button";
 
 function Dialog({ ...props }) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -55,17 +55,8 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            render={
-              <Button
-                variant="ghost"
-                className="absolute top-4 right-4 bg-secondary"
-                size="icon-sm"
-              />
-            }
-          >
-            <XIcon />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
+            render={<CloseButton className="absolute top-4 right-4" />}
+          />
         )}
       </DialogPrimitive.Popup>
     </DialogPortal>
@@ -76,7 +67,7 @@ function DialogHeader({ className, ...props }) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-1.5", className)}
+      className={cn("flex shrink-0 flex-col gap-1.5", className)}
       {...props}
     />
   );
@@ -92,7 +83,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+        "flex shrink-0 flex-col-reverse gap-2 sm:flex-row sm:flex-wrap sm:justify-end",
         className,
       )}
       {...props}

@@ -16,7 +16,7 @@ export async function updateCategory(categoryId, title) {
   return response.data;
 }
 
-export async function getCategories() {
-  const response = await apiClient.get("/v1/categories");
+export async function getCategories({ signal } = {}) {
+  const response = await apiClient.get("/v1/categories", { signal });
   return response.data;
 }

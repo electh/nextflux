@@ -59,7 +59,7 @@ export default function AI() {
   return (
     <div className="flex flex-col gap-4">
       <ItemWrapper title="OpenAI">
-        <div className="bg-default/60 dark:bg-default/30 p-2.5">
+        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
           <Field>
             <FieldLabel htmlFor="field-1961">
               {t("settings.ai.apiKey")}
@@ -74,7 +74,7 @@ export default function AI() {
           </Field>
         </div>
         <Separator />
-        <div className="bg-default/60 dark:bg-default/30 p-2.5">
+        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
           <Field>
             <FieldLabel htmlFor="field-2405">
               {t("settings.ai.baseUrl")}
@@ -90,7 +90,7 @@ export default function AI() {
           </Field>
         </div>
         <Separator />
-        <div className="bg-default/60 dark:bg-default/30 p-2.5">
+        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
           <Field>
             <FieldLabel htmlFor="field-2909">
               {t("settings.ai.model")}
@@ -105,7 +105,7 @@ export default function AI() {
           </Field>
         </div>
         <Separator />
-        <div className="bg-default/60 dark:bg-default/30 p-2.5">
+        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
           <Field>
             <FieldLabel htmlFor="field-3323">
               {t("settings.ai.prompt")}

@@ -57,8 +57,8 @@ export default function MarkAllReadButton() {
               })("markAsRead")
             }
           >
-            <CircleCheck className="size-4 text-danger" />
-            <span className="text-danger">{t("articleList.markAllRead")}</span>
+            <CircleCheck className="size-4 text-destructive" />
+            <span className="text-destructive">{t("articleList.markAllRead")}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

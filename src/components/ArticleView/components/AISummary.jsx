@@ -1,6 +1,5 @@
-import { X } from "lucide-react";
+import { CloseButton } from "@/components/ui/close-button";
 import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { aiSummaries, clearSummary } from "@/stores/aiStore.js";
@@ -62,21 +61,17 @@ export default function AISummary({ articleId }) {
       <div className="ai-summary p-4 bg-background rounded-2xl">
         <div className="flex gap-2 h-10">
           <div className="flex items-center gap-1 h-auto">
-            <Sparkles className="size-4 text-accent shrink-0" />
-            <span className="text-sm font-medium text-accent">
+            <Sparkles className="size-4 text-primary shrink-0" />
+            <span className="text-sm font-medium text-primary">
               {t("articleView.aiSummary")}
             </span>
           </div>
           {!isTyping && (
-            <Button
+            <CloseButton
               className="ml-auto"
               variant="ghost"
-              size="icon-sm"
-              aria-label="Close"
               onClick={() => clearSummary(articleId)}
-            >
-              <X />
-            </Button>
+            />
           )}
         </div>
 
@@ -87,13 +82,13 @@ export default function AISummary({ articleId }) {
           </div>
         )}
 
-        {state.error && <p className="text-sm text-danger">{state.error}</p>}
+        {state.error && <p className="text-sm text-destructive">{state.error}</p>}
 
         {displayedText && (
           <div className="text-sm text-muted-foreground leading-relaxed">
             {displayedText}
             {isTyping && (
-              <span className="inline-block w-0.5 h-4 bg-accent ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-pulse align-middle" />
             )}
           </div>
         )}

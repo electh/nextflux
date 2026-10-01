@@ -1,15 +1,12 @@
 import {
-  addArticles,
+  updateArticleFields,
+  updateArticleStatuses,
   getArticlesByPage,
-  getArticlesCount,
   getFeeds,
   getStarredCount,
   getUnreadCount,
 } from "@/db/storage.js";
-import {
-  updateEntryStarred,
-  updateEntryStatus,
-} from "@/api/resources/entries.js";
+import { updateEntries } from "@/api/resources/entries.js";
 import { getArticleFeedIds } from "@/domain/articles/articleScope.js";
 
 const remoteUpdate = (operation) =>
@@ -30,42 +27,38 @@ export async function loadArticlePage({
     showHiddenFeeds: settings.showHiddenFeeds,
   });
 
-  const [total, articles] = await Promise.all([
-    getArticlesCount(feedIds, filter),
-    getArticlesByPage(
-      feedIds,
-      filter,
-      page,
-      pageSize,
-      settings.sortDirection,
-      settings.sortField,
-    ),
-  ]);
-
-  return { articles, total, isMore: articles.length === pageSize };
+  // Read the loaded prefix plus one sentinel; no full collection sort or count.
+  const articles = await getArticlesByPage(
+    feedIds,
+    filter,
+    1,
+    page * pageSize + 1,
+    settings.sortDirection,
+    settings.sortField,
+  );
+  const isMore = articles.length > page * pageSize;
+  return {
+    articles: articles.slice((page - 1) * pageSize, page * pageSize),
+    isMore,
+  };
 }
 
 export async function persistArticleStatus(article, status) {
-  await Promise.all([
-    remoteUpdate(() => updateEntryStatus(article)),
-    addArticles([{ ...article, status }]),
-  ]);
+  await remoteUpdate(() => updateEntries([article.id], { status }));
+  await updateArticleFields(article.id, { status });
   return getUnreadCount(article.feedId);
 }
 
 export async function persistArticleStarred(article, starred) {
-  await Promise.all([
-    remoteUpdate(() => updateEntryStarred(article)),
-    addArticles([{ ...article, starred }]),
-  ]);
+  await remoteUpdate(() =>
+    updateEntries([article.id], { starred: starred === 1 }),
+  );
+  await updateArticleFields(article.id, { starred });
   return getStarredCount(article.feedId);
 }
 
 export async function persistArticlesAsRead(articles) {
-  await Promise.all([
-    remoteUpdate(() =>
-      Promise.all(articles.map((article) => updateEntryStatus(article))),
-    ),
-    addArticles(articles.map((article) => ({ ...article, status: "read" }))),
-  ]);
+  const ids = articles.map(({ id }) => id);
+  await remoteUpdate(() => updateEntries(ids, { status: "read" }));
+  await updateArticleStatuses(ids, "read");
 }

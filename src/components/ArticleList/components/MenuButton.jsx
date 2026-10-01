@@ -113,8 +113,8 @@ export default function MenuButton() {
                     })("unsubscribe")
                   }
                 >
-                  <Trash2 className="size-4 text-danger" />
-                  <span className="text-danger">
+                  <Trash2 className="size-4 text-destructive" />
+                  <span className="text-destructive">
                     {t("articleList.unsubscribe")}
                   </span>
                 </DropdownMenuItem>

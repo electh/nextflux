@@ -1,8 +1,8 @@
 import { apiClient } from "@/api/client.js";
 import { reportError } from "@/lib/errors.js";
 
-export async function getFeeds() {
-  const response = await apiClient.get("/v1/feeds");
+export async function getFeeds({ signal } = {}) {
+  const response = await apiClient.get("/v1/feeds", { signal });
   return response.data;
 }
 

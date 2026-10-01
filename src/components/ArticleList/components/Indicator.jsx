@@ -23,7 +23,7 @@ export default function Indicator({ virtuosoRef }) {
           exit={{ opacity: 0, scale: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleClick}
-          className="indicator absolute cursor-pointer select-none right-2 mt-14 standalone:mt-safe-offset-14 rounded-full bg-overlay/70 backdrop-blur-2xl z-10 shadow-custom py-1 px-2 flex gap-0.5 items-center font-mono text-xs font-medium text-muted-foreground"
+          className="indicator absolute cursor-pointer select-none right-2 mt-14 standalone:mt-safe-offset-14 rounded-full bg-popover/70 backdrop-blur-2xl z-10 shadow-custom py-1 px-2 flex gap-0.5 items-center font-mono text-xs font-medium text-muted-foreground"
         >
           {$visibleRange.startIndex}
           <ArrowUp

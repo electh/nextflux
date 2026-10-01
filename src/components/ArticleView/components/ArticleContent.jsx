@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import parse from "html-react-parser";
 import { PhotoProvider } from "react-photo-view";
 import { useTranslation } from "react-i18next";
@@ -81,6 +81,13 @@ export default function ArticleContent({
   lineHeight,
 }) {
   const { t } = useTranslation();
+  const content = useMemo(
+    () =>
+      parse(article.content, {
+        replace: replaceArticleNode,
+      }),
+    [article.content],
+  );
   const audioEnclosure = article.enclosures?.find((enclosure) =>
     enclosure.mime_type?.startsWith("audio/"),
   );
@@ -111,9 +118,7 @@ export default function ArticleContent({
             textAlign: alignJustify ? "justify" : "left",
           }}
         >
-          {parse(article.content, {
-            replace: replaceArticleNode,
-          })}
+          {content}
           <Attachments article={article} />
         </div>
       </PhotoProvider>

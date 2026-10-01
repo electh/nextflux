@@ -1,5 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
+import { codexThemes } from "@/themes/codexThemes";
 
 const defaultValue = {
   themeMode: "system",
@@ -10,13 +11,59 @@ const defaultValue = {
 // 主题配置
 export const themes = {
   light: [
-    { id: "light", name: "白色", color: "#ffffff" },
-    { id: "stone", name: "石灰", color: "#F3F1ED" },
-    { id: "leaf", name: "leaf", color: "#c8e6c9" },
+    {
+      id: "light",
+      name: "白色",
+      color: "#ffffff",
+      accent: "oklch(0.488 0.243 264.376)",
+    },
+    {
+      id: "stone",
+      name: "石灰",
+      color: "#F3F1ED",
+      accent: "rgb(216, 94.007, 74.996)",
+    },
+    { id: "leaf", name: "leaf", color: "#c8e6c9", accent: "rgb(53, 117, 74)" },
+    ...codexThemes.flatMap((theme) => {
+      const variant = theme.variants.light;
+      return variant
+        ? [
+            {
+              id: variant.id,
+              name: theme.name,
+              color: variant.sidebar,
+              accent: variant.accent,
+            },
+          ]
+        : [];
+    }),
   ],
   dark: [
-    { id: "dark", name: "黑色", color: "#1E1E1E" },
-    { id: "nord-dark", name: "深蓝", color: "#4c566a" },
+    {
+      id: "dark",
+      name: "黑色",
+      color: "#1E1E1E",
+      accent: "oklch(0.424 0.199 265.638)",
+    },
+    {
+      id: "nord-dark",
+      name: "深蓝",
+      color: "#4c566a",
+      accent: "rgb(135, 192, 208)",
+    },
+    ...codexThemes.flatMap((theme) => {
+      const variant = theme.variants.dark;
+      return variant
+        ? [
+            {
+              id: variant.id,
+              name: theme.name,
+              color: variant.sidebar,
+              accent: variant.accent,
+            },
+          ]
+        : [];
+    }),
   ],
 };
 

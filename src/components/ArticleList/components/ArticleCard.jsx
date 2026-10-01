@@ -113,9 +113,9 @@ export default function ArticleCard({ article }) {
                 "cursor-pointer select-none overflow-hidden p-2 rounded-xl",
                 "relative transform-gpu transition-background duration-200",
                 "bg-transparent contain-content",
-                "hover:bg-overlay/70",
+                "hover:bg-popover/70",
                 parseInt(articleId) === article.id &&
-                  "bg-overlay/70 shadow-custom",
+                  "bg-popover/70 shadow-custom",
               )}
               data-article-id={article.id}
               onClick={handleClick}

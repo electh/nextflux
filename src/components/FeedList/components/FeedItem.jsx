@@ -24,27 +24,30 @@ import { useTranslation } from "react-i18next";
 import { handleRefresh } from "@/handlers/feedHandlers";
 import { handleMarkAllRead } from "@/handlers/articleHandlers";
 import { useStore } from "@nanostores/react";
-import { getFeedCount } from "@/stores/feedsStore.js";
+import { createFeedCountStore } from "@/stores/feedsStore.js";
 import {
   editFeedModalOpen,
   unsubscribeModalOpen,
   currentFeedId,
 } from "@/stores/modalStore.js";
+import { memo, useMemo } from "react";
 const FeedItem = ({ feed }) => {
   const { t } = useTranslation();
   const { isMobile, setOpenMobile } = useSidebar();
   const { feedId } = useParams();
-  const $getFeedCount = useStore(getFeedCount);
+  const countStore = useMemo(() => createFeedCountStore(feed.id), [feed.id]);
+  const count = useStore(countStore);
   return (
     <ContextMenu>
       <SidebarMenuSubItem>
         <ContextMenuTrigger
           render={
             <SidebarMenuSubButton
+              isActive={Number(feedId) === feed.id}
               className={cn(
                 "pl-8 pr-2 h-8",
                 parseInt(feedId) === feed.id &&
-                  "active-feed bg-default/60 rounded-xl",
+                  "active-feed",
               )}
               render={
                 <Link
@@ -61,7 +64,7 @@ const FeedItem = ({ feed }) => {
                     <span className="line-clamp-1">{feed.title}</span>
                   </span>
                   <span className="text-muted-foreground opacity-60 text-xs">
-                    {$getFeedCount(feed.id) !== 0 && $getFeedCount(feed.id)}
+                    {count !== 0 && count}
                   </span>
                 </Link>
               }
@@ -106,7 +109,7 @@ const FeedItem = ({ feed }) => {
                 currentFeedId.set(feed.id.toString());
                 unsubscribeModalOpen.set(true);
               }}
-              className="text-danger! hover:bg-danger/20!"
+              className="text-destructive! hover:bg-destructive/20!"
             >
               {<Trash2 className="size-4" />}
               {t("articleList.unsubscribe")}
@@ -117,4 +120,4 @@ const FeedItem = ({ feed }) => {
     </ContextMenu>
   );
 };
-export default FeedItem;
+export default memo(FeedItem);

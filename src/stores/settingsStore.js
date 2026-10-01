@@ -26,7 +26,7 @@ const defaultValue = {
   defaultExpandCategory: false, // 默认展开分类
   showUnreadByDefault: false,
   reduceMotion: false,
-  borderRadius: 0.4, // 0-0.5rem
+  borderRadius: 0.45, // 0-0.5rem
   interfaceFontSize: "16",
   showIndicator: true,
   floatingSidebar: false,

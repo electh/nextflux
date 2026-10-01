@@ -59,7 +59,7 @@ export default function ArticleAiAction({ article }) {
             variant="ghost"
             aria-label={t("articleView.aiSummarize")}
             onClick={summarize}
-            disabled={state?.loading}
+            disabled={!article || state?.loading}
             aria-busy={state?.loading}
             size="icon-sm"
           >
@@ -67,7 +67,7 @@ export default function ArticleAiAction({ article }) {
               <Spinner />
             ) : (
               <Sparkles
-                className={`size-4 ${state?.summary ? "text-accent" : "text-muted-foreground"}`}
+                className={`size-4 ${state?.summary ? "text-primary" : "text-muted-foreground"}`}
               />
             )}
           </Button>

@@ -115,7 +115,7 @@ export default function SearchModal() {
     <Dialog open={isOpen} onOpenChange={(open) => searchDialogOpen.set(open)}>
       <DialogContent
         showCloseButton={false}
-        className="w-[700px] max-w-[90vw] h-[500px] max-h-[85vh] bg-overlay/90 backdrop-blur-lg border shadow-2xl p-0 flex flex-col gap-0 overflow-hidden sm:max-w-[700px]"
+        className="w-[700px] max-w-[90vw] h-[500px] max-h-[85vh] bg-popover/90 backdrop-blur-lg border shadow-2xl p-0 flex flex-col gap-0 overflow-hidden sm:max-w-[700px]"
       >
         <DialogTitle className="sr-only">{t("common.search")}</DialogTitle>
         <DialogHeader className="p-2 border-b">
@@ -153,7 +153,7 @@ export default function SearchModal() {
           />
         </div>
         <DialogFooter className="p-0 m-0">
-          <div className="w-full p-2 border-t bg-background flex items-center justify-between">
+          <div className="w-full p-2 border-t bg-background flex flex-wrap items-center justify-between gap-2">
             <Tabs
               value={searchType}
               onValueChange={(key) => {
@@ -170,7 +170,7 @@ export default function SearchModal() {
                 <TabsTrigger value="feeds">{t("common.feed")}</TabsTrigger>
               </TabsList>
             </Tabs>
-            <div className="flex items-center gap-1 px-1">
+            <div className="flex flex-wrap items-center gap-1 px-1">
               <Kbd>{"\u2191"}</Kbd>
               <Kbd>{"\u2193"}</Kbd>
               <span className="text-xs text-muted-foreground font-semibold">

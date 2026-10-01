@@ -1,5 +1,7 @@
 export default {
   common: {
+    newArticles: "{{count}} yeni makale",
+    backgroundSync: "Arka planda eşitleniyor · {{count}} önbellekte",
     cancel: "İptay",
     confirm: "Onayla",
     save: "Kaydet",
@@ -243,7 +245,8 @@ export default {
       sortByCreateDate: "Oluşturma tarihine göre",
       markAsReadOnScroll: "Kaydırırken okundu olarak işaretle",
       showUnreadByDefault: "Varsayılan olarak okunmamış makaleleri göster",
-      showUnreadByDefaultDescription: "Değişikliklerin geçerli olması için sayfayı yenileyin",
+      showUnreadByDefaultDescription:
+        "Değişikliklerin geçerli olması için sayfayı yenileyin",
     },
     appearance: {
       title: "Görünüm",

@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { CloseButton } from "@/components/ui/close-button";
 import {
   Tooltip,
   TooltipContent,
@@ -20,15 +20,7 @@ export default function ArticleNavigationControls({
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button
-              className="mx-2"
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Close"
-              onClick={onClose}
-            >
-              <X />
-            </Button>
+            <CloseButton className="mx-2" variant="ghost" onClick={onClose} />
           }
         />
         <TooltipContent>{t("common.close")}</TooltipContent>

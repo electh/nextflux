@@ -19,6 +19,16 @@ import { ItemWrapper } from "@/components/ui/settingItem";
 import { setTheme, themeState, themes } from "@/stores/themeStore";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
+function ThemeSwatch({ theme }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4 shrink-0">
+      <circle cx="8" cy="8" r="7.5" fill={theme.color} />
+      <path d="M 2.697 13.303 A 7.5 7.5 0 0 0 13.303 2.697 Z" fill={theme.accent} />
+      <circle cx="8" cy="8" r="7.5" fill="none" stroke="var(--border)" />
+    </svg>
+  );
+}
+
 export default function Theme() {
   const { t } = useTranslation();
   const { themeMode, lightTheme, darkTheme } = useStore(themeState);
@@ -39,7 +49,7 @@ export default function Theme() {
       icon: <MoonStar className="shrink-0 size-4 text-muted-foreground" />,
     },
   ];
-  const bgColor = "bg-default/60 dark:bg-default/30";
+  const bgColor = "bg-secondary/60 dark:bg-secondary/30";
   return (
     <ItemWrapper title={t("settings.appearance.theme")}>
       <div
@@ -66,7 +76,7 @@ export default function Theme() {
               </Button>
             }
           />
-          <DropdownMenuContent>
+          <DropdownMenuContent side="bottom" align="end">
             <DropdownMenuRadioGroup
               aria-label="theme"
               value={Array.from(new Set([themeMode]))[0]}
@@ -102,14 +112,16 @@ export default function Theme() {
                 variant="secondary"
                 className="text-muted-foreground h-8"
               >
-                {t(
-                  `settings.appearance.themes.${themes.light.find((item) => item.id === lightTheme)?.id}`,
-                )}
+                {t(`settings.appearance.themes.${lightTheme}`, {
+                  defaultValue: themes.light.find(
+                    (item) => item.id === lightTheme,
+                  )?.name,
+                })}
                 <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
               </Button>
             }
           />
-          <DropdownMenuContent>
+          <DropdownMenuContent side="bottom" align="end">
             <DropdownMenuRadioGroup
               aria-label="theme"
               value={Array.from(new Set([lightTheme]))[0]}
@@ -123,13 +135,12 @@ export default function Theme() {
             >
               {themes.light.map((item) => (
                 <DropdownMenuRadioItem key={item.id} value={item.id}>
-                  <div
-                    className="size-4 border rounded-full"
-                    style={{
-                      backgroundColor: item.color,
-                    }}
-                  />
-                  <span>{t(`settings.appearance.themes.${item.id}`)}</span>
+                  <ThemeSwatch theme={item} />
+                  <span>
+                    {t(`settings.appearance.themes.${item.id}`, {
+                      defaultValue: item.name,
+                    })}
+                  </span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -156,14 +167,16 @@ export default function Theme() {
                 variant="secondary"
                 className="text-muted-foreground h-8"
               >
-                {t(
-                  `settings.appearance.themes.${themes.dark.find((item) => item.id === darkTheme)?.id}`,
-                )}
+                {t(`settings.appearance.themes.${darkTheme}`, {
+                  defaultValue: themes.dark.find(
+                    (item) => item.id === darkTheme,
+                  )?.name,
+                })}
                 <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
               </Button>
             }
           />
-          <DropdownMenuContent>
+          <DropdownMenuContent side="bottom" align="end">
             <DropdownMenuRadioGroup
               aria-label="theme"
               value={Array.from(new Set([darkTheme]))[0]}
@@ -177,13 +190,12 @@ export default function Theme() {
             >
               {themes.dark.map((item) => (
                 <DropdownMenuRadioItem key={item.id} value={item.id}>
-                  <div
-                    className="size-4 border rounded-full"
-                    style={{
-                      backgroundColor: item.color,
-                    }}
-                  />
-                  <span>{t(`settings.appearance.themes.${item.id}`)}</span>
+                  <ThemeSwatch theme={item} />
+                  <span>
+                    {t(`settings.appearance.themes.${item.id}`, {
+                      defaultValue: item.name,
+                    })}
+                  </span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>

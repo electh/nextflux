@@ -30,7 +30,7 @@
 
 /* 文章内容链接样式 */
 .article-content a {
-  @apply border-b-[1px] border-dotted border-accent no-underline transition-colors text-accent;
+  @apply border-b-[1px] border-dotted border-primary no-underline transition-colors text-primary;
 }
 
 /*表格*/

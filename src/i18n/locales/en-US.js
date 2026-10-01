@@ -1,5 +1,8 @@
 export default {
   common: {
+    newArticles_one: "{{count}} new article",
+    newArticles_other: "{{count}} new articles",
+    backgroundSync: "Syncing in background · {{count}} cached",
     cancel: "Cancel",
     confirm: "Confirm",
     save: "Save",
@@ -243,7 +246,8 @@ export default {
       sortByCreateDate: "By create date",
       markAsReadOnScroll: "Mark as read on scroll",
       showUnreadByDefault: "Show unread articles by default",
-      showUnreadByDefaultDescription: "Refresh the page for changes to take effect",
+      showUnreadByDefaultDescription:
+        "Refresh the page for changes to take effect",
     },
     appearance: {
       title: "Appearance",

@@ -7,25 +7,24 @@ import {
 import minifluxAPI from "../api/miniflux";
 import { starredCounts, unreadCounts } from "./feedCountersStore.js";
 import { settingsState } from "./settingsStore";
-import { filter } from "./articleFilterStore.js";
 import { getAffectedFeedIds } from "@/domain/articles/articleScope.js";
 import {
   countArticlesByFeed,
   getUnreadArticlesInRange,
 } from "@/domain/articles/articleRange.js";
 import {
-  loadArticlePage,
   persistArticleStarred,
   persistArticleStatus,
   persistArticlesAsRead,
 } from "@/services/articleService.js";
+import { createArticleMutations } from "@/services/articleMutations.js";
 import { reportError } from "@/lib/errors.js";
 
 export { filter } from "./articleFilterStore.js";
 
 export const filteredArticles = atom([]);
 export const activeArticle = atom(null);
-export const loading = atom(false); // 加载文章列表
+export const loading = atom(false);
 export const loadingMore = atom(false); // 加载更多文章
 export const loadingOriginContent = atom(false);
 export const markingAllAsRead = atom(false);
@@ -39,91 +38,41 @@ export const visibleRange = atom({
   endIndex: 0,
 });
 
-// 加载文章列表
-export async function loadArticles(
-  sourceId = null,
-  type = "feed",
-  page = 1,
-  append = false,
-) {
-  error.set(null);
+export const pendingArticleMutations = atom({});
 
-  try {
-    const settings = settingsState.get();
-    const result = await loadArticlePage({
-      sourceId,
-      type: type || "all",
-      page,
-      pageSize: pageSize.get(),
-      filter: filter.get(),
-      settings,
-    });
-
-    // 根据是否追加来更新文章列表
-    if (append) {
-      filteredArticles.set([...filteredArticles.get(), ...result.articles]);
-      hasMore.set(result.isMore);
-      currentPage.set(page);
-    }
-
-    return result;
-  } catch (err) {
-    error.set(reportError(err, "articles.load", "加载文章失败"));
-  }
-}
-
-// 更新文章未读状态
-export async function updateArticleStatus(article) {
-  const newStatus = article.status === "read" ? "unread" : "read";
-
-  // 乐观更新UI
+function patchArticle(id, changes) {
   filteredArticles.set(
     filteredArticles
       .get()
-      .map((a) => (a.id === article.id ? { ...a, status: newStatus } : a)),
+      .map((article) =>
+        article.id === id ? { ...article, ...changes } : article,
+      ),
   );
+  const current = activeArticle.get();
+  if (current?.id === id) activeArticle.set({ ...current, ...changes });
+}
 
-  try {
-    const count = await persistArticleStatus(article, newStatus);
+const mutateArticle = createArticleMutations({
+  patch: patchArticle,
+  onPending: (pending) => pendingArticleMutations.set(pending),
+});
+
+export function updateArticleStatus(article) {
+  if (!article) return;
+  const status = article.status === "read" ? "unread" : "read";
+  return mutateArticle(article, "status", status, async () => {
+    const count = await persistArticleStatus(article, status);
     unreadCounts.set({ ...unreadCounts.get(), [article.feedId]: count });
-  } catch (err) {
-    // 发生错误时回滚UI状态
-    filteredArticles.set(
-      filteredArticles
-        .get()
-        .map((a) =>
-          a.id === article.id ? { ...a, status: article.status } : a,
-        ),
-    );
-    throw reportError(err, "articles.updateStatus");
-  }
+  });
 }
 
-// 更新文章收藏状态
-export async function updateArticleStarred(article) {
-  const newStarred = article.starred === 1 ? 0 : 1;
-
-  // 乐观更新UI
-  filteredArticles.set(
-    filteredArticles
-      .get()
-      .map((a) => (a.id === article.id ? { ...a, starred: newStarred } : a)),
-  );
-
-  try {
-    const count = await persistArticleStarred(article, newStarred);
+export function updateArticleStarred(article) {
+  if (!article) return;
+  const starred = article.starred === 1 ? 0 : 1;
+  return mutateArticle(article, "starred", starred, async () => {
+    const count = await persistArticleStarred(article, starred);
     starredCounts.set({ ...starredCounts.get(), [article.feedId]: count });
-  } catch (err) {
-    // 发生错误时回滚UI状态
-    filteredArticles.set(
-      filteredArticles
-        .get()
-        .map((a) =>
-          a.id === article.id ? { ...a, starred: article.starred } : a,
-        ),
-    );
-    throw reportError(err, "articles.updateStarred");
-  }
+  });
 }
 
 export async function markAllAsRead(type = "all", id = null) {
@@ -167,11 +116,13 @@ export async function markAllAsRead(type = "all", id = null) {
       const feedIdSet = new Set(feedIds);
 
       filteredArticles.set(
-        filteredArticles.get().map((article) =>
-          feedIdSet.has(article.feedId) && originalStatuses.has(article.id)
-            ? { ...article, status: originalStatuses.get(article.id) }
-            : article,
-        ),
+        filteredArticles
+          .get()
+          .map((article) =>
+            feedIdSet.has(article.feedId) && originalStatuses.has(article.id)
+              ? { ...article, status: originalStatuses.get(article.id) }
+              : article,
+          ),
       );
 
       const restoredCounts = { ...unreadCounts.get() };
@@ -209,9 +160,7 @@ export async function markAllAsRead(type = "all", id = null) {
     await markUnreadArticlesAsRead(result.succeededFeedIds);
 
     if (result.failedFeedIds.length > 0) {
-      throw new Error(
-        `${result.failedFeedIds.length} 个订阅源标记已读失败`,
-      );
+      throw new Error(`${result.failedFeedIds.length} 个订阅源标记已读失败`);
     }
   } catch (err) {
     throw reportError(err, "articles.markAllRead");
@@ -233,9 +182,7 @@ async function markArticleRangeAsRead(articleId, direction) {
   const countsByFeed = countArticlesByFeed(articlesToMark);
   filteredArticles.set(
     articles.map((article) =>
-      articleIds.has(article.id)
-        ? { ...article, status: "read" }
-        : article,
+      articleIds.has(article.id) ? { ...article, status: "read" } : article,
     ),
   );
 

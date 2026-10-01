@@ -52,29 +52,22 @@ export async function getArticlesByPage(
   sortDirection = "desc",
   sortField = "published_at",
 ) {
+  if (!feedIds.length) return [];
   const offset = (page - 1) * pageSize;
-  let collection;
-
-  if (filter === "unread") {
-    collection = db.articles
-      .where("status")
-      .equals("unread")
-      .and((article) => feedIds.includes(article.feedId));
-  } else if (filter === "starred") {
-    collection = db.articles
-      .where("starred")
-      .equals(1)
-      .and((article) => feedIds.includes(article.feedId));
-  } else {
-    collection = db.articles
-      .where("feedId")
-      .anyOf(feedIds)
-      .and((article) => article.status !== "removed");
-  }
-
-  const articles = await collection.sortBy(sortField);
-  const sorted = sortDirection === "desc" ? articles.reverse() : articles;
-  return sorted.slice(offset, offset + pageSize);
+  const feedIdSet = new Set(feedIds);
+  let collection = db.articles.orderBy(sortField);
+  if (sortDirection === "desc") collection = collection.reverse();
+  return collection
+    .filter(
+      (article) =>
+        feedIdSet.has(article.feedId) &&
+        article.status !== "removed" &&
+        (filter !== "unread" || article.status === "unread") &&
+        (filter !== "starred" || article.starred === 1),
+    )
+    .offset(offset)
+    .limit(pageSize)
+    .toArray();
 }
 
 export async function getArticleById(id) {
@@ -108,3 +101,8 @@ export async function searchArticles(
     throw reportError(error, "articles.search");
   }
 }
+
+export const updateArticleFields = (id, changes) =>
+  db.articles.update(id, changes);
+export const updateArticleStatuses = (ids, status) =>
+  db.articles.where("id").anyOf(ids).modify({ status });

@@ -109,7 +109,7 @@ export default function SearchResults({
       itemContent={(index, item) => (
         <div
           key={item.id}
-          className={`flex items-center justify-between gap-2 px-2 py-2 text-sm rounded-lg cursor-pointer ${index === selectedIndex ? "bg-default/80" : hoverEffect ? "hover:bg-default/60" : ""}`}
+          className={`flex items-center justify-between gap-2 px-2 py-2 text-sm rounded-lg cursor-pointer ${index === selectedIndex ? "bg-secondary/80" : hoverEffect ? "hover:bg-secondary/60" : ""}`}
           onClick={() => onSelect(item)}
           onMouseMove={() => setHoverEffect(true)}
         >

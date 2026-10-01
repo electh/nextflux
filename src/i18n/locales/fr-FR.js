@@ -1,5 +1,7 @@
 export default {
   common: {
+    newArticles: "{{count}} nouveaux articles",
+    backgroundSync: "Synchronisation · {{count}} en cache",
     cancel: "Annuler",
     confirm: "Confirmer",
     save: "Enregistrer",
@@ -245,7 +247,8 @@ export default {
       sortByCreateDate: "Par date de création",
       markAsReadOnScroll: "Marquer comme lu lors du défilement",
       showUnreadByDefault: "Afficher les articles non lus par défaut",
-      showUnreadByDefaultDescription: "Actualisez la page pour appliquer les modifications",
+      showUnreadByDefaultDescription:
+        "Actualisez la page pour appliquer les modifications",
     },
     appearance: {
       title: "Apparence",

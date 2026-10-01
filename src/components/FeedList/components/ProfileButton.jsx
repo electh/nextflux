@@ -112,7 +112,7 @@ export default function ProfileButton() {
                 })("logout")
               }
             >
-              <LogOut className="size-4 text-danger" />
+              <LogOut className="size-4 text-destructive" />
               <span>{t("sidebar.profile.logout")}</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>

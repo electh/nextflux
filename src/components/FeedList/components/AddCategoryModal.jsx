@@ -101,7 +101,7 @@ export default function AddCategoryModal() {
             </Field>
           </FieldGroup>
           <Separator className="my-2" />
-          <div className="flex flex-wrap gap-2 p-3 w-full rounded-2xl bg-default/60 shadow-surface">
+          <div className="flex flex-wrap gap-2 p-3 w-full rounded-2xl bg-secondary/60 shadow-surface">
             {$categories.map((category) => (
               <CategoryChip key={category.id} category={category} />
             ))}

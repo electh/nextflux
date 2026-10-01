@@ -21,7 +21,7 @@ export default function SettingIcon({ variant = "default", children }) {
         "before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:pointer-events-none before:bg-gradient-to-b before:from-white/40 before:to-transparent",
       )}
     >
-      <div className="flex items-center justify-center shrink-0 size-4 text-accent-foreground">
+      <div className="flex items-center justify-center shrink-0 size-4 text-primary-foreground">
         {children}
       </div>
     </div>

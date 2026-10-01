@@ -9,3 +9,10 @@ export function getAdjacentArticle(articles, activeArticleId, direction) {
     ? articles[targetIndex]
     : null;
 }
+
+export function getArticleTransitionDirection(articles, fromId, toId) {
+  const from = articles.findIndex(({ id }) => id === Number(fromId));
+  const to = articles.findIndex(({ id }) => id === Number(toId));
+  if (from < 0 || to < 0 || from === to) return null;
+  return to > from ? 1 : -1;
+}

@@ -1,14 +1,13 @@
 import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
-import {
-  getFeeds,
-  getCategories,
-  getUnreadCount,
-  getStarredCount,
-} from "../db/storage";
+import { getFeeds, getCategories, getFeedCounts } from "../db/storage";
 import { filter } from "@/stores/articleFilterStore.js";
 import { starredCounts, unreadCounts } from "@/stores/feedCountersStore.js";
 import { settingsState } from "@/stores/settingsStore.js";
+import {
+  reconcileRecords,
+  sameRecord,
+} from "@/domain/sync/reconcileRecords.js";
 import { reportError } from "@/lib/errors.js";
 
 export {
@@ -34,19 +33,21 @@ export const categoryExpandedState = persistentAtom(
 // 更新分类展开状态
 export const updateCategoryExpandState = (categoryId, isExpanded) => {
   const currentState = categoryExpandedState.get();
+  if (currentState[categoryId] === isExpanded) return;
   categoryExpandedState.set({
     ...currentState,
     [categoryId]: isExpanded,
   });
 };
 
+let previousFilteredFeeds = [];
 export const filteredFeeds = computed(
   [feeds, filter, starredCounts, unreadCounts, settingsState],
   ($feeds, $filter, $starredCounts, $unreadCounts, $settings) => {
     const visibleFeeds = $settings.showHiddenFeeds
       ? $feeds
       : $feeds.filter((feed) => !feed.hide_globally);
-    return visibleFeeds.filter((feed) => {
+    const next = visibleFeeds.filter((feed) => {
       switch ($filter) {
         case "starred":
           return $starredCounts[feed.id] > 0;
@@ -56,13 +57,16 @@ export const filteredFeeds = computed(
           return true;
       }
     });
+    previousFilteredFeeds = reconcileRecords(previousFilteredFeeds, next);
+    return previousFilteredFeeds;
   },
 );
 
+let previousGroups = [];
 export const feedsByCategory = computed(
-  [filteredFeeds, categories, unreadCounts, starredCounts],
-  ($filteredFeeds, $categories, $unreadCounts, $starredCounts) => {
-    return Object.entries(
+  [filteredFeeds, categories],
+  ($filteredFeeds, $categories) => {
+    const next = Object.entries(
       $filteredFeeds.reduce((acc, feed) => {
         const categoryId = feed.categoryId || "uncategorized";
         const category = $categories.find((c) => c.id === feed.categoryId);
@@ -82,13 +86,11 @@ export const feedsByCategory = computed(
         id,
         title: category.name,
         isActive: false,
-        feeds: category.feeds.map((feed) => ({
-          ...feed,
-          unreadCount: $unreadCounts[feed.id] || 0,
-          starredCount: $starredCounts[feed.id] || 0,
-        })),
+        feeds: category.feeds,
       }))
       .sort((a, b) => a.title.localeCompare(b.title));
+    previousGroups = reconcileRecords(previousGroups, next);
+    return previousGroups;
   },
 );
 
@@ -131,25 +133,39 @@ export const getFeedCount = computed(
   },
 );
 
-export async function loadFeeds() {
-  try {
-    const storedFeeds = await getFeeds();
-    feeds.set(storedFeeds || []);
-    const storedCategories = await getCategories();
-    categories.set(storedCategories || []);
-    const filteredFeeds = settingsState.get().showHiddenFeeds
-      ? storedFeeds
-      : storedFeeds.filter((feed) => !feed.hide_globally);
+// Each row subscribes to its own numeric value instead of the shared count function.
+export const createFeedCountStore = (id) =>
+  computed(getFeedCount, (getCount) => getCount(id));
+export const createCategoryCountStore = (id) =>
+  computed(getCategoryCount, (getCount) => getCount(id));
 
-    // 获取未读和收藏计数
-    const unreadCount = {};
-    const starredCount = {};
-    for (const feed of filteredFeeds) {
-      unreadCount[feed.id] = await getUnreadCount(feed.id);
-      starredCount[feed.id] = await getStarredCount(feed.id);
-    }
-    unreadCounts.set(unreadCount);
-    starredCounts.set(starredCount);
+let loadVersion = 0;
+export async function loadFeeds() {
+  const version = ++loadVersion;
+  try {
+    const [storedFeeds, storedCategories, counts] = await Promise.all([
+      getFeeds(),
+      getCategories(),
+      getFeedCounts(),
+    ]);
+    if (version !== loadVersion) return;
+    feeds.set(reconcileRecords(feeds.get(), storedFeeds));
+    categories.set(reconcileRecords(categories.get(), storedCategories));
+    const visibleIds = new Set(
+      storedFeeds
+        .filter(
+          (feed) => settingsState.get().showHiddenFeeds || !feed.hide_globally,
+        )
+        .map(({ id }) => String(id)),
+    );
+    const visibleCounts = (values) =>
+      Object.fromEntries(
+        Object.entries(values).filter(([id]) => visibleIds.has(id)),
+      );
+    const unread = visibleCounts(counts.unread);
+    const starred = visibleCounts(counts.starred);
+    if (!sameRecord(unreadCounts.get(), unread)) unreadCounts.set(unread);
+    if (!sameRecord(starredCounts.get(), starred)) starredCounts.set(starred);
   } catch (err) {
     error.set(reportError(err, "feeds.load", "加载订阅源失败"));
   }

@@ -13,7 +13,7 @@ export default function ResultListbox({ results, searchType, handleSelect }) {
         orientation="vertical"
         spacing={1}
         aria-label="results"
-        className="max-h-60 w-full items-stretch overflow-y-auto rounded-xl bg-default/60 p-1"
+        className="max-h-60 w-full items-stretch overflow-y-auto rounded-xl bg-secondary/60 p-1"
         onValueChange={(values) => {
           if (values.length) handleSelect(values);
         }}

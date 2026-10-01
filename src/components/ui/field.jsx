@@ -102,12 +102,13 @@ function FieldLabel({ className, ...props }) {
   );
 }
 
-function FieldTitle({ className, ...props }) {
+function FieldTitle({ className, variant = "default", ...props }) {
   return (
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-sm font-medium group-data-disabled/field:opacity-50",
+        "flex w-fit items-center gap-2 text-sm group-data-disabled/field:opacity-50",
+        variant === "setting" ? "font-normal text-foreground" : "font-medium",
         className,
       )}
       {...props}
