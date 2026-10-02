@@ -98,7 +98,10 @@
     --warning: oklch(0.7819 0.1585 72.33);
     --shadow-custom:
       0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07),
-      0 0 1px 0 rgba(0, 0, 0, 0.3);
+      0 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.04) inset,
+      0 2px 4px rgba(255, 255, 255, 0.04) inset,
+      0 1px 1px rgba(255, 255, 255, 0.04) inset,
+      0 0.5px 0.5px rgba(255, 255, 255, 0.06) inset;
     --shadow-custom-inner:
       inset 0 0 2px 0 rgba(0, 0, 0, 0.05), inset 0 0 4px 0 rgba(0, 0, 0, 0.05),
       inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
@@ -107,12 +110,11 @@
       0 4px 6px -2px rgb(0 0 0 / 0.04), 0 0 2px 0 rgb(0 0 0 / 0.04),
       0 0 0 1px rgb(0 0 0 / 0.04);
     --shadow-custom-btn:
-      0 1px 2px -0.5px rgba(255, 255, 255, 0.12) inset,
-      0 0.5px 0.5px rgba(255, 255, 255, 0.16) inset,
-      0 8px 24px -4px rgba(255, 255, 255, 0.16) inset,
-      0 8px 8px -3px rgba(0, 0, 0, 0.03), 0 5px 5px -2.5px rgba(0, 0, 0, 0.03),
-      0 3px 3px -1.5px rgba(0, 0, 0, 0.03), 0 2px 2px -1px rgba(0, 0, 0, 0.03),
-      0 1px 1px -0.5px rgba(0, 0, 0, 0.03), 0 0.5px 0.5px rgba(0, 0, 0, 0.03);
+      0 1px 2px -0.5px #ffffff1f inset, 0 0.5px 0.5px #ffffff29 inset,
+      0 8px 24px -4px #ffffff29 inset, 0 8px 8px -3px #09011408,
+      0 5px 5px -2.5px #09011408, 0 3px 3px -1.5px #08011408,
+      0 2px 2px -1px #08011408, 0 1px 1px -0.5px #08011408,
+      0 0.5px 0.5px #08011408;
   }
 
   .dark {
@@ -151,7 +153,11 @@
     --shadow-custom:
       0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
       inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
-      0 0 1px 0 rgba(255, 255, 255, 0.6);
+      0 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 4px 8px rgba(255, 255, 255, 0.02) inset,
+      0 2px 4px rgba(255, 255, 255, 0.01) inset,
+      0 1px 1px rgba(255, 255, 255, 0.01) inset,
+      0 0.5px 0.5px rgba(255, 255, 255, 0.03) inset;
     --shadow-custom-inner:
       inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
       inset 0 -0.5px 1px 0 rgba(255, 255, 255, 0.1),
@@ -196,7 +202,7 @@
     --warning-foreground: rgb(66, 64, 59);
     --destructive: rgb(216, 94.007, 74.996);
     --destructive-foreground: oklch(0.9911 0 0);
-    --border: rgb(197, 195, 190);
+    --border: rgba(197, 195, 190, 0.8);
     --ring: var(--primary);
   }
 

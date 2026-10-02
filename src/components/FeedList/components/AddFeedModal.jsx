@@ -439,7 +439,7 @@ export default function AddFeedModal() {
                 <CollapsibleTrigger
                   render={
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       className={cn(
                         "w-full",
                         "flex justify-between rounded-field px-3 text-muted-foreground",

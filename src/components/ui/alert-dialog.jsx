@@ -129,7 +129,7 @@ function AlertDialogAction({ className, ...props }) {
 
 function AlertDialogCancel({
   className,
-  variant = "outline",
+  variant = "secondary",
   size = "default",
   ...props
 }) {
