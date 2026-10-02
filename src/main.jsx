@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { router } from "@/routes/index.jsx";
 import { RouterProvider } from "react-router";
-import SplashScreen from "@/components/SplashScreen";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -20,7 +19,6 @@ initTheme();
 
 createRoot(document.getElementById("root")).render(
   <TooltipProvider>
-    <SplashScreen />
     <Toaster
       icons={{
         loading: <Loader2 className="size-4! animate-spin! text-primary!" />,

@@ -142,6 +142,10 @@ export default {
     },
   },
   articleView: {
+    notFoundTitle: "Article not found",
+    notFoundDescription: "This article may not have synced yet, or may have been deleted.",
+    backToList: "Back to list",
+
     imageError: "Error loading image",
     videoError: "Error loading video",
     stopPlay: "STOP",

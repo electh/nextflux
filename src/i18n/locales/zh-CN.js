@@ -140,6 +140,10 @@ export default {
     },
   },
   articleView: {
+    notFoundTitle: "未找到这篇文章",
+    notFoundDescription: "文章可能尚未同步，或已被删除。",
+    backToList: "返回列表",
+
     imageError: "加载图片失败",
     videoError: "加载视频失败",
     stopPlay: "停止播放",

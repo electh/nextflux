@@ -142,6 +142,10 @@ export default {
     },
   },
   articleView: {
+    notFoundTitle: "Article introuvable",
+    notFoundDescription: "Cet article n’a peut-être pas encore été synchronisé ou a été supprimé.",
+    backToList: "Retour à la liste",
+
     imageError: "Erreur de chargement de l'image",
     videoError: "Erreur de chargement de la vidéo",
     stopPlay: "STOP",

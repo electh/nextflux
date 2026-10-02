@@ -141,6 +141,10 @@ export default {
     },
   },
   articleView: {
+    notFoundTitle: "Makale bulunamadı",
+    notFoundDescription: "Bu makale henüz eşitlenmemiş veya silinmiş olabilir.",
+    backToList: "Listeye dön",
+
     imageError: "Resim yüklemede hata",
     videoError: "Video yüklemede hata",
     stopPlay: "DUR",

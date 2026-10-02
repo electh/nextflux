@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useStore } from "@nanostores/react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import "react-photo-view/dist/react-photo-view.css";
@@ -21,7 +22,10 @@ import { getArticleById } from "@/db/storage";
 import { useLiveQuery } from "dexie-react-hooks";
 import { sameRecord } from "@/domain/sync/reconcileRecords.js";
 import { getArticleQueryState } from "@/domain/articles/articleQueryState.js";
-import { getArticleTransitionDirection } from "@/domain/articles/articleNavigation.js";
+import {
+  getArticleBasePath,
+  getArticleTransitionDirection,
+} from "@/domain/articles/articleNavigation.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils.js";
 import ArticleLoading from "./components/ArticleLoading.jsx";
@@ -65,6 +69,7 @@ function useActiveArticle(articleId) {
   return getArticleQueryState(articleId, result);
 }
 export default function ArticleView() {
+  const navigate = useNavigate();
   const { articleId } = useParams();
   const { t } = useTranslation();
   const storedArticle = useStore(activeArticle);
@@ -208,9 +213,22 @@ export default function ArticleView() {
                         ) : loading ? (
                           <ArticleLoading />
                         ) : (
-                          <div className="flex min-h-40 items-center justify-center text-sm text-muted-foreground">
-                            {t("common.noData")}
-                          </div>
+                          <EmptyPlaceholder
+                            title={t("articleView.notFoundTitle")}
+                            description={t("articleView.notFoundDescription")}
+                            className="h-[calc(100dvh-8rem)] min-h-64 bg-transparent shadow-none rounded-none px-6"
+                          >
+                            <Button
+                              variant="secondary"
+                              onClick={() =>
+                                navigate(
+                                  getArticleBasePath(window.location.pathname),
+                                )
+                              }
+                            >
+                              {t("articleView.backToList")}
+                            </Button>
+                          </EmptyPlaceholder>
                         )}
                       </motion.div>
                     </AnimatePresence>
