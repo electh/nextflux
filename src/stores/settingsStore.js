@@ -26,10 +26,7 @@ const defaultValue = {
   defaultExpandCategory: false, // 默认展开分类
   showUnreadByDefault: false,
   reduceMotion: false,
-  borderRadius: 0.45, // 0-0.5rem
   interfaceFontSize: "16",
-  showIndicator: true,
-  floatingSidebar: false,
   aiApiKey: "",
   aiBaseUrl: "https://api.openai.com/v1",
   aiModel: "gpt-4o-mini",
@@ -49,7 +46,12 @@ export const settingsState = persistentAtom("settings", defaultValue, {
   },
   decode: (str) => {
     const storedValue = JSON.parse(str);
-    return { ...defaultValue, ...storedValue };
+    return Object.fromEntries(
+      Object.entries(defaultValue).map(([key, value]) => [
+        key,
+        key in storedValue ? storedValue[key] : value,
+      ]),
+    );
   },
 });
 

@@ -11,16 +11,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from "@/components/ui/select";
 import { Field, FieldLabel, FieldTitle } from "@/components/ui/field";
-import { ChevronsUpDown, Info } from "lucide-react";
+import { Info } from "lucide-react";
 
-const rowClass = "bg-secondary/60 min-h-12 px-2.5 py-2";
+const rowClass = "bg-secondary/60 dark:bg-secondary/30 min-h-12 px-2.5 py-2";
 const keySymbols = {
   command: "⌘",
   cmd: "⌘",
@@ -147,36 +148,27 @@ export function SelItem({
         </FieldTitle>
         <DescriptionTip description={description} />
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="setting"
-              size="sm"
-              aria-labelledby={settingName + "-label"}
-            />
-          }
-        >
-          {options.find((option) => option.value === String(settingValue))
-            ?.label || settingValue}
-          <ChevronsUpDown data-icon="inline-end" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuRadioGroup
-            value={String(settingValue)}
-            onValueChange={onValueChange}
-          >
+      <Select
+        items={options.map((option) => ({
+          value: String(option.value),
+          label: option.label,
+        }))}
+        value={String(settingValue)}
+        onValueChange={(value) => value !== null && onValueChange(value)}
+      >
+        <SelectTrigger size="sm" aria-labelledby={settingName + "-label"}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
             {options.map((option) => (
-              <DropdownMenuRadioItem
-                key={option.value}
-                value={String(option.value)}
-              >
+              <SelectItem key={option.value} value={String(option.value)}>
                 {option.label}
-              </DropdownMenuRadioItem>
+              </SelectItem>
             ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </Field>
   );
 }
@@ -199,6 +191,7 @@ export function GroupItem({
         <DescriptionTip description={description} />
       </div>
       <ToggleGroup
+        variant="outline"
         size="sm"
         spacing={0}
         value={[settingValue]}
@@ -227,8 +220,9 @@ export function KeyboardItem({ desc, kbdKey, keyStr }) {
     <div className={cn(rowClass, "flex items-center justify-between gap-2")}>
       <span className="text-sm">{desc}</span>
       <Kbd>
-        {kbdKey && (keySymbols[kbdKey] || kbdKey)}
-        {keyStr}
+        {[...(kbdKey || []).map((key) => keySymbols[key] || key), keyStr].join(
+          " + ",
+        )}
       </Kbd>
     </div>
   );

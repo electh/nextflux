@@ -171,7 +171,7 @@ function MobileSettings() {
   const currentPage = activeTab === null ? "menu" : "content";
   return (
     <Drawer open={isOpen} onOpenChange={handleClose} showSwipeHandle>
-      <DrawerContent className="h-[85vh] p-0">
+      <DrawerContent showOverlay={false} className="h-[85vh] p-0">
         <DrawerHeader className="px-4 py-1 flex flex-row items-center gap-2">
           {activeTab !== null && (
             <Button
@@ -235,7 +235,10 @@ function DesktopSettings() {
   };
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden  bg-sidebar backdrop-blur-sm border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]">
+      <DialogContent
+        showOverlay={false}
+        className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden  bg-sidebar backdrop-blur-sm border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]"
+      >
         <div className="flex h-full">
           {/* 左侧导航栏 */}
           <div className="flex flex-col w-52">

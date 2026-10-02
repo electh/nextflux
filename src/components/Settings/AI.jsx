@@ -1,5 +1,14 @@
+import { Form } from "@base-ui/react/form";
+import { Field as FieldPrimitive } from "@base-ui/react/field";
+import { validateAiSetting } from "@/lib/aiSettings.js";
 import { Spinner } from "@/components/ui/spinner";
-import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+} from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -13,23 +22,52 @@ import { ItemWrapper } from "@/components/ui/settingItem.jsx";
 export default function AI() {
   const { t } = useTranslation();
   const { aiApiKey, aiBaseUrl, aiModel, aiPrompt } = useStore(settingsState);
-  const [localApiKey, setLocalApiKey] = useState(aiApiKey);
-  const [localBaseUrl, setLocalBaseUrl] = useState(aiBaseUrl);
-  const [localModel, setLocalModel] = useState(aiModel);
-  const [localPrompt, setLocalPrompt] = useState(aiPrompt);
+  const [draft, setDraft] = useState({
+    aiApiKey,
+    aiBaseUrl,
+    aiModel,
+    aiPrompt,
+  });
+  const fields = [
+    {
+      name: "aiApiKey",
+      label: "apiKey",
+      type: "password",
+      placeholder: t("settings.ai.apiKeyPlaceholder"),
+    },
+    {
+      name: "aiBaseUrl",
+      label: "baseUrl",
+      placeholder: "https://api.openai.com/v1",
+      inputMode: "url",
+    },
+    { name: "aiModel", label: "model", placeholder: "gpt-4o-mini" },
+    { name: "aiPrompt", label: "prompt", multiline: true },
+  ];
+  const fieldError = (name, label, value) => {
+    const error = validateAiSetting(name, value);
+    return error
+      ? t(`settings.ai.${error}`, { field: t(`settings.ai.${label}`) })
+      : null;
+  };
   const [saving, setSaving] = useState(false);
-  const handleSave = async () => {
+  const handleSave = async (event) => {
+    event.preventDefault();
+    if (saving) return;
+    const values = Object.fromEntries(
+      Object.entries(draft).map(([key, value]) => [key, value.trim()]),
+    );
     setSaving(true);
     try {
-      const baseUrl = localBaseUrl.replace(/\/$/, "");
+      const baseUrl = values.aiBaseUrl.replace(/\/+$/, "");
       const res = await fetch(`${baseUrl}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localApiKey}`,
+          Authorization: `Bearer ${values.aiApiKey}`,
         },
         body: JSON.stringify({
-          model: localModel,
+          model: values.aiModel,
           messages: [
             {
               role: "user",
@@ -43,12 +81,7 @@ export default function AI() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err?.error?.message || `API error: ${res.status}`);
       }
-      updateSettings({
-        aiApiKey: localApiKey,
-        aiBaseUrl: localBaseUrl,
-        aiModel: localModel,
-        aiPrompt: localPrompt,
-      });
+      updateSettings({ ...values, aiBaseUrl: baseUrl });
       toast.success(t("common.success"));
     } catch (err) {
       toast.error(err.message);
@@ -57,70 +90,58 @@ export default function AI() {
     }
   };
   return (
-    <div className="flex flex-col gap-4">
+    <Form className="flex flex-col gap-4" onSubmit={handleSave}>
       <ItemWrapper title="OpenAI">
-        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
-          <Field>
-            <FieldLabel htmlFor="field-1961">
-              {t("settings.ai.apiKey")}
-            </FieldLabel>
-            <Input
-              type="password"
-              value={localApiKey}
-              onChange={(e) => setLocalApiKey(e.target.value)}
-              placeholder={t("settings.ai.apiKeyPlaceholder")}
-              id="field-1961"
-            />
-          </Field>
-        </div>
-        <Separator />
-        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
-          <Field>
-            <FieldLabel htmlFor="field-2405">
-              {t("settings.ai.baseUrl")}
-            </FieldLabel>
-            <Input
-              type="text"
-              value={localBaseUrl}
-              onChange={(e) => setLocalBaseUrl(e.target.value)}
-              placeholder="https://api.openai.com/v1"
-              id="field-2405"
-            />
-            <FieldDescription>{t("settings.ai.description")}</FieldDescription>
-          </Field>
-        </div>
-        <Separator />
-        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
-          <Field>
-            <FieldLabel htmlFor="field-2909">
-              {t("settings.ai.model")}
-            </FieldLabel>
-            <Input
-              type="text"
-              value={localModel}
-              onChange={(e) => setLocalModel(e.target.value)}
-              placeholder="gpt-4o-mini"
-              id="field-2909"
-            />
-          </Field>
-        </div>
-        <Separator />
-        <div className="bg-secondary/60 dark:bg-secondary/30 p-2.5">
-          <Field>
-            <FieldLabel htmlFor="field-3323">
-              {t("settings.ai.prompt")}
-            </FieldLabel>
-            <Textarea
-              value={localPrompt}
-              onChange={(e) => setLocalPrompt(e.target.value)}
-              rows={3}
-              id="field-3323"
-            />
-          </Field>
-        </div>
+        <FieldGroup className="gap-0">
+          {fields.map(({ name, label, multiline, ...controlProps }, index) => (
+            <div key={name}>
+              {index > 0 && <Separator />}
+              <Field
+                name={name}
+                disabled={saving}
+                validate={(value) => fieldError(name, label, value)}
+                className="bg-secondary/60 dark:bg-secondary/30 p-2.5"
+              >
+                <FieldLabel htmlFor={name}>
+                  {t(`settings.ai.${label}`)}
+                </FieldLabel>
+                {multiline ? (
+                  <FieldPrimitive.Control
+                    render={<Textarea rows={3} />}
+                    id={name}
+                    required
+                    value={draft[name]}
+                    onValueChange={(value) =>
+                      setDraft((current) => ({ ...current, [name]: value }))
+                    }
+                  />
+                ) : (
+                  <Input
+                    {...controlProps}
+                    id={name}
+                    required
+                    value={draft[name]}
+                    onChange={(event) =>
+                      setDraft((current) => ({
+                        ...current,
+                        [name]: event.target.value,
+                      }))
+                    }
+                  />
+                )}
+                <FieldError>{fieldError(name, label, draft[name])}</FieldError>
+                {name === "aiBaseUrl" && (
+                  <FieldDescription>
+                    {t("settings.ai.description")}
+                  </FieldDescription>
+                )}
+              </Field>
+            </div>
+          ))}
+        </FieldGroup>
       </ItemWrapper>
       <Button
-        onClick={handleSave}
+        type="submit"
         disabled={saving}
         aria-busy={saving}
         className="w-full"
@@ -128,6 +149,6 @@ export default function AI() {
         {saving && <Spinner />}
         {t("common.save")}
       </Button>
-    </div>
+    </Form>
   );
 }

@@ -18,9 +18,6 @@ import {
   MonitorCog,
   WrapText,
   LetterText,
-  SquareArrowUp,
-  PanelLeft,
-  SquareRoundCorner,
 } from "lucide-react";
 import Theme from "./components/Theme";
 import { useTranslation } from "react-i18next";
@@ -33,12 +30,9 @@ export default function Appearance() {
     showFavicon,
     showReadingTime,
     reduceMotion,
-    borderRadius,
     interfaceFontSize,
     textPreviewLines,
     titleLines,
-    showIndicator,
-    floatingSidebar,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -68,20 +62,6 @@ export default function Appearance() {
               label: t("settings.appearance.LargerText"),
             },
           ]}
-        />
-        <Separator />
-        <SliderItem
-          label={t("settings.appearance.borderRadius")}
-          icon={
-            <SettingIcon variant="purple">
-              <SquareRoundCorner />
-            </SettingIcon>
-          }
-          settingName="borderRadius"
-          settingValue={borderRadius}
-          max={0.5}
-          min={0}
-          step={0.1}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.favicons")}>
@@ -117,30 +97,7 @@ export default function Appearance() {
           settingValue={useGrayIcon}
         />
       </ItemWrapper>
-      <ItemWrapper title={t("settings.appearance.sidebar")}>
-        <SwitchItem
-          label={t("settings.appearance.floatingSidebar")}
-          icon={
-            <SettingIcon variant="default">
-              <PanelLeft />
-            </SettingIcon>
-          }
-          settingName="floatingSidebar"
-          settingValue={floatingSidebar}
-        />
-      </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.articleList")}>
-        <SwitchItem
-          label={t("settings.appearance.showIndicator")}
-          icon={
-            <SettingIcon variant="amber">
-              <SquareArrowUp />
-            </SettingIcon>
-          }
-          settingName="showIndicator"
-          settingValue={showIndicator}
-        />
-        <Separator />
         <SliderItem
           label={t("settings.appearance.titleLines")}
           icon={

@@ -1,13 +1,14 @@
 import { cn } from "@/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useEffect, Fragment } from "react";
@@ -36,13 +37,9 @@ import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
 import { loadFonts, FONT_CATEGORIES, SYSTEM_FONTS } from "@/lib/fontLoader";
 import { updateSettings } from "@/stores/settingsStore.js";
-import { ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
 
 // 字体选择器组件
 function FontSelector({ label, icon, settingName, settingValue }) {
-  const [selected, setSelected] = useState(new Set([settingValue]));
-
   // 打开时预加载所有字体
   useEffect(() => {
     const allFonts = Object.values(FONT_CATEGORIES).flatMap((cat) =>
@@ -50,11 +47,6 @@ function FontSelector({ label, icon, settingName, settingValue }) {
     );
     loadFonts(allFonts).catch(() => {});
   }, []);
-
-  // 同步选中状态
-  useEffect(() => {
-    setSelected(new Set([settingValue]));
-  }, [settingValue]);
 
   // 获取当前选中字体的名称
   const getSelectedFontName = () => {
@@ -86,7 +78,6 @@ function FontSelector({ label, icon, settingName, settingValue }) {
   const handleSelectionChange = (keys) => {
     const value = keys;
     if (value) {
-      setSelected(new Set([value]));
       updateSettings({
         [settingName]: value,
       });
@@ -98,72 +89,51 @@ function FontSelector({ label, icon, settingName, settingValue }) {
         {icon}
         <div className="text-sm text-foreground">{label}</div>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="secondary"
-              size="sm"
-              className="text-muted-foreground h-8 min-w-[100px]"
-            >
-              <span className="truncate">{getSelectedFontName()}</span>
-              <span
-                className="text-muted-foreground/60 ml-1"
-                style={{
-                  fontFamily: `${settingValue}, system-ui, sans-serif`,
-                }}
-              >
-                {getSelectedFontPreview()}
-              </span>
-              <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground opacity-60" />
-            </Button>
-          }
-        />
-
-        <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
-          <DropdownMenuRadioGroup
-            aria-label="Font selection"
-            value={Array.from(selected)[0]}
-            onValueChange={handleSelectionChange}
+      <Select value={settingValue} onValueChange={handleSelectionChange}>
+        <SelectTrigger size="sm" aria-label={label} className="min-w-[100px]">
+          <SelectValue>{getSelectedFontName()}</SelectValue>
+          <span
+            className="text-muted-foreground"
+            style={{ fontFamily: `${settingValue}, system-ui, sans-serif` }}
           >
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>System</DropdownMenuLabel>
-              {SYSTEM_FONTS.map((font) => (
-                <DropdownMenuRadioItem key={font.value} value={font.value}>
-                  <span>{font.name}</span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuGroup>
-            <Separator />
-            {Object.entries(FONT_CATEGORIES).map(
-              ([categoryKey, category], index) => (
-                <Fragment key={categoryKey}>
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>{category.label}</DropdownMenuLabel>
-                    {category.fonts.map((font) => (
-                      <DropdownMenuRadioItem
-                        key={font.value}
-                        value={font.value}
+            {getSelectedFontPreview()}
+          </span>
+        </SelectTrigger>
+        <SelectContent className="max-h-[300px]" alignItemWithTrigger={false}>
+          <SelectGroup>
+            <SelectLabel>System</SelectLabel>
+            {SYSTEM_FONTS.map((font) => (
+              <SelectItem key={font.value} value={font.value}>
+                {font.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+          <SelectSeparator />
+          {Object.entries(FONT_CATEGORIES).map(
+            ([categoryKey, category], index) => (
+              <Fragment key={categoryKey}>
+                <SelectGroup>
+                  <SelectLabel>{category.label}</SelectLabel>
+                  {category.fonts.map((font) => (
+                    <SelectItem key={font.value} value={font.value}>
+                      <span
+                        style={{
+                          fontFamily: `${font.value}, system-ui, sans-serif`,
+                        }}
                       >
-                        <span
-                          style={{
-                            fontFamily: `${font.value}, system-ui, sans-serif`,
-                          }}
-                        >
-                          {font.name}
-                        </span>
-                      </DropdownMenuRadioItem>
-                    ))}
-                  </DropdownMenuGroup>
-                  {index < Object.keys(FONT_CATEGORIES).length - 1 && (
-                    <Separator />
-                  )}
-                </Fragment>
-              ),
-            )}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+                        {font.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+                {index < Object.keys(FONT_CATEGORIES).length - 1 && (
+                  <SelectSeparator />
+                )}
+              </Fragment>
+            ),
+          )}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

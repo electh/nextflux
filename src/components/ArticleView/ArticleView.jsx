@@ -108,7 +108,6 @@ export default function ArticleView() {
     fontFamily,
     titleFontSize,
     titleAlignType,
-    floatingSidebar,
   } = useStore(settingsState);
   const reduceMotion = useReducedMotion();
   const { lightTheme } = useStore(themeState);
@@ -126,9 +125,8 @@ export default function ArticleView() {
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <div
         className={cn(
-          "motion-sensitive flex-1 min-w-0 w-full p-0 h-screen fixed md:static inset-0 z-20",
+          "motion-sensitive flex-1 min-w-0 w-full p-0 h-screen fixed md:static inset-0 z-20 md:pr-2 md:py-2",
           !articleId && "pointer-events-none md:pointer-events-auto",
-          !floatingSidebar && "md:pr-2 md:py-2",
         )}
       >
         <div className="relative h-full w-full min-w-0">
@@ -141,7 +139,7 @@ export default function ArticleView() {
                   reduceMotion
                     ? false
                     : articleId
-                      ? { x: "100%", opacity: 1, scale: 1 }
+                      ? { x: "100vw", opacity: 1, scale: 1 }
                       : { x: 0, opacity: 0, scale: 0.8 }
                 }
                 animate={{ x: 0, opacity: 1, scale: 1 }}
@@ -149,7 +147,7 @@ export default function ArticleView() {
                   reduceMotion
                     ? { opacity: 0, transition: { duration: 0 } }
                     : articleId
-                      ? { x: "100%", opacity: 1, scale: 1 }
+                      ? { x: "100vw", opacity: 1, scale: 1 }
                       : { x: 0, opacity: 0, scale: 0.8 }
                 }
                 transition={{
@@ -163,14 +161,7 @@ export default function ArticleView() {
                 ) : (
                   <div
                     ref={scrollAreaRef}
-                    className={cn(
-                      "overflow-y-auto w-full min-w-0",
-                      cn(
-                        "article-scroll-area h-full bg-popover relative",
-                        !floatingSidebar &&
-                          "md:bg-popover md:shadow-custom md:rounded-2xl",
-                      ),
-                    )}
+                    className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
                   >
                     <ActionButtons />
                     <AnimatePresence mode="wait" custom={direction}>

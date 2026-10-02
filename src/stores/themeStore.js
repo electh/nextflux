@@ -1,6 +1,5 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { codexThemes } from "@/themes/codexThemes";
 
 const defaultValue = {
   themeMode: "system",
@@ -23,20 +22,6 @@ export const themes = {
       color: "#F3F1ED",
       accent: "rgb(216, 94.007, 74.996)",
     },
-    { id: "leaf", name: "leaf", color: "#c8e6c9", accent: "rgb(53, 117, 74)" },
-    ...codexThemes.flatMap((theme) => {
-      const variant = theme.variants.light;
-      return variant
-        ? [
-            {
-              id: variant.id,
-              name: theme.name,
-              color: variant.sidebar,
-              accent: variant.accent,
-            },
-          ]
-        : [];
-    }),
   ],
   dark: [
     {
@@ -51,19 +36,6 @@ export const themes = {
       color: "#4c566a",
       accent: "rgb(135, 192, 208)",
     },
-    ...codexThemes.flatMap((theme) => {
-      const variant = theme.variants.dark;
-      return variant
-        ? [
-            {
-              id: variant.id,
-              name: theme.name,
-              color: variant.sidebar,
-              accent: variant.accent,
-            },
-          ]
-        : [];
-    }),
   ],
 };
 
@@ -71,7 +43,14 @@ export const themeState = persistentAtom("theme", defaultValue, {
   encode: JSON.stringify,
   decode: (str) => {
     const storedValue = JSON.parse(str);
-    return { ...defaultValue, ...storedValue };
+    const value = { ...defaultValue, ...storedValue };
+    for (const mode of ["light", "dark"]) {
+      const key = `${mode}Theme`;
+      if (!themes[mode].some((theme) => theme.id === value[key])) {
+        value[key] = defaultValue[key];
+      }
+    }
+    return value;
   },
 });
 

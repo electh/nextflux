@@ -47,7 +47,7 @@ function SyncStatus() {
   );
 }
 const FeedListSidebar = () => {
-  const { showHiddenFeeds, floatingSidebar } = useStore(settingsState);
+  const { showHiddenFeeds } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
   const { isMobile, isMedium } = useIsMobile();
@@ -80,7 +80,6 @@ const FeedListSidebar = () => {
   }, [showHiddenFeeds]);
   return (
     <Sidebar
-      variant={floatingSidebar ? "floating" : "sidebar"}
       className={`sidebar ${isArticleDetailOpen ? "sidebar-shifted" : ""}`}
     >
       <SidebarHeader className="sidebar-header standalone:pt-safe-or-2">

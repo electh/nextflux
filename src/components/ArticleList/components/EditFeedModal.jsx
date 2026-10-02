@@ -211,7 +211,7 @@ export default function EditFeedModal() {
                     name="feedUrl"
                     id="feedUrl"
                   />
-                  <InputGroupAddon className="pr-0.5" align="inline-end">
+                  <InputGroupAddon className="pr-2" align="inline-end">
                     <Button
                       variant="ghost"
                       className="rounded-field"

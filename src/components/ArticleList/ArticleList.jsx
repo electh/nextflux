@@ -23,7 +23,6 @@ import ArticleListHeader from "./components/ArticleListHeader";
 import ArticleListContent from "./components/ArticleListContent";
 import ArticleListFooter from "./components/ArticleListFooter";
 import { settingsState } from "@/stores/settingsStore.js";
-import Indicator from "@/components/ArticleList/components/Indicator.jsx";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
 import { reportError } from "@/lib/errors.js";
 import ArticleView from "@/components/ArticleView/ArticleView.jsx";
@@ -36,14 +35,8 @@ const ArticleList = () => {
   const $filter = useStore(filter);
   const $currentPage = useStore(currentPage);
   const $atTop = useStore(atTop);
-  const {
-    showUnreadByDefault,
-    sortDirection,
-    sortField,
-    showHiddenFeeds,
-    showIndicator,
-    floatingSidebar,
-  } = useStore(settingsState);
+  const { showUnreadByDefault, sortDirection, sortField, showHiddenFeeds } =
+    useStore(settingsState);
   const virtuosoRef = useRef(null);
   const { isMedium } = useIsMobile();
   // 判断是否在移动端且正在查看文章详情
@@ -149,7 +142,6 @@ const ArticleList = () => {
       <div
         className={cn(
           "motion-sensitive shrink-0 w-full relative max-w-screen md:w-84 md:max-w-[30%] md:min-w-[18rem] h-dvh flex flex-col",
-          floatingSidebar ? "md:border-r" : "",
           // iOS 风格动画：移动端查看文章详情时，列表向左移动
           isArticleDetailOpen && "article-list-shifted",
         )}
@@ -174,7 +166,6 @@ const ArticleList = () => {
             </Button>
           </div>
         )}
-        {showIndicator && <Indicator virtuosoRef={virtuosoRef} />}
         <ArticleListContent
           articles={$filteredArticles}
           virtuosoRef={virtuosoRef}

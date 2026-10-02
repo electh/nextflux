@@ -20,6 +20,7 @@ import {
 export default function CustomModal({
   open,
   onOpenChange,
+  onOpenChangeComplete,
   title,
   fixedHeight = false,
   children,
@@ -31,7 +32,12 @@ export default function CustomModal({
   };
   if (isMedium) {
     return (
-      <Drawer open={open} onOpenChange={handleOpenChange} showSwipeHandle>
+      <Drawer
+        open={open}
+        onOpenChange={handleOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+        showSwipeHandle
+      >
         <DrawerContent
           className={cn("max-h-[85dvh]", fixedHeight && "h-[80dvh]")}
         >
@@ -52,7 +58,11 @@ export default function CustomModal({
     );
   }
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={handleOpenChange}
+      onOpenChangeComplete={onOpenChangeComplete}
+    >
       <DialogContent
         className={cn(
           "flex max-h-[85dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg",

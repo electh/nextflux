@@ -29,7 +29,6 @@ export default function AddCategoryModal() {
   const [title, setTitle] = useState("");
   const onClose = () => {
     addCategoryModalOpen.set(false);
-    setTitle("");
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,6 +58,9 @@ export default function AddCategoryModal() {
     <CustomModal
       open={$addCategoryModalOpen}
       onOpenChange={onClose}
+      onOpenChangeComplete={(open) => {
+        if (!open) setTitle("");
+      }}
       title={t("sidebar.addCategory")}
       footer={
         <>

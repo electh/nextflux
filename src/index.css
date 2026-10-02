@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./themes/codex.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -89,7 +88,7 @@
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.546 0.245 262.881);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent: oklch(0.930999 0 0);
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
@@ -201,43 +200,6 @@
     --ring: var(--primary);
   }
 
-  [data-theme="leaf"] {
-    --muted: var(--secondary);
-    --accent: var(--secondary);
-    --accent-foreground: var(--foreground);
-    --input: var(--border);
-    --sidebar: var(--background);
-    --sidebar-foreground: var(--foreground);
-    --sidebar-primary: var(--primary);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: var(--accent);
-    --sidebar-accent-foreground: var(--accent-foreground);
-    --sidebar-border: var(--border);
-    --sidebar-ring: var(--ring);
-    color-scheme: light;
-    /* Base Colors */
-    --background: rgb(223, 231, 225);
-    --foreground: rgb(54, 67, 54);
-    --card: rgb(236, 244, 238);
-    --card-foreground: var(--foreground);
-    --popover: rgb(236, 244, 238);
-    --popover-foreground: var(--foreground);
-    --muted-foreground: rgb(82, 92, 85);
-    --secondary: rgba(0, 0, 0, 0.05);
-    --secondary-foreground: rgb(54, 67, 54);
-    --primary: rgb(53, 117, 74);
-    --primary-foreground: oklch(0.985 0 0);
-    /* Status */
-    --success: oklch(0.65 0.2 145);
-    --success-foreground: oklch(0.9911 0 0);
-    --warning: oklch(0.75 0.18 85);
-    --warning-foreground: rgb(54, 67, 54);
-    --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(0.9911 0 0);
-    --border: rgba(0, 0, 0, 0.05);
-    --ring: var(--primary);
-  }
-
   [data-theme="nord-dark"] {
     --muted: var(--secondary);
     --accent: var(--secondary);
@@ -247,8 +209,8 @@
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: var(--accent);
-    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-accent: var(--muted);
+    --sidebar-accent-foreground: var(--foreground);
     --sidebar-border: var(--border);
     --sidebar-ring: var(--ring);
     color-scheme: dark;
@@ -273,6 +235,47 @@
     --destructive-foreground: oklch(0.9911 0 0);
     --border: rgb(54.001, 60, 74);
     --ring: var(--primary);
+  }
+}
+
+@layer utilities {
+  .theme-options .theme-option,
+  .theme-options .theme-option:hover,
+  .theme-options .theme-option[aria-pressed="true"] {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .theme-option-preview {
+    padding: 8px;
+    border: 2px solid var(--border);
+    background-color: var(--muted);
+    transition:
+      border-color 150ms,
+      background-color 150ms;
+  }
+  .theme-option:hover .theme-option-preview {
+    background-color: color-mix(in srgb, var(--primary) 8%, var(--muted));
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  }
+  .theme-option[aria-pressed="true"] .theme-option-preview,
+  .theme-option:focus-visible .theme-option-preview {
+    border-color: var(--primary);
+  }
+  .theme-option[aria-pressed="true"] .theme-option-preview {
+    background-color: color-mix(in srgb, var(--primary) 14%, var(--background));
+  }
+  .theme-option-label {
+    padding: 0 8px;
+    border-radius: 999px;
+    color: var(--muted-foreground);
+    transition:
+      background-color 150ms,
+      color 150ms;
+  }
+  .theme-option[aria-pressed="true"] .theme-option-label {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -359,24 +362,4 @@
   transform: translateX(-100px);
   filter: brightness(0.7);
   background-color: var(--sidebar);
-}
-
-/* Keep the selected route distinct from hover across every sidebar theme. */
-[data-sidebar="menu-button"][data-active="true"],
-[data-sidebar="menu-sub-button"][data-active="true"] {
-  background-color: color-mix(in srgb, var(--sidebar-primary) 18%, var(--sidebar));
-  color: var(--sidebar-foreground);
-  font-weight: 500;
-}
-
-[data-sidebar="menu-button"]:hover:not([data-active="true"]),
-[data-sidebar="menu-sub-button"]:hover:not([data-active="true"]),
-[data-sidebar="menu-action"]:hover {
-  background-color: color-mix(in srgb, var(--sidebar-foreground) 12%, var(--sidebar));
-  color: var(--sidebar-foreground);
-}
-
-[data-sidebar="menu-button"][data-active="true"]:hover,
-[data-sidebar="menu-sub-button"][data-active="true"]:hover {
-  background-color: color-mix(in srgb, var(--sidebar-primary) 26%, var(--sidebar));
 }
