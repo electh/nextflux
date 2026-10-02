@@ -141,6 +141,8 @@ export default {
     },
   },
   articleView: {
+    readingNavigation: "Okuma gezintisi",
+    jumpToSection: "{{index}}. bölüme git: {{title}}",
     notFoundTitle: "Makale bulunamadı",
     notFoundDescription: "Bu makale henüz eşitlenmemiş veya silinmiş olabilir.",
     backToList: "Listeye dön",
@@ -295,6 +297,8 @@ export default {
       useNativeVideoPlayer: "Tarayıcının dahili video oynatıcısını kullan",
     },
     readability: {
+      readingNavigation: "OKUMA GEZİNTİSİ",
+      showReadingRail: "Okuma gezintisini göster",
       title: "Okuma",
       text: "METİN",
       autoHideToolbar: "Araç çubuğunu otomatik gizle",

@@ -140,6 +140,8 @@ export default {
     },
   },
   articleView: {
+    readingNavigation: "阅读导航",
+    jumpToSection: "跳转到第 {{index}} 段：{{title}}",
     notFoundTitle: "未找到这篇文章",
     notFoundDescription: "文章可能尚未同步，或已被删除。",
     backToList: "返回列表",
@@ -293,6 +295,8 @@ export default {
       useNativeVideoPlayer: "使用浏览器原生播放器",
     },
     readability: {
+      readingNavigation: "阅读导航",
+      showReadingRail: "显示阅读导航",
       title: "阅读",
       text: "文本",
       autoHideToolbar: "自动隐藏工具栏",

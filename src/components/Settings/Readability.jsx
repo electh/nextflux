@@ -20,6 +20,7 @@ import {
   AlignStartVertical,
   CaseSensitive,
   ListOrdered,
+  ListTree,
   SquareCode,
   Type,
   UnfoldHorizontal,
@@ -152,6 +153,7 @@ export default function Readability() {
     titleAlignType,
     showLineNumbers,
     forceDarkCodeTheme,
+    showReadingRail,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -255,6 +257,18 @@ export default function Readability() {
           max={80}
           min={50}
           step={5}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.readingNavigation")}>
+        <SwitchItem
+          label={t("settings.readability.showReadingRail")}
+          icon={
+            <SettingIcon variant="green">
+              <ListTree />
+            </SettingIcon>
+          }
+          settingName="showReadingRail"
+          settingValue={showReadingRail}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.codeBlock")}>

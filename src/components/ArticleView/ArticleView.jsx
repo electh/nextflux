@@ -29,6 +29,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils.js";
 import ArticleLoading from "./components/ArticleLoading.jsx";
+import ArticleReadingRail from "./components/ArticleReadingRail.jsx";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
 function useActiveArticle(articleId) {
   const result = useLiveQuery(async () => {
@@ -113,6 +114,7 @@ export default function ArticleView() {
     fontFamily,
     titleFontSize,
     titleAlignType,
+    showReadingRail,
   } = useStore(settingsState);
   const reduceMotion = useReducedMotion();
   const { lightTheme } = useStore(themeState);
@@ -139,7 +141,10 @@ export default function ArticleView() {
             {(articleId || !isMedium) && (
               <motion.div
                 key={articleId ? "reader" : "empty"}
-                className="h-full w-full min-w-0"
+                className={cn(
+                  "article-reader-panel relative h-full w-full min-w-0",
+                  showReadingRail && "has-reading-rail",
+                )}
                 initial={
                   reduceMotion
                     ? false
@@ -164,79 +169,90 @@ export default function ArticleView() {
                 {!articleId ? (
                   <EmptyPlaceholder />
                 ) : (
-                  <div
-                    ref={scrollAreaRef}
-                    className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
-                  >
-                    <ActionButtons />
-                    <AnimatePresence
-                      mode="wait"
-                      custom={direction}
-                      initial={false}
+                  <>
+                    <div
+                      ref={scrollAreaRef}
+                      className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
                     >
-                      <motion.div
-                        key={articleId}
+                      <ActionButtons />
+                      <AnimatePresence
+                        mode="wait"
                         custom={direction}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        variants={
-                          reduceMotion ? reducedArticleMotion : articleMotion
-                        }
-                        className="w-full min-w-0 min-h-[calc(100dvh-4rem)]"
+                        initial={false}
                       >
-                        {error ? (
-                          <div
-                            role="alert"
-                            className="p-5 text-muted-foreground"
-                          >
-                            {error}
-                          </div>
-                        ) : article ? (
-                          <div
-                            className="article-view-content px-5 pt-5 pb-20 w-full mx-auto"
-                            style={{
-                              maxWidth: `${maxWidth}ch`,
-                              fontFamily,
-                            }}
-                          >
-                            <ArticleHeader
-                              article={article}
-                              fontSize={fontSize}
-                              titleAlignType={titleAlignType}
-                              titleFontSize={titleFontSize}
-                            />
-                            <ArticleBody
-                              article={article}
-                              alignJustify={alignJustify}
-                              fontSize={fontSize}
-                              isStoneTheme={isStoneTheme}
-                              lineHeight={lineHeight}
-                            />
-                          </div>
-                        ) : loading ? (
-                          <ArticleLoading />
-                        ) : (
-                          <EmptyPlaceholder
-                            title={t("articleView.notFoundTitle")}
-                            description={t("articleView.notFoundDescription")}
-                            className="h-[calc(100dvh-8rem)] min-h-64 bg-transparent shadow-none rounded-none px-6"
-                          >
-                            <Button
-                              variant="secondary"
-                              onClick={() =>
-                                navigate(
-                                  getArticleBasePath(window.location.pathname),
-                                )
-                              }
+                        <motion.div
+                          key={articleId}
+                          custom={direction}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          variants={
+                            reduceMotion ? reducedArticleMotion : articleMotion
+                          }
+                          className="w-full min-w-0 min-h-[calc(100dvh-4rem)]"
+                        >
+                          {error ? (
+                            <div
+                              role="alert"
+                              className="p-5 text-muted-foreground"
                             >
-                              {t("articleView.backToList")}
-                            </Button>
-                          </EmptyPlaceholder>
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
+                              {error}
+                            </div>
+                          ) : article ? (
+                            <div
+                              className="article-view-content px-5 pt-5 pb-20 w-full mx-auto"
+                              style={{
+                                maxWidth: `${maxWidth}ch`,
+                                fontFamily,
+                              }}
+                            >
+                              <ArticleHeader
+                                article={article}
+                                fontSize={fontSize}
+                                titleAlignType={titleAlignType}
+                                titleFontSize={titleFontSize}
+                              />
+                              <ArticleBody
+                                article={article}
+                                alignJustify={alignJustify}
+                                fontSize={fontSize}
+                                isStoneTheme={isStoneTheme}
+                                lineHeight={lineHeight}
+                              />
+                            </div>
+                          ) : loading ? (
+                            <ArticleLoading />
+                          ) : (
+                            <EmptyPlaceholder
+                              title={t("articleView.notFoundTitle")}
+                              description={t("articleView.notFoundDescription")}
+                              className="h-[calc(100dvh-8rem)] min-h-64 bg-transparent shadow-none rounded-none px-6"
+                            >
+                              <Button
+                                variant="secondary"
+                                onClick={() =>
+                                  navigate(
+                                    getArticleBasePath(
+                                      window.location.pathname,
+                                    ),
+                                  )
+                                }
+                              >
+                                {t("articleView.backToList")}
+                              </Button>
+                            </EmptyPlaceholder>
+                          )}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                    {showReadingRail && article && !error && (
+                      <ArticleReadingRail
+                        key={articleId}
+                        article={article}
+                        scrollAreaRef={scrollAreaRef}
+                      />
+                    )}
+                  </>
                 )}
               </motion.div>
             )}

@@ -1,0 +1,117 @@
+.article-reader-panel {
+  container-type: inline-size;
+}
+
+.article-reading-rail {
+  display: none;
+  position: absolute;
+  top: calc(50% + 24px);
+  left: 12px;
+  transform: translateY(-50%);
+  width: 52px;
+  z-index: 40;
+}
+
+.article-reading-ticks {
+  display: flex;
+  flex-direction: column;
+  max-height: min(560px, calc(100dvh - 240px));
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.article-reading-tick {
+  display: flex;
+  align-items: center;
+  flex: 0 0 10px;
+  width: 100%;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.article-reading-tick span {
+  width: var(--tick-width, 8px);
+  height: 2px;
+  background: color-mix(in oklch, var(--foreground) 20%, transparent);
+  transition:
+    width 160ms ease,
+    background-color 160ms ease;
+}
+
+.article-reading-tick.is-active span {
+  background: var(--foreground);
+}
+
+.article-reading-tick:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.article-reading-preview {
+  position: absolute;
+  left: 64px;
+  transform: translateY(-50%);
+  width: min(340px, calc(100cqw - 112px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+}
+
+/* Keep the hover path continuous between the ruler and preview. */
+.article-reading-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0 100% 0 auto;
+  width: 16px;
+}
+
+.article-reading-preview-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.article-reading-preview-text {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  max-height: 66px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  mask-image: linear-gradient(to bottom, black 80%, transparent);
+}
+
+.article-reading-preview-text p {
+  margin: 0 0 10px;
+}
+
+.article-reading-preview-text blockquote {
+  margin: 10px 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--border);
+}
+
+@container (min-width: 700px) {
+  .article-reading-rail {
+    display: block;
+  }
+
+  .article-reader-panel.has-reading-rail .article-view-content {
+    padding-left: 76px;
+    padding-right: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-reading-tick span {
+    transition: none;
+  }
+}

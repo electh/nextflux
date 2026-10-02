@@ -142,8 +142,11 @@ export default {
     },
   },
   articleView: {
+    readingNavigation: "Reading navigation",
+    jumpToSection: "Jump to section {{index}}: {{title}}",
     notFoundTitle: "Article not found",
-    notFoundDescription: "This article may not have synced yet, or may have been deleted.",
+    notFoundDescription:
+      "This article may not have synced yet, or may have been deleted.",
     backToList: "Back to list",
 
     imageError: "Error loading image",
@@ -296,6 +299,8 @@ export default {
       useNativeVideoPlayer: "Use browser's native video player",
     },
     readability: {
+      readingNavigation: "READING NAVIGATION",
+      showReadingRail: "Show reading navigation",
       title: "Reading",
       text: "TEXT",
       autoHideToolbar: "Auto hide toolbar",

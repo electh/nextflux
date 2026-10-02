@@ -142,8 +142,11 @@ export default {
     },
   },
   articleView: {
+    readingNavigation: "Navigation de lecture",
+    jumpToSection: "Aller à la section {{index}} : {{title}}",
     notFoundTitle: "Article introuvable",
-    notFoundDescription: "Cet article n’a peut-être pas encore été synchronisé ou a été supprimé.",
+    notFoundDescription:
+      "Cet article n’a peut-être pas encore été synchronisé ou a été supprimé.",
     backToList: "Retour à la liste",
 
     imageError: "Erreur de chargement de l'image",
@@ -297,6 +300,8 @@ export default {
       useNativeVideoPlayer: "Utiliser le lecteur vidéo natif du navigateur",
     },
     readability: {
+      readingNavigation: "NAVIGATION DE LECTURE",
+      showReadingRail: "Afficher la navigation de lecture",
       title: "Lecture",
       text: "TEXTE",
       autoHideToolbar: "Masquer automatiquement la barre d'outils",

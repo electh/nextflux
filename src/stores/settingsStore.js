@@ -20,6 +20,7 @@ const defaultValue = {
   textPreviewLines: 2,
   showReadingTime: true,
   autoHideToolbar: false,
+  showReadingRail: false,
   syncInterval: "15", // 添加同步间隔设置，默认15分钟
   showLineNumbers: false,
   forceDarkCodeTheme: false,
@@ -69,6 +70,7 @@ export const resetSettings = () => {
     "titleFontSize",
     "titleAlignType",
     "autoHideToolbar",
+    "showReadingRail",
     "showLineNumbers",
     "forceDarkCodeTheme",
   ];
