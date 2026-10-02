@@ -119,7 +119,7 @@ export default function SearchModal() {
       >
         <DialogTitle className="sr-only">{t("common.search")}</DialogTitle>
         <DialogHeader className="p-2 border-b">
-          <InputGroup className="bg-transparent shadow-none ring-0 ring-transparent">
+          <InputGroup className="bg-transparent shadow-none ring-0 ring-transparent has-[[data-slot=input-group-control]:focus-visible]:border-transparent has-[[data-slot=input-group-control]:focus-visible]:ring-0">
             <InputGroupAddon>
               <SearchIcon className="size-5 text-muted-foreground opacity-60 stroke-3" />
             </InputGroupAddon>

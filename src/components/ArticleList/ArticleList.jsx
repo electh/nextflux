@@ -35,7 +35,7 @@ const ArticleList = () => {
   const $filter = useStore(filter);
   const $currentPage = useStore(currentPage);
   const $atTop = useStore(atTop);
-  const { showUnreadByDefault, sortDirection, sortField, showHiddenFeeds } =
+  const { sortDirection, sortField, showHiddenFeeds } =
     useStore(settingsState);
   const virtuosoRef = useRef(null);
   const { isMedium } = useIsMobile();
@@ -131,12 +131,6 @@ const ArticleList = () => {
   }, [result, scope, $atTop]);
   const setVisibleRange = useCallback((range) => visibleRange.set(range), []);
 
-  // 组件挂载时设置默认过滤器
-  useEffect(() => {
-    if (!feedId && !categoryId && showUnreadByDefault) {
-      filter.set("unread");
-    }
-  }, [categoryId, feedId, showUnreadByDefault]);
   return (
     <div className="main-content flex w-full min-w-0 bg-sidebar">
       <div
