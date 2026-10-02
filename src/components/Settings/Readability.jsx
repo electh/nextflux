@@ -99,7 +99,11 @@ function FontSelector({ label, icon, settingName, settingValue }) {
             {getSelectedFontPreview()}
           </span>
         </SelectTrigger>
-        <SelectContent className="max-h-[300px]" alignItemWithTrigger={false}>
+        <SelectContent
+          variant="glass"
+          className="max-h-[300px]"
+          alignItemWithTrigger={false}
+        >
           <SelectGroup>
             <SelectLabel>System</SelectLabel>
             {SYSTEM_FONTS.map((font) => (

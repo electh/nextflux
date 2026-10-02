@@ -1,10 +1,10 @@
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  MorphDropdownMenu,
+  MorphDropdownMenuTrigger,
+  MorphDropdownMenuContent,
+  MorphDropdownMenuGroup,
+  MorphDropdownMenuItem,
+} from "@/components/ui/morph-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, FolderPlus, Rss, Upload } from "lucide-react";
 import { addCategoryModalOpen, addFeedModalOpen } from "@/stores/modalStore";
@@ -45,17 +45,17 @@ export default function AddFeedButton() {
         className="hidden"
       />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger
+      <MorphDropdownMenu>
+        <MorphDropdownMenuTrigger
           render={
             <Button variant="ghost" size="icon-sm">
               <CirclePlus className="size-4 text-muted-foreground" />
             </Button>
           }
         />
-        <DropdownMenuContent>
-          <DropdownMenuGroup>
-            <DropdownMenuItem
+        <MorphDropdownMenuContent align="end">
+          <MorphDropdownMenuGroup>
+            <MorphDropdownMenuItem
               onClick={() =>
                 ((key) => {
                   if (key === "newFeed") {
@@ -75,8 +75,8 @@ export default function AddFeedButton() {
             >
               <Rss className="size-4 text-muted-foreground" />
               <span>{t("sidebar.addFeed")}</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
+            </MorphDropdownMenuItem>
+            <MorphDropdownMenuItem
               onClick={() =>
                 ((key) => {
                   if (key === "newFeed") {
@@ -96,8 +96,8 @@ export default function AddFeedButton() {
             >
               <Upload className="size-4 text-muted-foreground" />
               <span>{t("sidebar.importOPML")}</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
+            </MorphDropdownMenuItem>
+            <MorphDropdownMenuItem
               onClick={() =>
                 ((key) => {
                   if (key === "newFeed") {
@@ -117,10 +117,10 @@ export default function AddFeedButton() {
             >
               <FolderPlus className="size-4 text-muted-foreground" />
               <span>{t("sidebar.addCategory")}</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            </MorphDropdownMenuItem>
+          </MorphDropdownMenuGroup>
+        </MorphDropdownMenuContent>
+      </MorphDropdownMenu>
     </>
   );
 }

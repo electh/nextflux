@@ -1,0 +1,119 @@
+/* Share the animated surface bounds with the shadow outside its clip. */
+.morph-menu-positioner {
+  --morph-x: 0px;
+  --morph-y: 0px;
+  --morph-inset: var(--morph-y)
+    calc(100% - var(--morph-x) - var(--anchor-width))
+    calc(100% - var(--morph-y) - var(--anchor-height)) var(--morph-x);
+  --morph-closed: inset(var(--morph-inset) round 8px);
+}
+.morph-menu-positioner::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  transition:
+    inset 350ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    border-radius 350ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keep the shadow outside the animated clip so its edges remain visible. */
+.morph-menu-positioner:has(
+    .morph-menu-popup:is([data-starting-style], [data-ending-style])
+  )::before {
+  inset: var(--morph-inset);
+  border-radius: 8px;
+}
+
+.morph-menu-positioner:has(.morph-menu-popup[data-ending-style])::before {
+  opacity: 0;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.morph-menu-positioner:has(
+    .morph-menu-popup[data-reduced-motion="true"]
+  )::before {
+  transition: none;
+}
+
+.morph-menu-popup {
+  clip-path: inset(0 round 12px);
+  transition:
+    clip-path 350ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.morph-menu-positioner[data-side="top"] {
+  --morph-y: calc(100% - var(--anchor-height));
+}
+
+.morph-menu-positioner:is(
+    [data-side="top"],
+    [data-side="bottom"]
+  )[data-align="end"] {
+  --morph-x: calc(100% - var(--anchor-width));
+}
+
+.morph-menu-positioner:is(
+    [data-side="top"],
+    [data-side="bottom"]
+  )[data-align="center"] {
+  --morph-x: calc((100% - var(--anchor-width)) / 2);
+}
+
+.morph-menu-positioner:is([data-side="left"], [data-side="inline-start"]) {
+  --morph-x: calc(100% - var(--anchor-width));
+}
+
+.morph-menu-positioner:is(
+    [data-side="left"],
+    [data-side="right"],
+    [data-side="inline-start"],
+    [data-side="inline-end"]
+  )[data-align="end"] {
+  --morph-y: calc(100% - var(--anchor-height));
+}
+
+.morph-menu-positioner:is(
+    [data-side="left"],
+    [data-side="right"],
+    [data-side="inline-start"],
+    [data-side="inline-end"]
+  )[data-align="center"] {
+  --morph-y: calc((100% - var(--anchor-height)) / 2);
+}
+
+.morph-menu-popup[data-starting-style],
+.morph-menu-popup[data-ending-style] {
+  clip-path: var(--morph-closed);
+}
+
+.morph-menu-popup[data-ending-style] {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 250ms, 250ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.morph-menu-items {
+  transition:
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.morph-menu-popup:is([data-starting-style], [data-ending-style])
+  .morph-menu-items {
+  opacity: 0;
+  transform: translateX(40px) scale(0.97);
+  filter: blur(2px);
+}
+
+.morph-menu-popup[data-reduced-motion="true"],
+.morph-menu-popup[data-reduced-motion="true"] .morph-menu-items {
+  transition: none;
+}

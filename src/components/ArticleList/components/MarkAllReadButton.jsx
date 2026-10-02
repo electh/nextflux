@@ -1,10 +1,10 @@
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  MorphDropdownMenu,
+  MorphDropdownMenuTrigger,
+  MorphDropdownMenuContent,
+  MorphDropdownMenuGroup,
+  MorphDropdownMenuItem,
+} from "@/components/ui/morph-dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
@@ -22,8 +22,8 @@ export default function MarkAllReadButton() {
   const $filter = useStore(filter);
   const isPending = $isSyncing || $markingAllAsRead;
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
+    <MorphDropdownMenu>
+      <MorphDropdownMenuTrigger
         render={
           <Button
             variant="ghost"
@@ -40,10 +40,10 @@ export default function MarkAllReadButton() {
         }
       />
 
-      <DropdownMenuContent>
-        <DropdownMenuGroup aria-label="markAllAsRead">
-          <DropdownMenuItem
-            variant="danger"
+      <MorphDropdownMenuContent align="end">
+        <MorphDropdownMenuGroup aria-label="markAllAsRead">
+          <MorphDropdownMenuItem
+            variant="destructive"
             onClick={() =>
               ((key) => {
                 if (key !== "markAsRead") return;
@@ -57,11 +57,11 @@ export default function MarkAllReadButton() {
               })("markAsRead")
             }
           >
-            <CircleCheck className="size-4 text-destructive" />
-            <span className="text-destructive">{t("articleList.markAllRead")}</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <CircleCheck />
+            <span>{t("articleList.markAllRead")}</span>
+          </MorphDropdownMenuItem>
+        </MorphDropdownMenuGroup>
+      </MorphDropdownMenuContent>
+    </MorphDropdownMenu>
   );
 }

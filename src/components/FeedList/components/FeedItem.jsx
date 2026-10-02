@@ -4,6 +4,7 @@ import {
   ContextMenuGroup,
   ContextMenuTrigger,
   ContextMenuItem,
+  ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -46,8 +47,7 @@ const FeedItem = ({ feed }) => {
               isActive={Number(feedId) === feed.id}
               className={cn(
                 "pl-8 pr-2 h-8",
-                parseInt(feedId) === feed.id &&
-                  "active-feed",
+                parseInt(feedId) === feed.id && "active-feed",
               )}
               render={
                 <Link
@@ -103,15 +103,15 @@ const FeedItem = ({ feed }) => {
               {<FilePen className="size-4 text-muted-foreground" />}
               {t("articleList.editFeed")}
             </ContextMenuItem>
-            <div className="my-2 border-t" />
+            <ContextMenuSeparator />
             <ContextMenuItem
+              variant="destructive"
               onClick={() => {
                 currentFeedId.set(feed.id.toString());
                 unsubscribeModalOpen.set(true);
               }}
-              className="text-destructive! hover:bg-destructive/20!"
             >
-              {<Trash2 className="size-4" />}
+              <Trash2 />
               {t("articleList.unsubscribe")}
             </ContextMenuItem>
           </ContextMenuGroup>

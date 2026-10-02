@@ -191,7 +191,7 @@ export default function EditFeedModal() {
                   <SelectTrigger className="w-full" id="edit-category">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent variant="glass">
                     <SelectGroup>
                       {$categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>

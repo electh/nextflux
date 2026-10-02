@@ -213,7 +213,7 @@ export default function ArticleCard({ article }) {
           }
         />
 
-        <ContextMenuContent className="shadow-custom">
+        <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuItem
               onClick={() => {

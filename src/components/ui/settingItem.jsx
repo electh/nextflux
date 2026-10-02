@@ -159,7 +159,7 @@ export function SelItem({
         <SelectTrigger size="sm" aria-labelledby={settingName + "-label"}>
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent variant="glass">
           <SelectGroup>
             {options.map((option) => (
               <SelectItem key={option.value} value={String(option.value)}>

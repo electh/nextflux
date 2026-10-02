@@ -169,7 +169,11 @@ export default function ArticleView() {
                     className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
                   >
                     <ActionButtons />
-                    <AnimatePresence mode="wait" custom={direction}>
+                    <AnimatePresence
+                      mode="wait"
+                      custom={direction}
+                      initial={false}
+                    >
                       <motion.div
                         key={articleId}
                         custom={direction}

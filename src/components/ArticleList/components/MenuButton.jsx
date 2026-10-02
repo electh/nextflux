@@ -1,10 +1,10 @@
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  MorphDropdownMenu,
+  MorphDropdownMenuTrigger,
+  MorphDropdownMenuContent,
+  MorphDropdownMenuGroup,
+  MorphDropdownMenuItem,
+} from "@/components/ui/morph-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   EllipsisVertical,
@@ -29,8 +29,8 @@ export default function MenuButton() {
   const hasCategoryMenu = !!categoryId && !feedId;
   const isDisabled = !feedId && !categoryId;
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
+    <MorphDropdownMenu>
+      <MorphDropdownMenuTrigger
         render={
           <Button variant="ghost" disabled={isDisabled} size="icon-sm">
             <EllipsisVertical className="size-4 text-muted-foreground" />
@@ -39,13 +39,13 @@ export default function MenuButton() {
       />
 
       {(hasFeedMenu || hasCategoryMenu) && (
-        <DropdownMenuContent>
-          <DropdownMenuGroup
+        <MorphDropdownMenuContent align="end">
+          <MorphDropdownMenuGroup
             aria-label={hasFeedMenu ? "Feed Actions" : "Category Actions"}
           >
             {hasFeedMenu && (
               <>
-                <DropdownMenuItem
+                <MorphDropdownMenuItem
                   className="cursor-pointer"
                   onClick={() =>
                     ((key) => {
@@ -68,8 +68,8 @@ export default function MenuButton() {
                 >
                   <RefreshCw className="size-4 text-muted-foreground" />
                   <span>{t("articleList.refreshFeed")}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
+                </MorphDropdownMenuItem>
+                <MorphDropdownMenuItem
                   onClick={() =>
                     ((key) => {
                       if (hasFeedMenu) {
@@ -91,9 +91,10 @@ export default function MenuButton() {
                 >
                   <FilePen className="size-4 text-muted-foreground" />
                   <span>{t("articleList.editFeed")}</span>
-                </DropdownMenuItem>
+                </MorphDropdownMenuItem>
 
-                <DropdownMenuItem
+                <MorphDropdownMenuItem
+                  variant="destructive"
                   onClick={() =>
                     ((key) => {
                       if (hasFeedMenu) {
@@ -113,16 +114,14 @@ export default function MenuButton() {
                     })("unsubscribe")
                   }
                 >
-                  <Trash2 className="size-4 text-destructive" />
-                  <span className="text-destructive">
-                    {t("articleList.unsubscribe")}
-                  </span>
-                </DropdownMenuItem>
+                  <Trash2 />
+                  <span>{t("articleList.unsubscribe")}</span>
+                </MorphDropdownMenuItem>
               </>
             )}
 
             {hasCategoryMenu && (
-              <DropdownMenuItem
+              <MorphDropdownMenuItem
                 onClick={() =>
                   ((key) => {
                     if (hasFeedMenu) {
@@ -144,11 +143,11 @@ export default function MenuButton() {
               >
                 <FolderPen className="size-4 text-muted-foreground" />
                 <span>{t("articleList.renameCategory.title")}</span>
-              </DropdownMenuItem>
+              </MorphDropdownMenuItem>
             )}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
+          </MorphDropdownMenuGroup>
+        </MorphDropdownMenuContent>
       )}
-    </DropdownMenu>
+    </MorphDropdownMenu>
   );
 }

@@ -1,11 +1,11 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  MorphDropdownMenu,
+  MorphDropdownMenuTrigger,
+  MorphDropdownMenuContent,
+  MorphDropdownMenuGroup,
+  MorphDropdownMenuItem,
+} from "@/components/ui/morph-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, Cog, LogOut, CircleUser } from "lucide-react";
 import { authState } from "@/stores/authStore.js";
@@ -19,8 +19,8 @@ export default function ProfileButton() {
   const { isMobile, setOpenMobile } = useSidebar();
   return (
     <div className="profile-button standalone:pb-safe flex items-center gap-4">
-      <DropdownMenu>
-        <DropdownMenuTrigger
+      <MorphDropdownMenu>
+        <MorphDropdownMenuTrigger
           render={
             <Button
               size="sm"
@@ -38,9 +38,9 @@ export default function ProfileButton() {
           }
         />
 
-        <DropdownMenuContent side="top" align="start">
-          <DropdownMenuGroup aria-label="Profile Actions">
-            <DropdownMenuItem
+        <MorphDropdownMenuContent side="top" align="start">
+          <MorphDropdownMenuGroup aria-label="Profile Actions">
+            <MorphDropdownMenuItem
               onClick={() =>
                 ((key) => {
                   if (key === "settings") {
@@ -59,8 +59,8 @@ export default function ProfileButton() {
             >
               <Cog className="size-4 text-muted-foreground" />
               <span>{t("sidebar.profile.settings")}</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
+            </MorphDropdownMenuItem>
+            <MorphDropdownMenuItem
               onClick={() =>
                 ((key) => {
                   if (key === "settings") {
@@ -92,10 +92,10 @@ export default function ProfileButton() {
                 {t("sidebar.profile.openMiniflux")}
                 <ArrowUpRight className="text-muted-foreground opacity-60" />
               </span>
-            </DropdownMenuItem>
+            </MorphDropdownMenuItem>
 
-            <DropdownMenuItem
-              variant="danger"
+            <MorphDropdownMenuItem
+              variant="destructive"
               onClick={() =>
                 ((key) => {
                   if (key === "settings") {
@@ -112,12 +112,12 @@ export default function ProfileButton() {
                 })("logout")
               }
             >
-              <LogOut className="size-4 text-destructive" />
+              <LogOut />
               <span>{t("sidebar.profile.logout")}</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            </MorphDropdownMenuItem>
+          </MorphDropdownMenuGroup>
+        </MorphDropdownMenuContent>
+      </MorphDropdownMenu>
     </div>
   );
 }

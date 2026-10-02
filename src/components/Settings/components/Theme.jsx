@@ -173,7 +173,7 @@ function ThemeSelect({ mode, value, themeMode, label, icon }) {
         <SelectTrigger size="sm" aria-label={label}>
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent variant="glass">
           <SelectGroup>
             {options.map((theme) => (
               <SelectItem key={theme.id} value={theme.id}>

@@ -312,7 +312,7 @@ export default function AddFeedModal() {
                   <SelectTrigger className="w-full" id="add-type">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent variant="glass">
                     <SelectGroup>
                       {supportedTypes.map((type) => (
                         <SelectItem key={type.id} value={type.id}>
@@ -424,7 +424,7 @@ export default function AddFeedModal() {
                   <SelectTrigger className="w-full" id="add-category">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent variant="glass">
                     <SelectGroup>
                       {$categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
