@@ -230,6 +230,34 @@ export default {
     or: "Ou continuer avec",
   },
   settings: {
+    backup: {
+      title: "Données",
+      subscriptions: "Sauvegarde des abonnements",
+      opmlDescription:
+        "Exportez tous les abonnements et catégories du serveur, y compris les flux masqués.",
+      exportOpml: "Exporter OPML",
+      requiresConnection:
+        "Connectez-vous au serveur Miniflux pour exporter les abonnements.",
+      preferences: "Sauvegarde des paramètres",
+      settingsDescription:
+        "Sauvegardez les préférences de lecture, apparence, langue et IA. Les identifiants et clés API sont exclus.",
+      exportSettings: "Sauvegarder les paramètres",
+      restoreSettings: "Restaurer les paramètres",
+      migrationDescription:
+        "Ces sauvegardes excluent les articles, états de lecture, favoris, règles avancées des flux et configurations de services tiers. Pour migrer ces données, sauvegardez la base de données Miniflux.",
+      backupGuide: "Guide officiel de sauvegarde Miniflux",
+      restoreConfirm:
+        "Appliquer les paramètres de « {{filename}} » et remplacer les paramètres correspondants ? Les identifiants, clés API, abonnements et articles du serveur restent inchangés.",
+      exportSuccess: "Fichier de sauvegarde créé",
+      exportFailed: "Échec de l’export. Réessayez.",
+      restoreSuccess: "Paramètres restaurés",
+      restoreFailed:
+        "Échec de la restauration. Paramètres précédents rétablis.",
+      invalidBackup: "Sauvegarde Nextflux ou valeurs de paramètres invalides.",
+      unsupportedVersion:
+        "Version de sauvegarde non prise en charge. Mettez Nextflux à jour.",
+      fileTooLarge: "La taille maximale du fichier est de 1 Mo.",
+    },
     title: "Paramètres",
     general: {
       title: "Général",

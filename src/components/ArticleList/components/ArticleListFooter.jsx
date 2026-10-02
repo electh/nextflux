@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { filter } from "@/stores/articlesStore";
-import { CircleDot, Star, Text } from "lucide-react";
+import { Circle, Star, Text } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
 export default function ArticleListFooter() {
@@ -23,13 +23,13 @@ export default function ArticleListFooter() {
           >
             <TabsTrigger value="starred">
               <div className="flex items-center gap-1.5">
-                <Star className="size-3 fill-current" />
+                <Star className="size-3 fill-current" strokeWidth={0} />
                 <span>{t("articleList.starred")}</span>
               </div>
             </TabsTrigger>
             <TabsTrigger value="unread">
               <div className="flex items-center gap-1.5">
-                <CircleDot className="size-3 p-px fill-current" />
+                <Circle className="size-3 p-px fill-current" strokeWidth={0} />
                 <span>{t("articleList.unread")}</span>
               </div>
             </TabsTrigger>

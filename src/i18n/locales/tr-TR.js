@@ -227,6 +227,33 @@ export default {
     or: "Veya devam etmek için",
   },
   settings: {
+    backup: {
+      title: "Veriler",
+      subscriptions: "Abonelik yedeği",
+      opmlDescription:
+        "Gizli akışlar dahil sunucudaki tüm abonelikleri ve kategorileri dışa aktarın.",
+      exportOpml: "OPML dışa aktar",
+      requiresConnection:
+        "Abonelikleri dışa aktarmak için Miniflux sunucusuna bağlanın.",
+      preferences: "Ayar yedeği",
+      settingsDescription:
+        "Okuma, görünüm, dil ve yapay zekâ tercihlerini yedekleyin. Giriş bilgileri ve API anahtarları dahil edilmez.",
+      exportSettings: "Ayarları yedekle",
+      restoreSettings: "Ayarları geri yükle",
+      migrationDescription:
+        "Bu yedekler makaleleri, okuma durumunu, yıldızları, gelişmiş akış kurallarını ve üçüncü taraf hizmet ayarlarını içermez. Bu verileri taşımak için Miniflux veritabanını yedekleyin.",
+      backupGuide: "Miniflux resmî yedekleme kılavuzu",
+      restoreConfirm:
+        "“{{filename}}” dosyasındaki ayarlar karşılık gelen mevcut ayarların yerine uygulansın mı? Giriş bilgileri, API anahtarları, sunucu abonelikleri ve makaleleri değişmez.",
+      exportSuccess: "Yedek dosyası oluşturuldu",
+      exportFailed: "Dışa aktarma başarısız. Tekrar deneyin.",
+      restoreSuccess: "Ayarlar geri yüklendi",
+      restoreFailed: "Geri yükleme başarısız. Önceki ayarlar geri getirildi.",
+      invalidBackup: "Geçersiz Nextflux ayar yedeği veya ayar değerleri.",
+      unsupportedVersion:
+        "Desteklenmeyen yedek sürümü. Nextflux uygulamasını güncelleyin.",
+      fileTooLarge: "Yedek dosyası en fazla 1 MB olabilir.",
+    },
     title: "Ayarlar",
     general: {
       title: "Genel",

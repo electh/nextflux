@@ -226,6 +226,30 @@ export default {
     or: "或者使用",
   },
   settings: {
+    backup: {
+      title: "数据",
+      subscriptions: "订阅备份",
+      opmlDescription: "导出服务器上的全部订阅及分类，包括隐藏订阅。",
+      exportOpml: "导出 OPML",
+      requiresConnection: "导出订阅需要连接 Miniflux 服务器。",
+      preferences: "设置备份",
+      settingsDescription:
+        "备份阅读、外观、语言及 AI 配置。文件不包含登录凭据和 API Key。",
+      exportSettings: "备份设置",
+      restoreSettings: "恢复设置",
+      migrationDescription:
+        "OPML 和设置备份不包含文章正文、已读状态、收藏、订阅源高级规则或第三方服务配置。文章及阅读状态由 Miniflux 保存；迁移这些数据需备份 Miniflux 数据库。",
+      backupGuide: "Miniflux 官方备份指南",
+      restoreConfirm:
+        "将应用「{{filename}}」中的设置并覆盖对应的当前设置。登录信息、API Key 和服务器上的订阅及文章保持不变。是否恢复？",
+      exportSuccess: "备份文件已生成",
+      exportFailed: "导出失败，请重试",
+      restoreSuccess: "设置已恢复",
+      restoreFailed: "恢复失败，已还原原来的设置",
+      invalidBackup: "不是有效的 Nextflux 设置备份，或包含无效设置",
+      unsupportedVersion: "不支持此备份版本，请更新 Nextflux 后重试",
+      fileTooLarge: "备份文件过大，最大支持 1 MB",
+    },
     title: "设置",
     general: {
       title: "常规",

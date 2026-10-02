@@ -229,6 +229,34 @@ export default {
     or: "Or continue with",
   },
   settings: {
+    backup: {
+      title: "Data",
+      subscriptions: "Subscription backup",
+      opmlDescription:
+        "Export all subscriptions and categories from your server, including hidden feeds.",
+      exportOpml: "Export OPML",
+      requiresConnection:
+        "Connect to your Miniflux server to export subscriptions.",
+      preferences: "Settings backup",
+      settingsDescription:
+        "Back up reading, appearance, language and AI preferences. Login credentials and API keys are excluded.",
+      exportSettings: "Back up settings",
+      restoreSettings: "Restore settings",
+      migrationDescription:
+        "OPML and settings backups exclude article content, read status, stars, advanced feed rules and third-party service configuration. Miniflux stores articles and reading states; back up its database to migrate these data.",
+      backupGuide: "Miniflux backup guide",
+      restoreConfirm:
+        "Apply settings from “{{filename}}”, replacing the corresponding current settings? Login credentials, API keys, server subscriptions and articles will stay unchanged.",
+      exportSuccess: "Backup file created",
+      exportFailed: "Export failed. Please try again.",
+      restoreSuccess: "Settings restored",
+      restoreFailed: "Restore failed. Previous settings restored.",
+      invalidBackup:
+        "Invalid Nextflux settings backup or invalid preference values.",
+      unsupportedVersion:
+        "Unsupported backup version. Update Nextflux and try again.",
+      fileTooLarge: "Backup files must be no larger than 1 MB.",
+    },
     title: "Settings",
     general: {
       title: "General",

@@ -16,6 +16,7 @@ import General from "@/components/Settings/General.jsx";
 import Appearance from "@/components/Settings/Appearance.jsx";
 import Readability from "@/components/Settings/Readability.jsx";
 import AI from "@/components/Settings/AI.jsx";
+import Backup from "@/components/Settings/Backup.jsx";
 import About from "@/components/Settings/About.jsx";
 import Shortcuts from "@/components/Settings/Shortcuts.jsx";
 import { useTranslation } from "react-i18next";
@@ -28,6 +29,7 @@ import {
   Keyboard,
   Info,
   ArrowLeft,
+  Archive,
 } from "lucide-react";
 const menuItems = [
   {
@@ -49,6 +51,11 @@ const menuItems = [
     id: "ai",
     icon: Sparkles,
     translationKey: "settings.ai.title",
+  },
+  {
+    id: "backup",
+    icon: Archive,
+    translationKey: "settings.backup.title",
   },
   {
     id: "shortcuts",
@@ -117,6 +124,8 @@ function ContentArea({ activeTab, showTitle = false, className }) {
         return <AI />;
       case "shortcuts":
         return <Shortcuts />;
+      case "backup":
+        return <Backup />;
       case "about":
         return <About />;
       default:

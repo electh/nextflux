@@ -23,6 +23,7 @@ A modern RSS reader client for [Miniflux](https://github.com/miniflux/v2) built 
 - ⌨️ Keyboard shortcuts
 - 📊 Feed management
     - OPML import
+    - OPML export and settings backup/restore
     - Category organization
     - Feed hiding
     - Feed discovery and search
@@ -108,9 +109,6 @@ its UI style, slapped it on, and called it a day.
 - 🇹🇷 Turkish: [@TaylanTatli](https://github.com/TaylanTatli)
 
 - 🇫🇷 French: [@quent1-fr](https://github.com/quent1-fr)
-
-
-
 
 
 

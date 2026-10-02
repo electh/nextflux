@@ -49,11 +49,14 @@ export async function createFeed(feedUrl, categoryId, params) {
 }
 
 export async function importOPML(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-  const response = await apiClient.post("/v1/import", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+  const response = await apiClient.post("/v1/import", await file.text(), {
+    headers: { "Content-Type": "application/xml" },
   });
+  return response.data;
+}
+
+export async function exportOPML() {
+  const response = await apiClient.get("/v1/export", { responseType: "text" });
   return response.data;
 }
 

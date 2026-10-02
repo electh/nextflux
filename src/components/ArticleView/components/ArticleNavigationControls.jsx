@@ -20,7 +20,7 @@ export default function ArticleNavigationControls({
       <Tooltip>
         <TooltipTrigger
           render={
-            <CloseButton className="mx-2" variant="ghost" onClick={onClose} />
+            <CloseButton className="mx-2" onClick={onClose} />
           }
         />
         <TooltipContent>{t("common.close")}</TooltipContent>
