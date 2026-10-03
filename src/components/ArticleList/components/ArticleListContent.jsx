@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils.js";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
 const ArticleItem = memo(({ article, isLast }) => (
-  <div className="mx-2">
+  <div className="mx-auto w-full max-w-[560px] px-2">
     <ArticleCard article={article} />
     {!isLast && <div className="h-4" />}
   </div>
@@ -31,7 +31,7 @@ function ListFooter({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="vlist-footer h-24 pt-2 px-2">
+    <div className="vlist-footer mx-auto h-24 w-full max-w-[560px] px-2 pt-2">
       <Button
         size="sm"
         variant="secondary"

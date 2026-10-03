@@ -339,7 +339,7 @@
 }
 
 /* iOS 风格文章列表移动动画 */
-.main-content > div:first-child {
+.article-list-panel {
   transition:
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),

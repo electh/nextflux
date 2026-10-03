@@ -2,8 +2,7 @@ import { Outlet } from "react-router-dom";
 import "./App.css";
 import "m3-ripple/ripple.css";
 import { useEffect } from "react";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar.jsx";
-import FeedListSidebar from "@/components/FeedList/FeedListSidebar.jsx";
+import { SidebarProvider } from "@/components/ui/sidebar.jsx";
 import { authState } from "@/stores/authStore.js";
 import { startAutoSync, stopAutoSync } from "@/stores/syncStore.js";
 import { settingsState } from "@/stores/settingsStore.js";
@@ -43,10 +42,7 @@ function App() {
   useApplyReducedMotionPreference();
   return (
     <SidebarProvider className="bg-sidebar">
-      <FeedListSidebar />
-      <SidebarInset className="min-w-0 bg-sidebar">
-        <Outlet />
-      </SidebarInset>
+      <Outlet />
       <SettingsModal />
       <AddFeedModal />
       <AddCategoryModal />

@@ -1,5 +1,7 @@
 export default {
   common: {
+    resizeFeeds: "Resize feeds sidebar",
+    resizeArticles: "Resize article list",
     newArticles_one: "{{count}} new article",
     newArticles_other: "{{count}} new articles",
     backgroundSync: "Syncing in background · {{count}} cached",

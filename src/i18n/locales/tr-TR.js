@@ -1,5 +1,7 @@
 export default {
   common: {
+    resizeFeeds: "Abonelik kenar çubuğunu yeniden boyutlandır",
+    resizeArticles: "Makale listesini yeniden boyutlandır",
     newArticles: "{{count}} yeni makale",
     backgroundSync: "Arka planda eşitleniyor · {{count}} önbellekte",
     cancel: "İptay",

@@ -46,7 +46,7 @@ function SyncStatus() {
     </span>
   );
 }
-const FeedListSidebar = () => {
+const FeedListSidebar = ({ resizable = false }) => {
   const { showHiddenFeeds } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
@@ -80,7 +80,12 @@ const FeedListSidebar = () => {
   }, [showHiddenFeeds]);
   return (
     <Sidebar
-      className={`sidebar ${isArticleDetailOpen ? "sidebar-shifted" : ""}`}
+      collapsible={resizable ? "none" : "offcanvas"}
+      className={cn(
+        "sidebar",
+        resizable && "w-full",
+        isArticleDetailOpen && "sidebar-shifted",
+      )}
     >
       <SidebarHeader className="sidebar-header standalone:pt-safe-or-2">
         <SidebarMenu>

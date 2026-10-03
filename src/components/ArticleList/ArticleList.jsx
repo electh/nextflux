@@ -26,6 +26,7 @@ import { settingsState } from "@/stores/settingsStore.js";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
 import { reportError } from "@/lib/errors.js";
 import ArticleView from "@/components/ArticleView/ArticleView.jsx";
+import ReadingLayout from "@/components/ReadingLayout.jsx";
 const atTop = computed(visibleRange, (range) => range.startIndex === 0);
 const ArticleList = () => {
   const { t } = useTranslation();
@@ -35,8 +36,7 @@ const ArticleList = () => {
   const $filter = useStore(filter);
   const $currentPage = useStore(currentPage);
   const $atTop = useStore(atTop);
-  const { sortDirection, sortField, showHiddenFeeds } =
-    useStore(settingsState);
+  const { sortDirection, sortField, showHiddenFeeds } = useStore(settingsState);
   const virtuosoRef = useRef(null);
   const { isMedium } = useIsMobile();
   // 判断是否在移动端且正在查看文章详情
@@ -132,10 +132,10 @@ const ArticleList = () => {
   const setVisibleRange = useCallback((range) => visibleRange.set(range), []);
 
   return (
-    <div className="main-content flex w-full min-w-0 bg-sidebar">
+    <ReadingLayout reader={<ArticleView />}>
       <div
         className={cn(
-          "motion-sensitive shrink-0 w-full relative max-w-screen md:w-84 md:max-w-[30%] md:min-w-[18rem] h-dvh flex flex-col",
+          "article-list-panel motion-sensitive relative flex h-dvh w-full min-w-0 flex-col",
           // iOS 风格动画：移动端查看文章详情时，列表向左移动
           isArticleDetailOpen && "article-list-shifted",
         )}
@@ -167,8 +167,7 @@ const ArticleList = () => {
         />
         <ArticleListFooter />
       </div>
-      <ArticleView />
-    </div>
+    </ReadingLayout>
   );
 };
 export default ArticleList;

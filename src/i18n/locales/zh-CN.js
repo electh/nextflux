@@ -1,5 +1,7 @@
 export default {
   common: {
+    resizeFeeds: "调整订阅栏宽度",
+    resizeArticles: "调整文章列表宽度",
     newArticles: "{{count}} 篇新文章",
     backgroundSync: "后台同步 · 已缓存 {{count}} 篇",
     cancel: "取消",

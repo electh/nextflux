@@ -1,5 +1,7 @@
 export default {
   common: {
+    resizeFeeds: "Redimensionner la barre des flux",
+    resizeArticles: "Redimensionner la liste des articles",
     newArticles: "{{count}} nouveaux articles",
     backgroundSync: "Synchronisation · {{count}} en cache",
     cancel: "Annuler",
