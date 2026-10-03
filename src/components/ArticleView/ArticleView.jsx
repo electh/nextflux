@@ -9,7 +9,7 @@ import "./ArticleView.css";
 import ActionButtons from "./components/ActionButtons.jsx";
 import ArticleBody from "./components/ArticleBody.jsx";
 import ArticleHeader from "./components/ArticleHeader.jsx";
-import { articleMotion, reducedArticleMotion } from "./articleMotion.js";
+import ArticleTransition from "./components/ArticleTransition.jsx";
 import EmptyPlaceholder from "@/components/ArticleList/components/EmptyPlaceholder";
 import {
   activeArticle,
@@ -123,11 +123,6 @@ export default function ArticleView() {
   const { isMedium } = useIsMobile();
   const { error, loading } = useActiveArticle(articleId);
   const isStoneTheme = lightTheme === "stone" && themeMode === "light";
-  useEffect(() => {
-    const viewport = scrollAreaRef.current;
-    if (!viewport) return undefined;
-    viewport.scrollTo({ top: 0, behavior: "instant" });
-  }, [articleId]);
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <div
@@ -180,16 +175,11 @@ export default function ArticleView() {
                         custom={direction}
                         initial={false}
                       >
-                        <motion.div
+                        <ArticleTransition
                           key={articleId}
-                          custom={direction}
-                          initial="hidden"
-                          animate="visible"
-                          exit="exit"
-                          variants={
-                            reduceMotion ? reducedArticleMotion : articleMotion
-                          }
-                          className="w-full min-w-0 min-h-[calc(100dvh-4rem)]"
+                          direction={direction}
+                          reduceMotion={reduceMotion}
+                          scrollAreaRef={scrollAreaRef}
                         >
                           {error ? (
                             <div
@@ -242,7 +232,7 @@ export default function ArticleView() {
                               </Button>
                             </EmptyPlaceholder>
                           )}
-                        </motion.div>
+                        </ArticleTransition>
                       </AnimatePresence>
                     </div>
                     {showReadingRail && article && !error && (
