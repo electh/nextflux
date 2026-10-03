@@ -1,4 +1,4 @@
-/* Share the animated surface bounds with the shadow outside its clip. */
+/* Animate the background and shadow on one surface, outside the content clip. */
 .morph-menu-positioner {
   --morph-x: 0px;
   --morph-y: 0px;
@@ -10,7 +10,7 @@
 .morph-menu-positioner::before {
   content: "";
   position: absolute;
-  z-index: 1;
+  z-index: -1;
   inset: 0;
   border-radius: 12px;
   pointer-events: none;
@@ -20,7 +20,7 @@
     opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Keep the shadow outside the animated clip so its edges remain visible. */
+/* The surface can overshoot while the menu content stays clipped. */
 .morph-menu-positioner:has(
     .morph-menu-popup:is([data-starting-style], [data-ending-style])
   )::before {

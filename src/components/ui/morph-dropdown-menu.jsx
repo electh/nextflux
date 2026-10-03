@@ -28,7 +28,7 @@ function MorphDropdownMenuContent({
   return (
     <MenuPrimitive.Portal>
       <MenuPrimitive.Positioner
-        className="morph-menu-positioner isolate z-50 outline-none before:shadow-custom-md"
+        className="morph-menu-positioner isolate z-50 outline-none before:bg-popover/80 before:backdrop-blur-[24px] before:shadow-custom-md"
         align={align}
         alignOffset={alignOffset}
         side={side}
@@ -38,7 +38,7 @@ function MorphDropdownMenuContent({
           data-slot="morph-dropdown-menu-content"
           data-reduced-motion={reduceMotion}
           className={cn(
-            "morph-menu-popup max-h-(--available-height) w-(--anchor-width) min-w-48 overflow-x-hidden overflow-y-auto rounded-xl bg-popover/80 backdrop-blur-[24px] p-1.5 text-popover-foreground outline-none",
+            "morph-menu-popup max-h-(--available-height) w-(--anchor-width) min-w-48 overflow-x-hidden overflow-y-auto rounded-xl p-1.5 text-popover-foreground outline-none",
             className,
           )}
           {...props}

@@ -1,5 +1,7 @@
+import "./morph-dropdown-menu.css";
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/hooks/useReducedMotion.js";
 import { ChevronRightIcon, CheckIcon } from "lucide-react";
 
 function ContextMenu({ ...props }) {
@@ -24,16 +26,19 @@ function ContextMenuTrigger({ className, ...props }) {
 
 function ContextMenuContent({
   className,
+  children,
   align = "start",
   alignOffset = 4,
   side = "right",
   sideOffset = 0,
   ...props
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Positioner
-        className="isolate z-50 outline-none"
+        className="morph-menu-positioner isolate z-50 outline-none before:bg-popover/80 before:backdrop-blur-[24px] before:shadow-custom-md"
         align={align}
         alignOffset={alignOffset}
         side={side}
@@ -41,12 +46,15 @@ function ContextMenuContent({
       >
         <ContextMenuPrimitive.Popup
           data-slot="context-menu-content"
+          data-reduced-motion={reduceMotion}
           className={cn(
-            "z-50 max-h-(--available-height) min-w-48 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-xl bg-popover/80 backdrop-blur-[24px] p-1.5 text-popover-foreground shadow-custom-md duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "morph-menu-popup max-h-(--available-height) min-w-48 overflow-x-hidden overflow-y-auto rounded-xl p-1.5 text-popover-foreground outline-none",
             className,
           )}
           {...props}
-        />
+        >
+          <div className="morph-menu-items">{children}</div>
+        </ContextMenuPrimitive.Popup>
       </ContextMenuPrimitive.Positioner>
     </ContextMenuPrimitive.Portal>
   );
@@ -114,7 +122,6 @@ function ContextMenuSubContent({ ...props }) {
   return (
     <ContextMenuContent
       data-slot="context-menu-sub-content"
-      className="shadow-custom-md"
       side="right"
       {...props}
     />
