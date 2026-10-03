@@ -144,6 +144,7 @@ export default {
     getFullText: "阅读模式",
     showSummary: "隐藏阅读模式",
     saveToThirdParty: "保存到第三方服务",
+    archive: "网页存档",
     attachments: "附件",
     audioNotSupported: "您的浏览器不支持音频播放",
     aiSummarize: "AI 总结",
