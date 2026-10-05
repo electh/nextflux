@@ -38,6 +38,7 @@ export const resetSettings = () => {
     "titleAlignType",
     "autoHideToolbar",
     "showReadingRail",
+    "useThirdPartyMediaPlayer",
     "showLineNumbers",
     "forceDarkCodeTheme",
   ];

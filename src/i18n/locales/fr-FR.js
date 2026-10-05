@@ -336,6 +336,10 @@ export default {
       useNativeVideoPlayer: "Utiliser le lecteur vidéo natif du navigateur",
     },
     readability: {
+      media: "MÉDIAS",
+      useThirdPartyMediaPlayer: "Utiliser un lecteur vidéo tiers",
+      useThirdPartyMediaPlayerDescription:
+        "Fonction expérimentale : utiliser Video.js pour les contenus audio et vidéo des articles et synchroniser la progression de lecture des pièces jointes audio lorsque cette option est activée.",
       toolbars: "BARRES D’OUTILS",
       readingNavigation: "NAVIGATION DE LECTURE",
       showReadingRail: "Afficher la navigation de lecture",

@@ -12,6 +12,7 @@ export const settingsDefaults = {
   sortField: "published_at", // published_at, created_at
   showHiddenFeeds: false,
   markAsReadOnScroll: false,
+  useThirdPartyMediaPlayer: false,
   cardImageSize: "large", // none, small, large
   showFavicon: true,
   titleLines: 2,

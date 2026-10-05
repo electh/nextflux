@@ -328,6 +328,10 @@ export default {
       useNativeVideoPlayer: "使用浏览器原生播放器",
     },
     readability: {
+      media: "媒体",
+      useThirdPartyMediaPlayer: "使用第三方视频播放器",
+      useThirdPartyMediaPlayerDescription:
+        "实验性功能：使用 Video.js 播放文章中的音视频，开启后可同步音频附件的播放进度。",
       toolbars: "工具栏",
       readingNavigation: "阅读导航",
       showReadingRail: "显示阅读导航",

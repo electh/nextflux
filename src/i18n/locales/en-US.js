@@ -335,6 +335,10 @@ export default {
       useNativeVideoPlayer: "Use browser's native video player",
     },
     readability: {
+      media: "MEDIA",
+      useThirdPartyMediaPlayer: "Use third-party video player",
+      useThirdPartyMediaPlayerDescription:
+        "Experimental: use Video.js for article audio and video, and sync playback progress for audio attachments when enabled.",
       toolbars: "TOOLBARS",
       readingNavigation: "READING NAVIGATION",
       showReadingRail: "Show reading navigation",

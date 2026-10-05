@@ -332,6 +332,10 @@ export default {
       useNativeVideoPlayer: "Tarayıcının dahili video oynatıcısını kullan",
     },
     readability: {
+      media: "MEDYA",
+      useThirdPartyMediaPlayer: "Üçüncü taraf video oynatıcı kullan",
+      useThirdPartyMediaPlayerDescription:
+        "Deneysel özellik: Makalelerdeki ses ve videolar için Video.js kullanır ve etkinleştirildiğinde ses eklerinin oynatma ilerlemesini eşitler.",
       toolbars: "ARAÇ ÇUBUKLARI",
       readingNavigation: "OKUMA GEZİNTİSİ",
       showReadingRail: "Okuma gezintisini göster",

@@ -26,6 +26,7 @@ import {
   Type,
   UnfoldHorizontal,
   UnfoldVertical,
+  Video,
 } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import {
@@ -156,6 +157,7 @@ export default function Readability() {
     forceDarkCodeTheme,
     showReadingRail,
     autoHideToolbar,
+    useThirdPartyMediaPlayer,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -283,6 +285,21 @@ export default function Readability() {
           }
           settingName="showReadingRail"
           settingValue={showReadingRail}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.media")}>
+        <SwitchItem
+          label={t("settings.readability.useThirdPartyMediaPlayer")}
+          description={t(
+            "settings.readability.useThirdPartyMediaPlayerDescription",
+          )}
+          icon={
+            <SettingIcon variant="blue">
+              <Video />
+            </SettingIcon>
+          }
+          settingName="useThirdPartyMediaPlayer"
+          settingValue={useThirdPartyMediaPlayer}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.codeBlock")}>

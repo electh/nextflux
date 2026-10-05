@@ -1,6 +1,9 @@
 import { lazy, Suspense, useMemo } from "react";
 import parse from "html-react-parser";
 import { PhotoProvider } from "react-photo-view";
+import { useStore } from "@nanostores/react";
+import { useTranslation } from "react-i18next";
+import { settingsState } from "@/stores/settingsStore.js";
 import ArticleImage from "./ArticleImage.jsx";
 import Attachments from "./Attachments.jsx";
 import Iframe from "./Iframe.jsx";
@@ -34,9 +37,15 @@ function renderLinkedImages(node) {
     </>
   );
 }
-function replaceArticleNode(node, articleId, enclosures) {
+function replaceArticleNode(
+  node,
+  articleId,
+  enclosures,
+  useThirdPartyMediaPlayer,
+) {
   if (node.type !== "tag") return undefined;
   if (node.name === "audio" || node.name === "video") {
+    if (!useThirdPartyMediaPlayer) return undefined;
     const media = getArticleMedia(node);
     const urls = [media.src, ...media.sources.map((source) => source.src)];
     const enclosure = enclosures?.find((item) => urls.includes(item.url));
@@ -58,7 +67,7 @@ function replaceArticleNode(node, articleId, enclosures) {
   }
   if (node.name === "iframe") {
     const media = resolveMediaSource(node.attribs?.src);
-    if (media.adapter !== "native")
+    if (useThirdPartyMediaPlayer && media.adapter !== "native")
       return (
         <MediaPlayer
           kind={media.kind}
@@ -96,6 +105,8 @@ export default function ArticleContent({
   isStoneTheme,
   lineHeight,
 }) {
+  const { useThirdPartyMediaPlayer } = useStore(settingsState);
+  const { t } = useTranslation();
   const { content, inlineUrls } = useMemo(() => {
     const inlineUrls = [];
     const content = parse(article.content, {
@@ -112,14 +123,36 @@ export default function ArticleContent({
           resolveMediaSource(node.attribs?.src).adapter !== "native"
         )
           inlineUrls.push(node.attribs.src);
-        return replaceArticleNode(node, article.id, article.enclosures);
+        return replaceArticleNode(
+          node,
+          article.id,
+          article.enclosures,
+          useThirdPartyMediaPlayer,
+        );
       },
     });
     return { content, inlineUrls };
-  }, [article.content, article.id, article.enclosures]);
-  const mediaEnclosures = getMediaEnclosures(article.enclosures, inlineUrls);
+  }, [
+    article.content,
+    article.id,
+    article.enclosures,
+    useThirdPartyMediaPlayer,
+  ]);
+  const mediaEnclosures = useThirdPartyMediaPlayer
+    ? getMediaEnclosures(article.enclosures, inlineUrls)
+    : [];
+  const audioEnclosure =
+    !useThirdPartyMediaPlayer &&
+    article.enclosures?.find((enclosure) =>
+      enclosure.mime_type?.startsWith("audio/"),
+    );
   return (
     <>
+      {audioEnclosure && (
+        <audio controls className="w-full my-4" src={audioEnclosure.url}>
+          {t("articleView.audioNotSupported")}
+        </audio>
+      )}
       {mediaEnclosures.map((enclosure) => (
         <MediaPlayer
           key={`${article.id}:${enclosure.url}`}
