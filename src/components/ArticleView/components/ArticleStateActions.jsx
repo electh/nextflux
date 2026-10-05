@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { useRef } from "react";
 import { useStore } from "@nanostores/react";
 import { Circle, CircleDot, FileText, Star } from "lucide-react";
@@ -57,6 +58,7 @@ export default function ArticleStateActions({ article }) {
         />
         <TooltipContent>
           {article?.status === "read" ? t("common.unread") : t("common.read")}
+          <Kbd>M</Kbd>
         </TooltipContent>
       </Tooltip>
       <Tooltip>
@@ -86,6 +88,7 @@ export default function ArticleStateActions({ article }) {
         />
         <TooltipContent>
           {article?.starred === 1 ? t("common.unstar") : t("common.star")}
+          <Kbd>S</Kbd>
         </TooltipContent>
       </Tooltip>
       <ArticleExternalActions article={article} />
@@ -125,6 +128,7 @@ export default function ArticleStateActions({ article }) {
           {article?.shownOriginal
             ? t("articleView.showSummary")
             : t("articleView.getFullText")}
+          <Kbd>G</Kbd>
         </TooltipContent>
       </Tooltip>
     </div>

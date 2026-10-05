@@ -11,6 +11,7 @@ import SettingsModal from "@/components/Settings/Settings.jsx";
 import AddFeedModal from "@/components/FeedList/components/AddFeedModal.jsx";
 import AddCategoryModal from "@/components/FeedList/components/AddCategoryModal.jsx";
 import { useHotkeys } from "@/hooks/useHotkeys.js";
+import AddAccountModal from "@/components/FeedList/components/AddAccountModal.jsx";
 import LogoutModal from "@/components/FeedList/components/LogoutModal.jsx";
 import RenameModal from "@/components/ArticleList/components/RenameModal.jsx";
 import UnsubscribeModal from "@/components/ArticleList/components/UnsubscribeModal.jsx";
@@ -47,6 +48,7 @@ function App() {
       <AddFeedModal />
       <AddCategoryModal />
       <LogoutModal />
+      <AddAccountModal />
       <RenameModal />
       <UnsubscribeModal />
       <EditFeedModal />

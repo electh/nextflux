@@ -105,8 +105,8 @@
   }
 
   .article-reader-panel.has-reading-rail .article-view-content {
-    padding-left: 76px;
-    padding-right: 32px;
+    /* Reserve equal gutters so the rail does not shift the article's center. */
+    width: calc(100% - 112px);
   }
 }
 

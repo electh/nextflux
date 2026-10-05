@@ -92,12 +92,17 @@ export default {
     categoryNamePlaceholder: "Veuillez entrer le titre de la catégorie",
     categoryNameRequired: "Veuillez entrer le titre de la catégorie",
     profile: {
+      switchAccount: "Changer de compte",
+      addAccount: "Ajouter un compte",
+      addAnotherAccount: "Ajouter un autre compte",
+      currentAccount: "Compte actuel",
+
       about: "À propos",
       settings: "Paramètres",
       openMiniflux: "Ouvrir Miniflux",
       logout: "Déconnexion",
       logoutConfirmDescription:
-        "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données et paramètres locaux seront supprimés.",
+        "Déconnecter ce compte ? Ses identifiants et son cache local seront supprimés. Les autres comptes et les paramètres seront conservés.",
     },
     shortcuts: {
       title: "Raccourcis",
@@ -215,6 +220,7 @@ export default {
     open: "Ouvrir",
   },
   auth: {
+    toggleCredentialVisibility: "Afficher ou masquer les identifiants",
     login: "Connexion à votre serveur",
     username: "Nom d'utilisateur",
     password: "Mot de passe",
@@ -330,11 +336,12 @@ export default {
       useNativeVideoPlayer: "Utiliser le lecteur vidéo natif du navigateur",
     },
     readability: {
+      toolbars: "BARRES D’OUTILS",
       readingNavigation: "NAVIGATION DE LECTURE",
       showReadingRail: "Afficher la navigation de lecture",
       title: "Lecture",
       text: "TEXTE",
-      autoHideToolbar: "Masquer automatiquement la barre d'outils",
+      autoHideToolbar: "Masquer/afficher automatiquement les barres",
       font: "Police",
       systemFont: "Système",
       sansSerif: "Sans-serif",

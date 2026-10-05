@@ -11,6 +11,7 @@ A modern RSS reader client for [Miniflux](https://github.com/miniflux/v2) built 
 
 - 🚀 Fast and responsive UI built with HeroUI (Previously NextUI)
 - 🌐 Connect to your Miniflux server
+- 👥 Save multiple Miniflux accounts and switch between them with separate caches
 - 🔄 Automatic background sync with configurable intervals
 - 📱 Mobile-friendly with PWA support
 - 🌙 Light/Dark mode with multiple theme options
@@ -63,6 +64,17 @@ The app requires a Miniflux server to function. You'll need to provide:
 
 - Server URL
 - API Token / Username and Password
+
+### Multiple accounts
+
+Open the account menu at the bottom of the sidebar and choose **Add account**.
+Sign in to additional accounts in the dialog that opens.
+Each account can use a username/password or API token, on the same server or different servers.
+Choose a saved account in this menu to switch; the app reloads at the home page, and other open tabs follow the selected account.
+
+Articles, feeds, icons and sync progress are cached separately for each account.
+Appearance and app preferences are shared. Existing logins and their cached data are migrated automatically.
+Logging out removes only the current account's saved credentials and local cache, then selects another saved account if available.
 
 ## 🌍 Browser Support
 

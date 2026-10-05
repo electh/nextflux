@@ -92,12 +92,17 @@ export default {
     categoryNamePlaceholder: "Please enter category title",
     categoryNameRequired: "Please enter category title",
     profile: {
+      switchAccount: "Switch account",
+      addAccount: "Add account",
+      addAnotherAccount: "Add another account",
+      currentAccount: "Current account",
+
       about: "About",
       settings: "Settings",
       openMiniflux: "Open Miniflux",
       logout: "Logout",
       logoutConfirmDescription:
-        "Are you sure you want to logout? All local data and settings will be deleted.",
+        "Log out of this account? Its saved credentials and local cache will be removed. Other accounts and app settings will be kept.",
     },
     shortcuts: {
       title: "Shortcuts",
@@ -214,6 +219,7 @@ export default {
     open: "Open",
   },
   auth: {
+    toggleCredentialVisibility: "Toggle credential visibility",
     login: "Login to your server",
     username: "Username",
     password: "Password",
@@ -329,11 +335,12 @@ export default {
       useNativeVideoPlayer: "Use browser's native video player",
     },
     readability: {
+      toolbars: "TOOLBARS",
       readingNavigation: "READING NAVIGATION",
       showReadingRail: "Show reading navigation",
       title: "Reading",
       text: "TEXT",
-      autoHideToolbar: "Auto hide toolbar",
+      autoHideToolbar: "Auto hide/show bars",
       font: "Font",
       systemFont: "System",
       sansSerif: "Sans-serif",

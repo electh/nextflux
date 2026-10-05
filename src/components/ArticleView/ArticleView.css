@@ -1,5 +1,30 @@
 @reference "../../index.css";
 
+.action-buttons {
+  transition: transform 180ms ease;
+}
+
+.action-buttons[data-hidden="true"] {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+/* Keyboard navigation restores the toolbar without moving the article. */
+.action-buttons:focus-within {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+html[data-reduced-motion="true"] .action-buttons {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-buttons {
+    transition: none;
+  }
+}
+
 .article-content,
 .article-title {
   @apply break-words;

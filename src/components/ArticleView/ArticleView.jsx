@@ -169,7 +169,10 @@ export default function ArticleView() {
                       ref={scrollAreaRef}
                       className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
                     >
-                      <ActionButtons />
+                      <ActionButtons
+                        key={articleId}
+                        scrollAreaRef={scrollAreaRef}
+                      />
                       <AnimatePresence
                         mode="wait"
                         custom={direction}

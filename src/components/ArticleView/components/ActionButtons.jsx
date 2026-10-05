@@ -9,7 +9,14 @@ import {
 } from "@/domain/articles/articleNavigation.js";
 import ArticleNavigationControls from "./ArticleNavigationControls.jsx";
 import ArticleStateActions from "./ArticleStateActions.jsx";
-export default function ActionButtons() {
+import { useAutoHideToolbar } from "@/hooks/useAutoHideToolbar.js";
+import { settingsState } from "@/stores/settingsStore.js";
+export default function ActionButtons({ scrollAreaRef }) {
+  const { autoHideToolbar } = useStore(settingsState);
+  const { toolbarRef, hidden, ...toolbarEvents } = useAutoHideToolbar(
+    scrollAreaRef,
+    autoHideToolbar,
+  );
   const navigate = useNavigate();
   const articles = useStore(filteredArticles);
   const { articleId } = useParams();
@@ -30,6 +37,9 @@ export default function ActionButtons() {
   };
   return (
     <div
+      ref={toolbarRef}
+      data-hidden={hidden}
+      {...toolbarEvents}
       className={cn(
         "action-buttons py-2 standalone:pt-safe-or-2.5 backdrop-blur-sm border-b border-foreground/10 px-2 sticky top-0 z-50",
         "bg-popover/70",

@@ -21,8 +21,11 @@ export const feeds = atom([]);
 export const categories = atom([]);
 export const error = atom(null);
 
+import { sessionAccount } from "@/stores/authStore.js";
+import { accountStorageKey } from "@/domain/auth/accounts.js";
+
 export const categoryExpandedState = persistentAtom(
-  "categoryExpanded",
+  accountStorageKey(sessionAccount, "categoryExpanded"),
   {},
   {
     encode: (value) => JSON.stringify(value),

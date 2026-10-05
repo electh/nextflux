@@ -4,6 +4,8 @@ import { reportError } from "@/lib/errors.js";
 import { syncService } from "@/services/syncService.js";
 import { settingsState } from "@/stores/settingsStore.js";
 
+import { sessionAccount } from "@/stores/authStore.js";
+
 export const isOnline = atom(navigator.onLine);
 export const isSyncing = atom(false);
 export const lastSync = atom(getLastSyncTime());
@@ -45,7 +47,11 @@ export function sync() {
   // Serialize browser tabs sharing the same IndexedDB and synchronization watermark.
   inFlight = (
     navigator.locks
-      ? navigator.locks.request("nextflux:sync", { signal }, synchronize)
+      ? navigator.locks.request(
+          `nextflux:sync:${sessionAccount.databaseName}`,
+          { signal },
+          synchronize,
+        )
       : synchronize()
   )
     .catch((syncError) => {

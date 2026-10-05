@@ -91,12 +91,17 @@ export default {
     categoryNamePlaceholder: "Lütfen kategori başlığını girin",
     categoryNameRequired: "Lütfen kategori başlığını girin",
     profile: {
+      switchAccount: "Hesap değiştir",
+      addAccount: "Hesap ekle",
+      addAnotherAccount: "Başka bir hesap ekle",
+      currentAccount: "Geçerli hesap",
+
       about: "Hakkında",
       settings: "Ayarlar",
       openMiniflux: "Miniflux'u Aç",
       logout: "Çıkış",
       logoutConfirmDescription:
-        "Çıkış yapmak istediğinize emin misiniz? Tüm yerel veriler ve ayarlar silinecek.",
+        "Bu hesaptan çıkılsın mı? Kayıtlı kimlik bilgileri ve yerel önbelleği silinecek. Diğer hesaplar ve uygulama ayarları korunacak.",
     },
     shortcuts: {
       title: "Kısayollar",
@@ -212,6 +217,7 @@ export default {
     open: "Aç",
   },
   auth: {
+    toggleCredentialVisibility: "Kimlik bilgilerini göster veya gizle",
     login: "Sunucunuza giriş yapın",
     username: "Kullanıcı adı",
     password: "Parola",
@@ -326,11 +332,12 @@ export default {
       useNativeVideoPlayer: "Tarayıcının dahili video oynatıcısını kullan",
     },
     readability: {
+      toolbars: "ARAÇ ÇUBUKLARI",
       readingNavigation: "OKUMA GEZİNTİSİ",
       showReadingRail: "Okuma gezintisini göster",
       title: "Okuma",
       text: "METİN",
-      autoHideToolbar: "Araç çubuğunu otomatik gizle",
+      autoHideToolbar: "Araç çubuklarını otomatik gizle/göster",
       font: "Yazı tipi",
       systemFont: "Sistem",
       sansSerif: "Sans-serif",

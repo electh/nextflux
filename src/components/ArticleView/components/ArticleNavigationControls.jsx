@@ -5,6 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 export default function ArticleNavigationControls({
@@ -19,11 +20,11 @@ export default function ArticleNavigationControls({
     <>
       <Tooltip>
         <TooltipTrigger
-          render={
-            <CloseButton className="mx-2" onClick={onClose} />
-          }
+          render={<CloseButton className="mx-2" onClick={onClose} />}
         />
-        <TooltipContent>{t("common.close")}</TooltipContent>
+        <TooltipContent>
+          {t("common.close")} <Kbd>Esc</Kbd>
+        </TooltipContent>
       </Tooltip>
       <div className="gap-1 hidden md:flex">
         <Tooltip>
@@ -41,7 +42,9 @@ export default function ArticleNavigationControls({
             }
             delay={0}
           />
-          <TooltipContent>{t("common.previous")}</TooltipContent>
+          <TooltipContent>
+            {t("common.previous")} <Kbd>K</Kbd>
+          </TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger
@@ -58,7 +61,9 @@ export default function ArticleNavigationControls({
             }
             delay={0}
           />
-          <TooltipContent>{t("common.next")}</TooltipContent>
+          <TooltipContent>
+            {t("common.next")} <Kbd>J</Kbd>
+          </TooltipContent>
         </Tooltip>
       </div>
     </>

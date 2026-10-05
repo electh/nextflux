@@ -1,7 +1,13 @@
 import Dexie from "dexie";
 import { reportError } from "@/lib/errors.js";
 
-export const db = new Dexie("minifluxReader");
+import { sessionAccount } from "@/stores/authStore.js";
+
+export const db = new Dexie(
+  sessionAccount.databaseName || "minifluxReader:anonymous",
+);
+
+window.addEventListener("nextflux:logout", () => db.close());
 
 db.version(11).stores({
   articles:

@@ -91,11 +91,17 @@ export default {
     categoryNameRequired: "请输入分类标题",
     addFeed: "新增订阅",
     profile: {
+      switchAccount: "切换账号",
+      addAccount: "添加账号",
+      addAnotherAccount: "添加另一个账号",
+      currentAccount: "当前账号",
+
       about: "关于",
       settings: "设置",
       openMiniflux: "访问 Miniflux",
       logout: "注销",
-      logoutConfirmDescription: "确定要注销吗？注销后本地数据及设置将清空。",
+      logoutConfirmDescription:
+        "确定要退出当前账号吗？将移除此账号的登录信息和本地缓存，其他账号及应用设置会保留。",
     },
     shortcuts: {
       title: "快捷键",
@@ -211,6 +217,7 @@ export default {
     open: "打开",
   },
   auth: {
+    toggleCredentialVisibility: "显示或隐藏凭据",
     login: "登录到您的服务器",
     username: "用户名",
     password: "密码",
@@ -321,11 +328,12 @@ export default {
       useNativeVideoPlayer: "使用浏览器原生播放器",
     },
     readability: {
+      toolbars: "工具栏",
       readingNavigation: "阅读导航",
       showReadingRail: "显示阅读导航",
       title: "阅读",
       text: "文本",
-      autoHideToolbar: "自动隐藏工具栏",
+      autoHideToolbar: "自动隐藏/显示工具栏",
       font: "字体",
       systemFont: "系统",
       sansSerif: "sans-serif",

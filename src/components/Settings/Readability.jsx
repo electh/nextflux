@@ -22,6 +22,7 @@ import {
   ListOrdered,
   ListTree,
   SquareCode,
+  PanelTop,
   Type,
   UnfoldHorizontal,
   UnfoldVertical,
@@ -154,6 +155,7 @@ export default function Readability() {
     showLineNumbers,
     forceDarkCodeTheme,
     showReadingRail,
+    autoHideToolbar,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -257,6 +259,18 @@ export default function Readability() {
           max={80}
           min={50}
           step={5}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.toolbars")}>
+        <SwitchItem
+          label={t("settings.readability.autoHideToolbar")}
+          icon={
+            <SettingIcon variant="blue">
+              <PanelTop />
+            </SettingIcon>
+          }
+          settingName="autoHideToolbar"
+          settingValue={autoHideToolbar}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.readability.readingNavigation")}>
