@@ -31,12 +31,8 @@ html[data-reduced-motion="true"] .action-buttons {
   word-break: break-word;
 }
 
-.article-content *:not(.plyr__tooltip) {
+.article-content *:not(.article-media-player, .article-media-player *) {
   @apply max-w-full;
-}
-
-.article-content audio {
-  @apply hidden;
 }
 
 .article-content li,
@@ -105,7 +101,7 @@ html[data-reduced-motion="true"] .action-buttons {
   @apply my-4 w-auto!;
 }
 
-iframe {
+iframe:not(.article-media-player iframe) {
   @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5;
 }
 

@@ -37,6 +37,8 @@ export function useHotkeys() {
     const handleKeyDown = async (e) => {
       // 如果焦点在输入框中,不触发快捷键
       if (
+        e.defaultPrevented ||
+        e.target.closest?.(".article-media-player") ||
         e.target.tagName === "INPUT" ||
         e.target.tagName === "TEXTAREA" ||
         e.target.isContentEditable

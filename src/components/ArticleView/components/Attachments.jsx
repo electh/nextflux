@@ -8,10 +8,6 @@ export default function Attachments({ article }) {
   const imgEnclosures = article?.enclosures?.filter((enclosure) =>
     enclosure.mime_type?.startsWith("image/"),
   );
-  // 检查是否有视频附件
-  const videoEnclosures = article?.enclosures?.filter((enclosure) =>
-    enclosure.mime_type?.startsWith("video/"),
-  );
 
   // 定义黑名单域名列表
   const blacklist = ["youtube.com", "youtu.be", "glass.photo"];
@@ -23,7 +19,7 @@ export default function Attachments({ article }) {
   if (isBlacklisted || !article?.enclosures) {
     return null;
   }
-  if (imgEnclosures?.length === 0 && videoEnclosures?.length === 0) {
+  if (imgEnclosures?.length === 0) {
     return null;
   }
   return (

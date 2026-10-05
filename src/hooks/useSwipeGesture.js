@@ -9,6 +9,7 @@ export function useSwipeGesture({ onSwipeRight, threshold = 50 }) {
   useEffect(() => {
     // 默认排除的选择器，包括音频和视频播放器的进度条
     const excludeSelectors = [
+      ".article-media-player",
       ".audio-player-slider", // 音频播放器进度条
       ".video-player", // 视频播放器
       ".code-block", // code

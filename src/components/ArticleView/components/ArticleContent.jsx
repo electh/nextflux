@@ -1,14 +1,19 @@
-import { ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { lazy, Suspense, useMemo } from "react";
 import parse from "html-react-parser";
 import { PhotoProvider } from "react-photo-view";
-import { useTranslation } from "react-i18next";
 import ArticleImage from "./ArticleImage.jsx";
 import Attachments from "./Attachments.jsx";
 import Iframe from "./Iframe.jsx";
+import MediaPlayer from "./MediaPlayer.jsx";
+import MediaLinkPill from "./MediaLinkPill.jsx";
+import { resolveMediaSource } from "@/domain/articles/mediaSource.js";
+import {
+  getArticleMedia,
+  getMediaEnclosures,
+  hasMediaContent,
+} from "@/domain/articles/articleMedia.js";
 import { imageGalleryActive } from "@/stores/articlesStore.js";
-import { cn, getFontSizeClass, getHostname } from "@/lib/utils.js";
+import { cn, getFontSizeClass } from "@/lib/utils.js";
 import {
   getCodeLanguage,
   hasImageContent,
@@ -25,33 +30,35 @@ function renderLinkedImages(node) {
       {images.map((image, index) => (
         <ArticleImage imgNode={image} key={image.attribs?.src || index} />
       ))}
-      <div className="flex justify-center">
-        <Badge className="cursor-pointer my-2" variant="secondary">
-          <a
-            href={node.attribs.href}
-            className="border-none!"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {getHostname(node.attribs.href)}
-          </a>
-          <ArrowUpRight />
-        </Badge>
-      </div>
+      <MediaLinkPill href={node.attribs.href} />
     </>
   );
 }
 function replaceArticleNode(node) {
   if (node.type !== "tag") return undefined;
+  if (node.name === "audio" || node.name === "video") {
+    return <MediaPlayer {...getArticleMedia(node)} />;
+  }
   if (node.name === "img") return <ArticleImage imgNode={node} />;
   if (node.name === "a" && node.children.length > 0) {
     return renderLinkedImages(node);
   }
-  if (node.name === "p" && hasImageContent(node)) {
+  if (node.name === "p" && (hasImageContent(node) || hasMediaContent(node))) {
     node.name = "div";
     return node;
   }
-  if (node.name === "iframe") return <Iframe domNode={node} />;
+  if (node.name === "iframe") {
+    const media = resolveMediaSource(node.attribs?.src);
+    if (media.adapter !== "native")
+      return (
+        <MediaPlayer
+          kind={media.kind}
+          src={media.src}
+          title={node.attribs?.title}
+        />
+      );
+    return <Iframe domNode={node} />;
+  }
   if (node.name !== "pre") return undefined;
   const codeNode = node.children.find(
     (child) => child.type === "tag" && child.name === "code",
@@ -80,24 +87,43 @@ export default function ArticleContent({
   isStoneTheme,
   lineHeight,
 }) {
-  const { t } = useTranslation();
-  const content = useMemo(
-    () =>
-      parse(article.content, {
-        replace: replaceArticleNode,
-      }),
-    [article.content],
-  );
-  const audioEnclosure = article.enclosures?.find((enclosure) =>
-    enclosure.mime_type?.startsWith("audio/"),
-  );
+  const { content, inlineUrls } = useMemo(() => {
+    const inlineUrls = [];
+    const content = parse(article.content, {
+      replace: (node) => {
+        if (node.name === "audio" || node.name === "video") {
+          const media = getArticleMedia(node);
+          inlineUrls.push(
+            media.src,
+            ...media.sources.map((source) => source.src),
+          );
+        }
+        if (
+          node.name === "iframe" &&
+          resolveMediaSource(node.attribs?.src).adapter !== "native"
+        )
+          inlineUrls.push(node.attribs.src);
+        return replaceArticleNode(node);
+      },
+    });
+    return { content, inlineUrls };
+  }, [article.content]);
+  const mediaEnclosures = getMediaEnclosures(article.enclosures, inlineUrls);
   return (
     <>
-      {audioEnclosure && (
-        <audio controls className="w-full my-4" src={audioEnclosure.url}>
-          {t("articleView.audioNotSupported")}
-        </audio>
-      )}
+      {mediaEnclosures.map((enclosure) => (
+        <MediaPlayer
+          key={`${article.id}:${enclosure.url}`}
+          kind={
+            enclosure.mime_type?.toLowerCase().startsWith("audio/")
+              ? "audio"
+              : "video"
+          }
+          src={enclosure.url}
+          type={enclosure.mime_type}
+          title={enclosure.title || article.title}
+        />
+      ))}
       <PhotoProvider
         bannerVisible
         onVisibleChange={(visible) => imageGalleryActive.set(visible)}
