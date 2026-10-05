@@ -34,6 +34,7 @@ export default function ArticleStateActions({ article }) {
     <div className="flex gap-1 ml-auto">
       <Tooltip>
         <TooltipTrigger
+          closeOnClick={false}
           render={
             <Button
               variant="ghost"
@@ -44,6 +45,8 @@ export default function ArticleStateActions({ article }) {
               }
               onClick={() => handleMarkStatus(article)}
               disabled={!article || statusPending}
+              focusableWhenDisabled={Boolean(article)}
+              className="data-disabled:opacity-50"
               aria-busy={statusPending}
               size="icon-sm"
             >
@@ -63,10 +66,13 @@ export default function ArticleStateActions({ article }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger
+          closeOnClick={false}
           render={
             <Button
               ref={starButtonRef}
               disabled={!article || starPending}
+              focusableWhenDisabled={Boolean(article)}
+              className="data-disabled:opacity-50"
               aria-busy={starPending}
               variant="ghost"
               aria-label={
@@ -95,6 +101,7 @@ export default function ArticleStateActions({ article }) {
       <ArticleAiAction article={article} />
       <Tooltip>
         <TooltipTrigger
+          closeOnClick={false}
           render={
             <Button
               variant="ghost"
@@ -105,6 +112,8 @@ export default function ArticleStateActions({ article }) {
               }
               onClick={() => handleToggleContent(article)}
               disabled={!article || fetchLoading}
+              focusableWhenDisabled={Boolean(article)}
+              className="data-disabled:opacity-50"
               aria-busy={fetchLoading}
               size="icon-sm"
             >

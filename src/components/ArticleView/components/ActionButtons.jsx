@@ -12,14 +12,15 @@ import ArticleStateActions from "./ArticleStateActions.jsx";
 import { useAutoHideToolbar } from "@/hooks/useAutoHideToolbar.js";
 import { settingsState } from "@/stores/settingsStore.js";
 export default function ActionButtons({ scrollAreaRef }) {
+  const { articleId } = useParams();
   const { autoHideToolbar } = useStore(settingsState);
   const { toolbarRef, hidden, ...toolbarEvents } = useAutoHideToolbar(
     scrollAreaRef,
     autoHideToolbar,
+    articleId,
   );
   const navigate = useNavigate();
   const articles = useStore(filteredArticles);
-  const { articleId } = useParams();
   const active = useStore(activeArticle);
   // Route identity remains available while the detail query is loading.
   const targetId = Number(articleId);

@@ -16,7 +16,8 @@ import { reportError } from "@/lib/errors.js";
 export default function ArticleExternalActions({ article }) {
   const { t } = useTranslation();
   const integrationsEnabled = useStore(hasIntegrations);
-  const [saving, setSaving] = useState(false);
+  const [savingArticleId, setSavingArticleId] = useState(null);
+  const saving = savingArticleId === article?.id;
   const share = async () => {
     if (!article) return;
     try {
@@ -34,14 +35,14 @@ export default function ArticleExternalActions({ article }) {
   };
   const save = async () => {
     if (!article) return;
-    setSaving(true);
+    setSavingArticleId(article.id);
     try {
       await saveToThirdParty(article.id);
       toast.success(t("common.success"));
     } catch (error) {
       reportError(error, "article.saveToThirdParty");
     } finally {
-      setSaving(false);
+      setSavingArticleId((current) => (current === article.id ? null : current));
     }
   };
   return (
@@ -49,12 +50,15 @@ export default function ArticleExternalActions({ article }) {
       {integrationsEnabled && (
         <Tooltip>
           <TooltipTrigger
+            closeOnClick={false}
             render={
               <Button
                 variant="ghost"
                 aria-label={t("articleView.saveToThirdParty")}
                 onClick={save}
                 disabled={!article || saving}
+                focusableWhenDisabled={Boolean(article)}
+                className="data-disabled:opacity-50"
                 aria-busy={saving}
                 size="icon-sm"
               >
@@ -72,6 +76,7 @@ export default function ArticleExternalActions({ article }) {
       )}
       <Tooltip>
         <TooltipTrigger
+          closeOnClick={false}
           render={
             <Button
               variant="ghost"

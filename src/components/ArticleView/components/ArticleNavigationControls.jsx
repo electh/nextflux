@@ -20,6 +20,7 @@ export default function ArticleNavigationControls({
     <>
       <Tooltip>
         <TooltipTrigger
+          closeOnClick={false}
           render={<CloseButton className="mx-2" onClick={onClose} />}
         />
         <TooltipContent>
@@ -29,6 +30,7 @@ export default function ArticleNavigationControls({
       <div className="gap-1 hidden md:flex">
         <Tooltip>
           <TooltipTrigger
+            closeOnClick={false}
             render={
               <Button
                 variant="ghost"
@@ -48,6 +50,7 @@ export default function ArticleNavigationControls({
         </Tooltip>
         <Tooltip>
           <TooltipTrigger
+            closeOnClick={false}
             render={
               <Button
                 variant="ghost"

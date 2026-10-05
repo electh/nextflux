@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useAutoHideToolbar(scrollAreaRef, enabled) {
+export function useAutoHideToolbar(scrollAreaRef, enabled, resetKey) {
   const toolbarRef = useRef(null);
   const hoveredRef = useRef(false);
   const [hidden, setHidden] = useState(false);
@@ -60,7 +60,7 @@ export function useAutoHideToolbar(scrollAreaRef, enabled) {
       viewport.removeEventListener("scroll", onScroll);
       viewport.removeEventListener("pointermove", onPointerMove);
     };
-  }, [scrollAreaRef, enabled]);
+  }, [scrollAreaRef, enabled, resetKey]);
 
   return {
     toolbarRef,

@@ -54,12 +54,15 @@ export default function ArticleAiAction({ article }) {
   return (
     <Tooltip>
       <TooltipTrigger
+        closeOnClick={false}
         render={
           <Button
             variant="ghost"
             aria-label={t("articleView.aiSummarize")}
             onClick={summarize}
             disabled={!article || state?.loading}
+            focusableWhenDisabled={Boolean(article)}
+            className="data-disabled:opacity-50"
             aria-busy={state?.loading}
             size="icon-sm"
           >
