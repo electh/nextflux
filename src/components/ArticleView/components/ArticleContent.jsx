@@ -34,10 +34,19 @@ function renderLinkedImages(node) {
     </>
   );
 }
-function replaceArticleNode(node) {
+function replaceArticleNode(node, articleId, enclosures) {
   if (node.type !== "tag") return undefined;
   if (node.name === "audio" || node.name === "video") {
-    return <MediaPlayer {...getArticleMedia(node)} />;
+    const media = getArticleMedia(node);
+    const urls = [media.src, ...media.sources.map((source) => source.src)];
+    const enclosure = enclosures?.find((item) => urls.includes(item.url));
+    return (
+      <MediaPlayer
+        key={`${articleId}:${enclosure?.id || media.src}`}
+        {...media}
+        enclosure={enclosure}
+      />
+    );
   }
   if (node.name === "img") return <ArticleImage imgNode={node} />;
   if (node.name === "a" && node.children.length > 0) {
@@ -103,11 +112,11 @@ export default function ArticleContent({
           resolveMediaSource(node.attribs?.src).adapter !== "native"
         )
           inlineUrls.push(node.attribs.src);
-        return replaceArticleNode(node);
+        return replaceArticleNode(node, article.id, article.enclosures);
       },
     });
     return { content, inlineUrls };
-  }, [article.content]);
+  }, [article.content, article.id, article.enclosures]);
   const mediaEnclosures = getMediaEnclosures(article.enclosures, inlineUrls);
   return (
     <>
@@ -122,6 +131,7 @@ export default function ArticleContent({
           src={enclosure.url}
           type={enclosure.mime_type}
           title={enclosure.title || article.title}
+          enclosure={enclosure}
         />
       ))}
       <PhotoProvider

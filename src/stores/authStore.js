@@ -102,5 +102,9 @@ export async function logout() {
   ]) {
     localStorage.removeItem(accountStorageKey(account, key));
   }
+  const mediaProgressPrefix = accountStorageKey(account, "mediaProgress:v1:");
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith(mediaProgressPrefix)) localStorage.removeItem(key);
+  }
   accountsState.set(removeAccount(state, account.id));
 }

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { lazy, Suspense, useState } from "react";
 import { cn } from "@/lib/utils.js";
 import MediaPlaceholder from "./MediaPlaceholder.jsx";
+import useAudioProgress from "../hooks/useAudioProgress.js";
 import {
   getAdapterSource,
   getMediaSelection,
@@ -43,7 +44,14 @@ export default function VideoJsPlayer(props) {
   const Player = selection.kind === "audio" ? AudioPlayer : VideoPlayer;
   return (
     <I18nProvider locale={i18n.resolvedLanguage || i18n.language}>
-      <Player key={JSON.stringify([selection, props.sources, props.tracks])}>
+      <Player
+        key={JSON.stringify([
+          selection,
+          props.sources,
+          props.tracks,
+          props.enclosure?.id,
+        ])}
+      >
         <PlayerSurface {...props} selection={selection} />
       </Player>
     </I18nProvider>
@@ -60,9 +68,11 @@ function PlayerSurface({
   muted,
   crossOrigin,
   title,
+  enclosure,
 }) {
   const [ready, setReady] = useState(false);
   const isAudio = selection.kind === "audio";
+  const progressEvents = useAudioProgress(isAudio ? enclosure : undefined);
   const Skin = isAudio ? AudioSkin : VideoSkin;
   const Media =
     adapterMedia[`${selection.adapter}-${selection.kind}`] ||
@@ -104,8 +114,15 @@ function PlayerSurface({
               muted={muted}
               crossOrigin={crossOrigin}
               aria-label={title}
-              onLoadedMetadata={() => setReady(true)}
-              onCanPlay={() => setReady(true)}
+              {...progressEvents}
+              onLoadedMetadata={(event) => {
+                setReady(true);
+                progressEvents.onLoadedMetadata(event);
+              }}
+              onCanPlay={(event) => {
+                setReady(true);
+                progressEvents.onCanPlay(event);
+              }}
               onError={() => setReady(true)}
             >
               {isNative &&
