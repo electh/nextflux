@@ -70,9 +70,9 @@
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.967 0.001 286.375);
     --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.97 0 0);
+    --muted: oklch(0.930999 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
+    --accent: oklch(0.930999 0 0);
     --accent-foreground: oklch(0.205 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
@@ -115,6 +115,10 @@
       0 5px 5px -2.5px #09011408, 0 3px 3px -1.5px #08011408,
       0 2px 2px -1px #08011408, 0 1px 1px -0.5px #08011408,
       0 0.5px 0.5px #08011408;
+    --liquid-glass-highlight: rgb(255 255 255 / 85%);
+    --liquid-glass-edge: rgb(0 0 0 / 15%);
+    --liquid-glass-drop: rgb(0 0 0 / 15%);
+    --liquid-glass-edge-mix: 5%;
   }
 
   .dark {
@@ -167,6 +171,10 @@
       0 1px 3px #ffffff0f inset, 0 0.5px 0.5px #ffffff0f inset,
       0 16px 56px #0000003d, 0 4px 16px #0000003d, 0 1px 2px #0000003d,
       0 0 0 1px rgba(0, 0, 0, 0.1);
+    --liquid-glass-highlight: rgb(255 255 255 / 20%);
+    --liquid-glass-edge: rgb(255 255 255 / 8%);
+    --liquid-glass-drop: rgb(0 0 0 / 24%);
+    --liquid-glass-edge-mix: 3.5%;
   }
 
   [data-theme="stone"] {
@@ -286,6 +294,56 @@
 }
 
 @layer components {
+  /* Baseline 4.0-inspired material, with a stronger fill for readable controls. */
+  .liquid-glass {
+    --muted-foreground: var(--foreground);
+    --liquid-glass-opacity: 50%;
+    --liquid-glass-fill: color-mix(in oklch, var(--popover) var(--liquid-glass-opacity), transparent);
+    --liquid-glass-rim: color-mix(in oklch, var(--liquid-glass-fill), white var(--liquid-glass-edge-mix));
+    background: linear-gradient(
+      to bottom,
+      var(--liquid-glass-rim),
+      var(--liquid-glass-fill) 25%,
+      var(--liquid-glass-fill) 65%,
+      var(--liquid-glass-rim)
+    );
+    -webkit-backdrop-filter: blur(6px) saturate(1.2);
+    backdrop-filter: blur(6px) saturate(1.2);
+    box-shadow:
+      0 0 0 0.5px var(--liquid-glass-edge),
+      -1px 0 0 -0.5px var(--liquid-glass-drop),
+      1px 0 0 -0.5px var(--liquid-glass-drop),
+      inset 0 1.5px 1.5px -1.5px var(--liquid-glass-highlight),
+      inset 0 -1.5px 1.5px -1.5px var(--liquid-glass-highlight),
+      0 2px 12px -3px var(--liquid-glass-drop);
+  }
+
+  .liquid-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      150deg,
+      var(--liquid-glass-highlight),
+      transparent 35%,
+      transparent 65%,
+      var(--liquid-glass-highlight)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .liquid-glass {
+      --liquid-glass-opacity: 100%;
+    }
+  }
+
   [data-slot="overlay-body"] {
     @apply min-h-0 flex-1 overflow-y-auto;
   }
@@ -368,4 +426,14 @@
   transform: translateX(-100px);
   filter: brightness(0.7);
   background-color: var(--sidebar);
+}
+
+/* 统一使用纯色圆形波纹，边缘不做渐变过渡。 */
+.salty-ripple.app-ripple .salty-ripple-surface::after {
+  background: radial-gradient(
+    closest-side,
+    var(--ripple-color, currentColor) 100%,
+    transparent 100%
+  );
+  transition-duration: 220ms;
 }

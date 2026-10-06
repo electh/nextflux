@@ -32,7 +32,12 @@ export default function MenuButton() {
     <MorphDropdownMenu>
       <MorphDropdownMenuTrigger
         render={
-          <Button variant="ghost" disabled={isDisabled} size="icon-sm">
+          <Button
+            variant="ghost"
+            disabled={isDisabled}
+            size="icon-sm"
+            className="rounded-full"
+          >
             <EllipsisVertical className="size-4 text-muted-foreground" />
           </Button>
         }

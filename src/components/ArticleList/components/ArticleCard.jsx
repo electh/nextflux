@@ -6,7 +6,7 @@ import {
   ContextMenuItem,
 } from "@/components/ui/context-menu";
 import { useNavigate, useParams } from "react-router-dom";
-import { Ripple } from "m3-ripple";
+import { Ripple } from "@/components/ui/ripple";
 import { Clock, ArrowUpFromLine, Star, Circle, CircleDot } from "lucide-react";
 import {
   cleanTitle,
@@ -120,13 +120,13 @@ export default function ArticleCard({ article }) {
               data-article-id={article.id}
               onClick={handleClick}
             >
-              <Ripple hoverOpacity={0} pressedOpacity={0.05} duration={100} />
+              <Ripple />
               <div
                 className={cn(
-                  "card-content flex flex-col gap-1 transition-opacity",
+                  "card-content flex flex-col gap-1 [&_.card-meta]:transition-opacity [&_.card-title]:transition-opacity [&_.card-reading-time]:transition-opacity [&_.card-preview]:transition-opacity",
                   article.status === "read" &&
                     article.starred === 0 &&
-                    "opacity-50",
+                    "[&_.card-meta]:opacity-50 [&_.card-title]:opacity-50 [&_.card-reading-time]:opacity-50 [&_.card-preview]:opacity-50 [&_.card-image-content]:opacity-50",
                 )}
               >
                 <div className="card-header flex flex-col gap-1">
@@ -174,7 +174,7 @@ export default function ArticleCard({ article }) {
                         {cleanTitle(article.title)}
                       </h3>
                       {showReadingTime && (
-                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <div className="card-reading-time text-xs text-muted-foreground flex items-center gap-1">
                           <Clock className="size-3 shrink-0" />
                           <span className="line-clamp-1">
                             {article.reading_time === 0
@@ -186,7 +186,7 @@ export default function ArticleCard({ article }) {
                       {textPreviewLines !== 0 && (
                         <span
                           className={cn(
-                            "text-sm text-muted-foreground text-wrap break-words w-full max-w-full overflow-hidden",
+                            "card-preview text-sm text-muted-foreground text-wrap break-words w-full max-w-full overflow-hidden",
                           )}
                           style={{
                             wordBreak: "break-word",

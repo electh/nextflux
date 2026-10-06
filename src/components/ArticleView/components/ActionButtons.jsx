@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { handleMarkStatus } from "@/handlers/articleHandlers.js";
@@ -41,10 +40,7 @@ export default function ActionButtons({ scrollAreaRef }) {
       ref={toolbarRef}
       data-hidden={hidden}
       {...toolbarEvents}
-      className={cn(
-        "action-buttons py-2 standalone:pt-safe-or-2.5 backdrop-blur-sm border-b border-foreground/10 px-2 sticky top-0 z-50",
-        "bg-popover/70",
-      )}
+      className="action-buttons py-2 standalone:pt-safe-or-2.5 px-2 sticky top-0 z-50"
     >
       <div className="flex items-center">
         <ArticleNavigationControls

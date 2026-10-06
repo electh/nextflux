@@ -16,6 +16,7 @@ const SyncButton = () => {
   };
   return (
     <Button
+      className="rounded-full"
       variant="ghost"
       onClick={handleForceSync}
       disabled={$isSyncing || !$isOnline || $isSyncing}

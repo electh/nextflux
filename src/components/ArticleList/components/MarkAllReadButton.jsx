@@ -26,6 +26,7 @@ export default function MarkAllReadButton() {
       <MorphDropdownMenuTrigger
         render={
           <Button
+            className="rounded-full"
             variant="ghost"
             disabled={$filter === "starred" || $markingAllAsRead || isPending}
             aria-busy={isPending}

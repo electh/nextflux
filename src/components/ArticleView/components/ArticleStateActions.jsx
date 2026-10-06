@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { LiquidGlass } from "@/components/ui/liquid-glass";
 import { Kbd } from "@/components/ui/kbd";
 import { useRef } from "react";
 import { useStore } from "@nanostores/react";
@@ -31,7 +32,11 @@ export default function ArticleStateActions({ article }) {
   const statusPending = article ? `${article.id}:status` in pending : false;
   const starPending = article ? `${article.id}:starred` in pending : false;
   return (
-    <div className="flex gap-1 ml-auto">
+    <LiquidGlass
+      role="group"
+      aria-label={`${t("common.read")} / ${t("common.star")} / ${t("common.share")}`}
+      className="ml-auto gap-1 p-0.5"
+    >
       <Tooltip>
         <TooltipTrigger
           closeOnClick={false}
@@ -46,7 +51,7 @@ export default function ArticleStateActions({ article }) {
               onClick={() => handleMarkStatus(article)}
               disabled={!article || statusPending}
               focusableWhenDisabled={Boolean(article)}
-              className="data-disabled:opacity-50"
+              className="rounded-full data-disabled:opacity-50"
               aria-busy={statusPending}
               size="icon-sm"
             >
@@ -72,7 +77,7 @@ export default function ArticleStateActions({ article }) {
               ref={starButtonRef}
               disabled={!article || starPending}
               focusableWhenDisabled={Boolean(article)}
-              className="data-disabled:opacity-50"
+              className="rounded-full data-disabled:opacity-50"
               aria-busy={starPending}
               variant="ghost"
               aria-label={
@@ -113,7 +118,7 @@ export default function ArticleStateActions({ article }) {
               onClick={() => handleToggleContent(article)}
               disabled={!article || fetchLoading}
               focusableWhenDisabled={Boolean(article)}
-              className="data-disabled:opacity-50"
+              className="rounded-full data-disabled:opacity-50"
               aria-busy={fetchLoading}
               size="icon-sm"
             >
@@ -140,6 +145,6 @@ export default function ArticleStateActions({ article }) {
           <Kbd>G</Kbd>
         </TooltipContent>
       </Tooltip>
-    </div>
+    </LiquidGlass>
   );
 }

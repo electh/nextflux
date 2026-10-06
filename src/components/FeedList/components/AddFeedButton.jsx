@@ -48,7 +48,7 @@ export default function AddFeedButton() {
       <MorphDropdownMenu>
         <MorphDropdownMenuTrigger
           render={
-            <Button variant="ghost" size="icon-sm">
+            <Button variant="ghost" size="icon-sm" className="rounded-full">
               <CirclePlus className="size-4 text-muted-foreground" />
             </Button>
           }

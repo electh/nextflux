@@ -58,7 +58,7 @@ export default function ArticleExternalActions({ article }) {
                 onClick={save}
                 disabled={!article || saving}
                 focusableWhenDisabled={Boolean(article)}
-                className="data-disabled:opacity-50"
+                className="rounded-full data-disabled:opacity-50"
                 aria-busy={saving}
                 size="icon-sm"
               >
@@ -81,6 +81,7 @@ export default function ArticleExternalActions({ article }) {
             <Button
               variant="ghost"
               aria-label={t("common.share")}
+              className="rounded-full"
               onClick={share}
               disabled={!article}
               size="icon-sm"
