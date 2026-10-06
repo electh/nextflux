@@ -21,7 +21,6 @@ function ArticleCardCover({ imageUrl }) {
       <div
         className={cn(
           "card-image relative bg-secondary rounded-lg shadow-custom overflow-hidden",
-          "after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-custom after:content-['']",
           cardImageSize === "large"
             ? "aspect-video w-full"
             : "w-20 h-20 shrink-0",
@@ -39,7 +38,6 @@ function ArticleCardCover({ imageUrl }) {
       ref={imgRef}
       className={cn(
         "card-image relative bg-secondary rounded-lg shadow-custom overflow-hidden",
-        "after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-custom after:content-['']",
         loading && "animate-pulse!",
         cardImageSize === "large"
           ? "aspect-video w-full"
