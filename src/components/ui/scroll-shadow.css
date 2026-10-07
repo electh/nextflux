@@ -28,7 +28,9 @@
   .scroll-shadow:is([data-scroll-shadow-visibility="bottom"], [data-scroll-shadow-visibility="right"], [data-scroll-shadow-visibility="both"]) {
     --scroll-shadow-end: min(var(--scroll-shadow-size), 50%);
   }
-  .scroll-shadow[data-scroll-shadow-visibility]:not([data-scroll-shadow-visibility="none"]) {
+  /* Keep the mask attached even when content fits. Switching between a masked
+     and unmasked scrolling layer can flicker inside transformed overlays. */
+  .scroll-shadow[data-scroll-shadow-enabled="true"] {
     --scroll-shadow-mask: linear-gradient(
       var(--scroll-shadow-direction),
       transparent, #000 var(--scroll-shadow-start),

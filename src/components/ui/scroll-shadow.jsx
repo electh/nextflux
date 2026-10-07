@@ -103,6 +103,7 @@ const ScrollShadow = forwardRef(function ScrollShadow(
       {...props}
       ref={elementRef}
       data-slot="scroll-shadow"
+      data-scroll-shadow-enabled={isEnabled ? "true" : "false"}
       data-orientation={orientation}
       data-hide-scrollbar={hideScrollBar || undefined}
       className={cn("scroll-shadow relative", className)}

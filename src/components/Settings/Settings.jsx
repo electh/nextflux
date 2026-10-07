@@ -80,7 +80,10 @@ function MenuList({ onSelect }) {
   };
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <ScrollShadow role="navigation" className="min-h-0 flex-1 p-2">
+      <ScrollShadow
+        role="navigation"
+        className="min-h-0 flex-1 overscroll-contain p-2"
+      >
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -147,8 +150,11 @@ function ContentArea({ activeTab, showTitle = false, className }) {
           </h3>
         </div>
       )}
-      <ScrollShadow className="settings-content min-h-0 flex-1 p-4 flex flex-col gap-4">
-        {renderContent()}
+      {/* Keep the flex layout inside the scroll viewport so groups don't shrink. */}
+      <ScrollShadow
+        className="settings-content min-h-0 flex-1 overscroll-contain p-4"
+      >
+        <div className="flex flex-col gap-4">{renderContent()}</div>
       </ScrollShadow>
     </div>
   );
@@ -242,17 +248,20 @@ function DesktopSettings() {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent
         showOverlay={false}
-        className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden  bg-sidebar backdrop-blur-sm border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]"
+        className="w-[700px] max-w-[90vw] h-[600px] max-h-[85vh] p-0 overflow-hidden bg-sidebar border shadow-2xl flex flex-col gap-0 sm:max-w-[700px]"
       >
-        <div className="flex h-full">
+        <div className="flex h-full min-h-0">
           {/* 左侧导航栏 */}
-          <div className="flex flex-col w-52">
+          <div className="flex min-h-0 shrink-0 flex-col w-52">
             <div className="p-4 border-b mx-2">
               <DialogTitle className="text-lg font-semibold">
                 {t("common.settings")}
               </DialogTitle>
             </div>
-            <ScrollShadow role="navigation" className="min-h-0 flex-1 p-2">
+            <ScrollShadow
+              role="navigation"
+              className="min-h-0 flex-1 overscroll-contain p-2"
+            >
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -283,7 +292,7 @@ function DesktopSettings() {
           </div>
 
           {/* 右侧内容区域 */}
-          <div className="flex-1 flex flex-col min-w-0 py-2 pr-2">
+          <div className="flex-1 flex flex-col min-h-0 min-w-0 py-2 pr-2">
             {/* Match the shell radius minus the 8px inset and 1px border. */}
             <ContentArea
               activeTab={activeTab}
