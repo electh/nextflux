@@ -18,7 +18,6 @@ import {
 import { imageGalleryActive } from "@/stores/articlesStore.js";
 import { cn, getFontSizeClass } from "@/lib/utils.js";
 import {
-  getCodeLanguage,
   hasImageContent,
   normalizeCode,
 } from "@/domain/articles/articleHtml.js";
@@ -91,10 +90,7 @@ function replaceArticleNode(
         </pre>
       }
     >
-      <CodeBlock
-        code={code}
-        language={codeNode ? getCodeLanguage(codeNode) : "text"}
-      />
+      <CodeBlock code={code} />
     </Suspense>
   );
 }
@@ -102,7 +98,6 @@ export default function ArticleContent({
   article,
   alignJustify,
   fontSize,
-  isStoneTheme,
   lineHeight,
 }) {
   const { useThirdPartyMediaPlayer } = useStore(settingsState);
@@ -176,11 +171,10 @@ export default function ArticleContent({
       >
         <div
           className={cn(
-            "article-content prose dark:prose-invert max-w-none",
+            "article-content prose max-w-none",
             "prose-pre:rounded-lg prose-pre:shadow-small",
             "prose-h1:text-[1.5em] prose-h2:text-[1.25em] prose-h3:text-[1.125em] prose-h4:text-[1em]",
             getFontSizeClass(fontSize),
-            isStoneTheme && "prose-stone",
           )}
           style={{
             lineHeight: `${lineHeight}em`,

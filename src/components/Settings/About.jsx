@@ -47,6 +47,22 @@ export default function About() {
             HeroUI
           </a>
           <a
+            href="https://ui.shadcn.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            shadcn/ui
+          </a>
+          <a
+            href="https://videojs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            Video.js
+          </a>
+          <a
             href="https://tailwindcss.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -61,14 +77,6 @@ export default function About() {
             className="text-primary hover:underline"
           >
             React-photo-view
-          </a>
-          <a
-            href="https://shiki.matsu.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            Shiki
           </a>
           <a
             href="https://virtuoso.dev"

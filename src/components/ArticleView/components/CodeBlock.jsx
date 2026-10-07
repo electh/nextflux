@@ -4,44 +4,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { settingsState } from "@/stores/settingsStore.js";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils.js";
 import { themeState } from "@/stores/themeStore.js";
 import { useTranslation } from "react-i18next";
-import { useInView } from "framer-motion";
-import { highlightCode } from "@/lib/codeHighlighter.js";
 import { reportError } from "@/lib/errors.js";
-export default function CodeBlock({ code, language }) {
+export default function CodeBlock({ code }) {
   const { t } = useTranslation();
-  const [html, setHtml] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const { showLineNumbers, forceDarkCodeTheme } = useStore(settingsState);
   const { darkTheme } = useStore(themeState);
-  const codeRef = useRef(null);
-  const isInView = useInView(codeRef, {
-    once: true,
-  });
-  useEffect(() => {
-    let cancelled = false;
-    async function highlight() {
-      try {
-        const highlighted = await highlightCode(code, language);
-        if (!cancelled) setHtml(highlighted);
-      } catch (error) {
-        reportError(error, "code.highlight");
-        if (!cancelled) setHtml("");
-      }
-    }
-    if (isInView) {
-      highlight();
-    }
-    return () => {
-      cancelled = true;
-    };
-  }, [code, language, isInView]);
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -54,25 +29,17 @@ export default function CodeBlock({ code, language }) {
   return (
     <div
       className={cn(
-        forceDarkCodeTheme ? `${darkTheme} force-dark-code-theme` : "",
-        "code-block relative group",
+        forceDarkCodeTheme && "dark",
+        "code-block relative",
         showLineNumbers ? "line-numbers" : "",
       )}
-      ref={codeRef}
+      data-theme={forceDarkCodeTheme ? darkTheme : undefined}
     >
-      <span
-        className={cn(
-          "text-xs absolute right-2 top-1 text-muted-foreground opacity-100 group-hover:opacity-0 transition-opacity",
-          language === "text" ? "hidden" : "",
-        )}
-      >
-        {language}
-      </span>
       <Tooltip>
         <TooltipTrigger
           render={
             <Button
-              className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-2"
               variant="ghost"
               aria-label={t("common.copy")}
               onClick={handleCopy}
@@ -90,19 +57,17 @@ export default function CodeBlock({ code, language }) {
         />
         <TooltipContent>{t("common.copy")}</TooltipContent>
       </Tooltip>
-      {isInView && html && (
-        <div
-          className="animate-in fade-in duration-300"
-          dangerouslySetInnerHTML={{
-            __html: html,
-          }}
-        />
-      )}
-      {isInView && !html && (
-        <pre className="overflow-x-auto">
-          <code>{code}</code>
-        </pre>
-      )}
+      <pre className="overflow-x-auto" tabIndex={0}>
+        {showLineNumbers && (
+          <span className="code-line-numbers" aria-hidden="true">
+            {code
+              .split("\n")
+              .map((_, index) => index + 1)
+              .join("\n")}
+          </span>
+        )}
+        <code>{code}</code>
+      </pre>
     </div>
   );
 }

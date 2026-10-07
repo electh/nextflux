@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  getCodeLanguage,
   getNodeText,
   hasImageContent,
   normalizeCode,
@@ -29,13 +28,4 @@ test("extracts code text and preserves structural line breaks", () => {
   };
   assert.equal(getNodeText(node), "first\nsecond\n");
   assert.equal(normalizeCode(node), "first\nsecond");
-});
-
-test("reads language and lang class prefixes", () => {
-  assert.equal(
-    getCodeLanguage({ attribs: { class: "foo language-typescript" } }),
-    "typescript",
-  );
-  assert.equal(getCodeLanguage({ attribs: { class: "lang-js" } }), "js");
-  assert.equal(getCodeLanguage({}), "text");
 });

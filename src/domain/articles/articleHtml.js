@@ -20,16 +20,6 @@ export function getNodeText(node) {
   return BLOCK_TAGS.has(node.name) ? `${text}\n` : text;
 }
 
-export function getCodeLanguage(codeNode) {
-  const className = codeNode?.attribs?.class || "";
-  return (
-    className
-      .split(/\s+/)
-      .find((name) => name.startsWith("language-") || name.startsWith("lang-"))
-      ?.replace(/^(language-|lang-)/, "") || "text"
-  );
-}
-
 export function normalizeCode(node) {
   return getNodeText(node)
     .replace(/\n{3,}/g, "\n\n")

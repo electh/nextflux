@@ -17,7 +17,6 @@ import {
   pendingArticleMutations,
 } from "@/stores/articlesStore.js";
 import { settingsState } from "@/stores/settingsStore";
-import { currentThemeMode, themeState } from "@/stores/themeStore.js";
 import { getArticleById } from "@/db/storage";
 import { useLiveQuery } from "dexie-react-hooks";
 import { sameRecord } from "@/domain/sync/reconcileRecords.js";
@@ -117,12 +116,9 @@ export default function ArticleView() {
     showReadingRail,
   } = useStore(settingsState);
   const reduceMotion = useReducedMotion();
-  const { lightTheme } = useStore(themeState);
-  const themeMode = useStore(currentThemeMode);
   const scrollAreaRef = useRef(null);
   const { isMedium } = useIsMobile();
   const { error, loading } = useActiveArticle(articleId);
-  const isStoneTheme = lightTheme === "stone" && themeMode === "light";
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <div
@@ -206,7 +202,6 @@ export default function ArticleView() {
                                 article={article}
                                 alignJustify={alignJustify}
                                 fontSize={fontSize}
-                                isStoneTheme={isStoneTheme}
                                 lineHeight={lineHeight}
                               />
                             </div>

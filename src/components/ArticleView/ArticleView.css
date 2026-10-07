@@ -31,6 +31,27 @@ html[data-reduced-motion="true"] .action-buttons {
   word-break: break-word;
 }
 
+.article-content.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-kbd: var(--foreground);
+  --tw-prose-kbd-shadows: var(--border);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
 .article-content *:not(.article-media-player, .article-media-player *) {
   @apply max-w-full;
 }
@@ -61,7 +82,7 @@ html[data-reduced-motion="true"] .action-buttons {
 
 /*code 相关样式 */
 .article-content code:not(pre code) {
-  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono dark:text-muted-foreground rounded text-muted-foreground bg-background dark:bg-background/80 px-1.5 py-0.5;
+  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono rounded text-foreground bg-muted px-1.5 py-0.5;
 }
 
 .article-content pre {
@@ -72,21 +93,27 @@ html[data-reduced-motion="true"] .action-buttons {
   @apply whitespace-pre;
 }
 
-/*https://github.com/shikijs/shiki/issues/3*/
-.line-numbers code {
-  counter-increment: step 0;
-  counter-reset: step;
+.article-content .line-numbers pre {
+  display: flex;
+  align-items: flex-start;
+  padding-left: 0;
 }
 
-.line-numbers code .line::before {
-  content: counter(step);
-  counter-increment: step;
-  display: inline-block;
-  margin-right: 1.5rem;
+.article-content .line-numbers pre code {
+  flex: none;
+  max-width: none;
+}
+
+.code-line-numbers {
+  @apply bg-muted text-muted-foreground;
+  position: sticky;
+  left: 0;
+  flex: none;
+  padding-left: 1em;
+  padding-right: 1.5rem;
+  min-width: calc(3ch + 2.5rem);
   text-align: right;
-  width: 3ch;
-  min-width: 3ch;
-  white-space: nowrap;
+  white-space: pre;
   word-break: normal;
   overflow-wrap: normal;
   font-variant-numeric: tabular-nums;
@@ -113,17 +140,12 @@ figcaption {
   @apply italic!;
 }
 
-/*代码主题跟随系统当前使用主题*/
-.shiki {
-  @apply shadow-custom;
+.article-content .code-block pre {
+  @apply bg-muted text-foreground shadow-custom;
 }
 
-html[class$="dark"] .shiki,
-html[class$="dark"] .shiki span,
-div.force-dark-code-theme .shiki,
-div.force-dark-code-theme .shiki span {
-  background-color: var(--shiki-dark-bg) !important;
-  color: var(--shiki-dark) !important;
+.article-content .code-block pre code {
+  color: inherit;
 }
 
 /*image gallery*/
