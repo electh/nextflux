@@ -27,6 +27,7 @@ import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useParams, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { isModalOpen } from "@/stores/modalStore";
+import { ScrollShadow } from "@/components/ui/scroll-shadow.jsx";
 function SyncStatus() {
   const { t } = useTranslation();
   const $lastSync = useStore(lastSync);
@@ -102,11 +103,11 @@ const FeedListSidebar = ({ resizable = false }) => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <div className={cn("overflow-y-auto", "h-full")}>
+      <SidebarContent className="overflow-hidden">
+        <ScrollShadow className="h-full min-h-0" size={40}>
           <ArticlesGroup />
           <FeedsGroup />
-        </div>
+        </ScrollShadow>
       </SidebarContent>
       <SidebarFooter>
         <ProfileButton />

@@ -21,6 +21,7 @@ import About from "@/components/Settings/About.jsx";
 import Shortcuts from "@/components/Settings/Shortcuts.jsx";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { ScrollShadow } from "@/components/ui/scroll-shadow.jsx";
 import {
   Cog,
   Paintbrush,
@@ -78,8 +79,8 @@ function MenuList({ onSelect }) {
     onSelect(id);
   };
   return (
-    <div className="flex flex-col">
-      <nav className="flex-1 overflow-y-auto p-2">
+    <div className="flex h-full min-h-0 flex-col">
+      <ScrollShadow role="navigation" className="min-h-0 flex-1 p-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -99,7 +100,7 @@ function MenuList({ onSelect }) {
             </button>
           );
         })}
-      </nav>
+      </ScrollShadow>
     </div>
   );
 }
@@ -135,7 +136,7 @@ function ContentArea({ activeTab, showTitle = false, className }) {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-popover md:shadow-custom md:rounded-2xl",
+        "flex min-h-0 flex-col h-full bg-popover md:shadow-custom md:rounded-2xl",
         className,
       )}
     >
@@ -146,14 +147,9 @@ function ContentArea({ activeTab, showTitle = false, className }) {
           </h3>
         </div>
       )}
-      <div
-        className={cn(
-          "overflow-y-auto",
-          "settings-content flex-1 overflow-y-auto p-4 flex flex-col gap-4",
-        )}
-      >
+      <ScrollShadow className="settings-content min-h-0 flex-1 p-4 flex flex-col gap-4">
         {renderContent()}
-      </div>
+      </ScrollShadow>
     </div>
   );
 }
@@ -256,7 +252,7 @@ function DesktopSettings() {
                 {t("common.settings")}
               </DialogTitle>
             </div>
-            <nav className="flex-1 overflow-y-auto p-2">
+            <ScrollShadow role="navigation" className="min-h-0 flex-1 p-2">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -283,7 +279,7 @@ function DesktopSettings() {
                   </button>
                 );
               })}
-            </nav>
+            </ScrollShadow>
           </div>
 
           {/* 右侧内容区域 */}

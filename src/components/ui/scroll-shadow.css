@@ -1,0 +1,54 @@
+@layer components {
+  .scroll-shadow {
+    --scroll-shadow-start: 0px;
+    --scroll-shadow-end: 0px;
+    --scroll-shadow-scrollbar-size: 10px;
+  }
+  .scroll-shadow[data-orientation="vertical"] {
+    overflow-y: auto;
+    --scroll-shadow-direction: to bottom;
+    --scroll-shadow-mask-size: calc(100% - var(--scroll-shadow-scrollbar-size)) 100%;
+    --scroll-shadow-gutter-size: var(--scroll-shadow-scrollbar-size) 100%;
+    --scroll-shadow-gutter-position: right top;
+  }
+  .scroll-shadow[data-orientation="vertical"]:dir(rtl) {
+    --scroll-shadow-gutter-position: left top;
+    --scroll-shadow-content-position: right top;
+  }
+  .scroll-shadow[data-orientation="horizontal"] {
+    overflow-x: auto;
+    --scroll-shadow-direction: to right;
+    --scroll-shadow-mask-size: 100% calc(100% - var(--scroll-shadow-scrollbar-size));
+    --scroll-shadow-gutter-size: 100% var(--scroll-shadow-scrollbar-size);
+    --scroll-shadow-gutter-position: left bottom;
+  }
+  .scroll-shadow:is([data-scroll-shadow-visibility="top"], [data-scroll-shadow-visibility="left"], [data-scroll-shadow-visibility="both"]) {
+    --scroll-shadow-start: min(var(--scroll-shadow-size), 50%);
+  }
+  .scroll-shadow:is([data-scroll-shadow-visibility="bottom"], [data-scroll-shadow-visibility="right"], [data-scroll-shadow-visibility="both"]) {
+    --scroll-shadow-end: min(var(--scroll-shadow-size), 50%);
+  }
+  .scroll-shadow[data-scroll-shadow-visibility]:not([data-scroll-shadow-visibility="none"]) {
+    --scroll-shadow-mask: linear-gradient(
+      var(--scroll-shadow-direction),
+      transparent, #000 var(--scroll-shadow-start),
+      #000 calc(100% - var(--scroll-shadow-end)), transparent
+    );
+    -webkit-mask-image: var(--scroll-shadow-mask), linear-gradient(#000, #000);
+    mask-image: var(--scroll-shadow-mask), linear-gradient(#000, #000);
+    -webkit-mask-size: var(--scroll-shadow-mask-size), var(--scroll-shadow-gutter-size);
+    mask-size: var(--scroll-shadow-mask-size), var(--scroll-shadow-gutter-size);
+    -webkit-mask-position: var(--scroll-shadow-content-position, left top), var(--scroll-shadow-gutter-position);
+    mask-position: var(--scroll-shadow-content-position, left top), var(--scroll-shadow-gutter-position);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  .scroll-shadow[data-hide-scrollbar="true"] {
+    --scroll-shadow-scrollbar-size: 0px;
+    scrollbar-width: none;
+  }
+  .scroll-shadow[data-hide-scrollbar="true"]::-webkit-scrollbar {
+    display: none;
+  }
+
+}
