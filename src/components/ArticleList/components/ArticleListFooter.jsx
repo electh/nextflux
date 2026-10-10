@@ -1,4 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LiquidGlass } from "@/components/ui/liquid-glass";
 import { filter } from "@/stores/articlesStore";
 import { Circle, Star, Text } from "lucide-react";
 import { useStore } from "@nanostores/react";
@@ -15,11 +16,11 @@ export default function ArticleListFooter() {
           filter.set(value);
         }}
       >
-        <>
+        <LiquidGlass>
           <TabsList
             variant="pill"
             aria-label="filter"
-            className="backdrop-blur-md shadow-custom w-fit *:h-6 *:w-fit *:px-3 *:text-xs *:font-normal"
+            className="bg-transparent w-fit *:h-6 *:w-fit *:px-3 *:text-xs *:font-normal"
           >
             <TabsTrigger value="starred">
               <div className="flex items-center gap-1.5">
@@ -40,7 +41,7 @@ export default function ArticleListFooter() {
               </div>
             </TabsTrigger>
           </TabsList>
-        </>
+        </LiquidGlass>
       </Tabs>
     </div>
   );

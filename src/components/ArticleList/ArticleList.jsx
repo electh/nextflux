@@ -16,6 +16,7 @@ import { reconcileRecords } from "@/domain/sync/reconcileRecords.js";
 import { computed } from "nanostores";
 import { db } from "@/db/database.js";
 import { Button } from "@/components/ui/button";
+import { LiquidGlass } from "@/components/ui/liquid-glass";
 import { ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -143,21 +144,23 @@ const ArticleList = () => {
         <ArticleListHeader />
         {pendingCount > 0 && (
           <div className="absolute top-16 inset-x-0 flex justify-center pointer-events-none z-10">
-            <Button
-              size="sm"
-              variant="secondary"
-              className="pointer-events-auto shadow-sm rounded-full"
-              onClick={() => {
-                visibleRange.set({ startIndex: 0, endIndex: 0 });
-                virtuosoRef.current?.scrollToIndex({
-                  index: 0,
-                  behavior: "auto",
-                });
-              }}
-            >
-              <ArrowUp data-icon="inline-start" />
-              {t("common.newArticles", { count: pendingCount })}
-            </Button>
+            <LiquidGlass className="pointer-events-auto">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="rounded-full"
+                onClick={() => {
+                  visibleRange.set({ startIndex: 0, endIndex: 0 });
+                  virtuosoRef.current?.scrollToIndex({
+                    index: 0,
+                    behavior: "auto",
+                  });
+                }}
+              >
+                <ArrowUp data-icon="inline-start" />
+                {t("common.newArticles", { count: pendingCount })}
+              </Button>
+            </LiquidGlass>
           </div>
         )}
         <ArticleListContent

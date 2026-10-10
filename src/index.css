@@ -398,7 +398,7 @@
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, filter, background-color;
+  will-change: transform, background-color;
 }
 
 .article-list-shifted {
