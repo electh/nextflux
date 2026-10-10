@@ -148,6 +148,8 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "进入全视图",
+    restoreViewport: "退出全视图",
     readingNavigation: "阅读导航",
     jumpToSection: "跳转到第 {{index}} 段：{{title}}",
     notFoundTitle: "未找到这篇文章",

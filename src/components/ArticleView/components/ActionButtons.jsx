@@ -10,7 +10,12 @@ import ArticleNavigationControls from "./ArticleNavigationControls.jsx";
 import ArticleStateActions from "./ArticleStateActions.jsx";
 import { useAutoHideToolbar } from "@/hooks/useAutoHideToolbar.js";
 import { settingsState } from "@/stores/settingsStore.js";
-export default function ActionButtons({ scrollAreaRef }) {
+export default function ActionButtons({
+  scrollAreaRef,
+  isExpanded,
+  canExpand,
+  onToggleExpanded,
+}) {
   const { articleId } = useParams();
   const { autoHideToolbar } = useStore(settingsState);
   const { toolbarRef, hidden, ...toolbarEvents } = useAutoHideToolbar(
@@ -50,7 +55,12 @@ export default function ActionButtons({ scrollAreaRef }) {
           onNext={() => openArticle(next)}
           onPrevious={() => openArticle(previous)}
         />
-        <ArticleStateActions article={article} />
+        <ArticleStateActions
+          article={article}
+          canExpand={canExpand}
+          isExpanded={isExpanded}
+          onToggleExpanded={onToggleExpanded}
+        />
       </div>
     </div>
   );

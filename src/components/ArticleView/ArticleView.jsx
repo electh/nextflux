@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,11 @@ function useActiveArticle(articleId) {
 export default function ArticleView() {
   const navigate = useNavigate();
   const { articleId } = useParams();
+  const [expandedArticleId, setExpandedArticleId] = useState(null);
+  const isExpanded = Boolean(articleId && expandedArticleId === articleId);
+  useEffect(() => {
+    setExpandedArticleId(null);
+  }, [articleId]);
   const { t } = useTranslation();
   const storedArticle = useStore(activeArticle);
   const cachedArticles = useStore(filteredArticles);
@@ -117,13 +122,33 @@ export default function ArticleView() {
   } = useStore(settingsState);
   const reduceMotion = useReducedMotion();
   const scrollAreaRef = useRef(null);
+  const previousExpansion = useRef(isExpanded);
+  useLayoutEffect(() => {
+    const changed = previousExpansion.current !== isExpanded;
+    previousExpansion.current = isExpanded;
+    if (!changed || reduceMotion || !articleId) return;
+
+    // Animate the surface after reflow; scaling the layout stretches text,
+    // media and toolbar icons as the panel changes width.
+    const animation = scrollAreaRef.current?.animate(
+      [
+        { opacity: 0.65, transform: "translateY(6px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      { duration: 220, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+    );
+    return () => animation?.cancel();
+  }, [isExpanded, reduceMotion, articleId]);
   const { isMedium } = useIsMobile();
   const { error, loading } = useActiveArticle(articleId);
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <div
         className={cn(
-          "motion-sensitive flex-1 min-w-0 w-full p-0 h-screen fixed md:static inset-0 z-20 md:pr-2 md:py-2",
+          "motion-sensitive flex-1 min-w-0 w-full p-0 inset-0",
+          isExpanded
+            ? "fixed h-dvh z-30"
+            : "h-screen fixed md:static z-20 md:pr-2 md:py-2",
           !articleId && "pointer-events-none md:pointer-events-auto",
         )}
       >
@@ -163,9 +188,19 @@ export default function ArticleView() {
                   <>
                     <div
                       ref={scrollAreaRef}
-                      className="article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative md:shadow-custom md:rounded-2xl"
+                      className={cn(
+                        "article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative",
+                        !isExpanded && "md:shadow-custom md:rounded-2xl",
+                      )}
                     >
-                      <ActionButtons scrollAreaRef={scrollAreaRef} />
+                      <ActionButtons
+                        scrollAreaRef={scrollAreaRef}
+                        isExpanded={isExpanded}
+                        canExpand={!isMedium}
+                        onToggleExpanded={() =>
+                          setExpandedArticleId(isExpanded ? null : articleId)
+                        }
+                      />
                       <AnimatePresence
                         mode="wait"
                         custom={direction}

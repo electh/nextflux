@@ -24,7 +24,13 @@ import {
 } from "@/stores/articlesStore.js";
 import ArticleAiAction from "./ArticleAiAction.jsx";
 import ArticleExternalActions from "./ArticleExternalActions.jsx";
-export default function ArticleStateActions({ article }) {
+import ArticleViewportControl from "./ArticleViewportControl.jsx";
+export default function ArticleStateActions({
+  article,
+  canExpand,
+  isExpanded,
+  onToggleExpanded,
+}) {
   const { t } = useTranslation();
   const starButtonRef = useRef(null);
   const fetchLoading = useStore(loadingOriginContent);
@@ -145,6 +151,12 @@ export default function ArticleStateActions({ article }) {
           <Kbd>G</Kbd>
         </TooltipContent>
       </Tooltip>
+      {(canExpand || isExpanded) && (
+        <ArticleViewportControl
+          isExpanded={isExpanded}
+          onToggleExpanded={onToggleExpanded}
+        />
+      )}
     </LiquidGlass>
   );
 }

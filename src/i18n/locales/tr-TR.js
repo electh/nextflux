@@ -148,6 +148,8 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "Tam görünüme geç",
+    restoreViewport: "Tam görünümden çık",
     readingNavigation: "Okuma gezintisi",
     jumpToSection: "{{index}}. bölüme git: {{title}}",
     notFoundTitle: "Makale bulunamadı",

@@ -149,6 +149,8 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "Enter full view",
+    restoreViewport: "Exit full view",
     readingNavigation: "Reading navigation",
     jumpToSection: "Jump to section {{index}}: {{title}}",
     notFoundTitle: "Article not found",
