@@ -71,10 +71,10 @@ function useActiveArticle(articleId) {
 export default function ArticleView() {
   const navigate = useNavigate();
   const { articleId } = useParams();
-  const [expandedArticleId, setExpandedArticleId] = useState(null);
-  const isExpanded = Boolean(articleId && expandedArticleId === articleId);
+  const [fullView, setFullView] = useState(false);
+  const isExpanded = Boolean(articleId && fullView);
   useEffect(() => {
-    setExpandedArticleId(null);
+    if (!articleId) setFullView(false);
   }, [articleId]);
   const { t } = useTranslation();
   const storedArticle = useStore(activeArticle);
@@ -148,7 +148,7 @@ export default function ArticleView() {
           "motion-sensitive flex-1 min-w-0 w-full p-0 inset-0",
           isExpanded
             ? "fixed h-dvh z-30"
-            : "h-screen fixed md:static z-20 md:pr-2 md:py-2",
+            : "h-dvh fixed md:static z-20 md:pr-2 md:py-2",
           !articleId && "pointer-events-none md:pointer-events-auto",
         )}
       >
@@ -190,6 +190,7 @@ export default function ArticleView() {
                       ref={scrollAreaRef}
                       className={cn(
                         "article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative",
+                        (isExpanded || isMedium) && "px-safe pb-safe",
                         !isExpanded && "md:shadow-custom md:rounded-2xl",
                       )}
                     >
@@ -198,7 +199,7 @@ export default function ArticleView() {
                         isExpanded={isExpanded}
                         canExpand={!isMedium}
                         onToggleExpanded={() =>
-                          setExpandedArticleId(isExpanded ? null : articleId)
+                          setFullView((current) => !current)
                         }
                       />
                       <AnimatePresence

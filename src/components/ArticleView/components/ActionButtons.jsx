@@ -45,7 +45,7 @@ export default function ActionButtons({
       ref={toolbarRef}
       data-hidden={hidden}
       {...toolbarEvents}
-      className="action-buttons py-2 standalone:pt-safe-or-2.5 px-2 sticky top-0 z-50"
+      className="action-buttons pt-safe-offset-2 pb-2 px-2 sticky top-0 z-50"
     >
       <div className="flex items-center">
         <ArticleNavigationControls
