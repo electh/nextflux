@@ -2,6 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
+    <script>
+      // Apply the saved theme before the app bundle or styles can paint.
+      (() => {
+        let theme = {};
+        try {
+          theme = JSON.parse(localStorage.getItem("theme")) || {};
+        } catch {
+          // Storage may be unavailable; follow the system preference instead.
+        }
+        const mode = ["light", "dark"].includes(theme.themeMode)
+          ? theme.themeMode
+          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        const selected = theme[`${mode}Theme`];
+        const available = mode === "dark" ? ["dark", "nord-dark"] : ["light", "stone"];
+        document.documentElement.classList.add(mode);
+        document.documentElement.dataset.theme = available.includes(selected) ? selected : mode;
+      })();
+    </script>
+    <style>
+      /* Critical startup colors, before the main Tailwind stylesheet loads. */
+      html {
+        --startup-background: #f0f0f0;
+        color-scheme: light;
+        background-color: var(--sidebar, var(--startup-background));
+      }
+      html.dark {
+        --startup-background: #161616;
+        color-scheme: dark;
+      }
+      html[data-theme="stone"] { --startup-background: #e3e0db; }
+      html[data-theme="nord-dark"] { --startup-background: #242933; }
+      body { margin: 0; }
+    </style>
     <link href="favicon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
     <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
     <link href="favicon.ico" rel="shortcut icon"/>
@@ -23,7 +56,7 @@
     <!-- Fonts are loaded on demand via fontLoader.js -->
     <title>Nextflux</title>
 </head>
-<body class="bg-background">
+<body class="bg-sidebar">
   <div id="root"></div>
   <script src="/src/main.jsx" type="module"></script>
 </body>
