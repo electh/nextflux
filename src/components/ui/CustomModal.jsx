@@ -1,6 +1,7 @@
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
 import { cn } from "@/lib/utils";
 import { CloseButton } from "@/components/ui/close-button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -47,7 +48,12 @@ export default function CustomModal({
               render={<CloseButton className="absolute top-3 right-3" />}
             />
           </DrawerHeader>
-          <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+          <ScrollArea
+            className="min-h-0 flex-1"
+            viewportClassName="overscroll-contain"
+          >
+            {children}
+          </ScrollArea>
           {footer && (
             <DrawerFooter className="grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal border-t p-4 pb-safe-or-4">
               {footer}
@@ -72,7 +78,12 @@ export default function CustomModal({
         <DialogHeader className="p-4">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+        <ScrollArea
+          className="min-h-0 flex-1"
+          viewportClassName="overscroll-contain"
+        >
+          {children}
+        </ScrollArea>
         {footer && (
           <DialogFooter className="m-0 grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal rounded-none border-t p-4">
             {footer}

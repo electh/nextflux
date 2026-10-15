@@ -32,6 +32,7 @@ import { reportError } from "@/lib/errors.js";
 import { filter } from "@/stores/articlesStore.js";
 import { handleMarkStatus } from "@/handlers/articleHandlers";
 import { debounce } from "lodash";
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 export default function SearchModal() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -43,6 +44,10 @@ export default function SearchModal() {
   const [searchType, setSearchType] = useState("articles");
   const [isComposing, setIsComposing] = useState(false);
   const inputRef = useRef(null);
+  const [scrollViewport, setScrollViewport] = useState(null);
+  const $searching = useStore(searching);
+  const results =
+    searchType === "articles" ? $searchResults : $feedSearchResults;
   useEffect(() => {
     let ignore = false;
     searching.set(true);
@@ -140,7 +145,14 @@ export default function SearchModal() {
             />
           </InputGroup>
         </DialogHeader>
-        <div className="p-0 m-0" data-slot="overlay-body">
+        <ScrollArea
+          className="min-h-0 flex-1"
+          viewportRef={setScrollViewport}
+          viewportClassName="overscroll-contain"
+          contentClassName={
+            !keyword || $searching || !results.length ? "h-full" : undefined
+          }
+        >
           <SearchResults
             results={
               searchType === "articles" ? $searchResults : $feedSearchResults
@@ -150,8 +162,9 @@ export default function SearchModal() {
             type={searchType}
             isComposing={isComposing}
             inputRef={inputRef}
+            scrollViewport={scrollViewport}
           />
-        </div>
+        </ScrollArea>
         <DialogFooter className="p-0 m-0">
           <div className="w-full p-2 border-t bg-background flex flex-wrap items-center justify-between gap-2">
             <Tabs

@@ -136,7 +136,7 @@ const ArticleList = () => {
     <ReadingLayout reader={<ArticleView />}>
       <div
         className={cn(
-          "article-list-panel motion-sensitive relative flex h-dvh w-full min-w-0 flex-col",
+          "article-list-panel motion-sensitive relative flex h-dvh w-full min-w-0 flex-col overflow-hidden",
           // iOS 风格动画：移动端查看文章详情时，列表向左移动
           isArticleDetailOpen && "article-list-shifted",
         )}

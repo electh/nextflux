@@ -184,7 +184,7 @@ const Sidebar = React.forwardRef(
             {...props}
           >
             <SheetTitle className="sr-only">Sidebar</SheetTitle>
-            <div className="flex h-full min-h-0 w-full flex-col overflow-y-auto touch-pan-y">
+            <div className="flex h-full min-h-0 w-full flex-col overflow-hidden touch-pan-y">
               {children}
             </div>
           </SheetContent>

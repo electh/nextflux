@@ -14,6 +14,7 @@ export default function SearchResults({
   type = "articles",
   isComposing,
   inputRef,
+  scrollViewport,
 }) {
   const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -30,7 +31,8 @@ export default function SearchResults({
         isComposing ||
         e.isComposing ||
         e.keyCode === 229
-      ) return;
+      )
+        return;
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
@@ -67,7 +69,7 @@ export default function SearchResults({
         behavior: "instant",
       });
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, scrollViewport]);
 
   // 重置搜索时重置选中项
   useEffect(() => {
@@ -96,10 +98,12 @@ export default function SearchResults({
       </div>
     );
   }
+  if (!scrollViewport) return null;
   return (
     <Virtuoso
       ref={listRef}
-      className="h-full mx-2"
+      className="mx-2"
+      customScrollParent={scrollViewport}
       totalCount={results.length}
       data={results}
       components={{

@@ -266,9 +266,7 @@ export default function AddFeedModal() {
         )
       }
     >
-      <div
-        className={cn("overflow-y-auto", "w-full overflow-y-auto px-4 pb-4")}
-      >
+      <div className="w-full px-4 pb-4">
         <AnimatePresence initial={false} mode="wait">
           {!formData.feed_url || formData.feed_url === "" ? (
             <motion.div

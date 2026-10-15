@@ -21,7 +21,7 @@ import About from "@/components/Settings/About.jsx";
 import Shortcuts from "@/components/Settings/Shortcuts.jsx";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/hooks/use-mobile.jsx";
-import { ScrollShadow } from "@/components/ui/scroll-shadow.jsx";
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 import {
   Cog,
   Paintbrush,
@@ -80,9 +80,10 @@ function MenuList({ onSelect }) {
   };
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <ScrollShadow
+      <ScrollArea
         role="navigation"
-        className="min-h-0 flex-1 overscroll-contain p-2"
+        className="min-h-0 flex-1"
+        viewportClassName="scroll-area-fade overscroll-contain p-2"
       >
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -103,7 +104,7 @@ function MenuList({ onSelect }) {
             </button>
           );
         })}
-      </ScrollShadow>
+      </ScrollArea>
     </div>
   );
 }
@@ -151,11 +152,13 @@ function ContentArea({ activeTab, showTitle = false, className }) {
         </div>
       )}
       {/* Keep the flex layout inside the scroll viewport so groups don't shrink. */}
-      <ScrollShadow
-        className="settings-content min-h-0 flex-1 overscroll-contain p-4"
+      <ScrollArea
+        key={activeTab}
+        className="settings-content min-h-0 flex-1"
+        viewportClassName="scroll-area-fade overscroll-contain p-4"
       >
         <div className="flex flex-col gap-4">{renderContent()}</div>
-      </ScrollShadow>
+      </ScrollArea>
     </div>
   );
 }
@@ -258,9 +261,10 @@ function DesktopSettings() {
                 {t("common.settings")}
               </DialogTitle>
             </div>
-            <ScrollShadow
+            <ScrollArea
               role="navigation"
-              className="min-h-0 flex-1 overscroll-contain p-2"
+              className="min-h-0 flex-1"
+              viewportClassName="scroll-area-fade overscroll-contain p-2"
             >
               {menuItems.map((item) => {
                 const Icon = item.icon;
@@ -270,11 +274,6 @@ function DesktopSettings() {
                     key={item.id}
                     onClick={() => {
                       setActiveTab(item.id);
-                      const modalBody =
-                        document.querySelector(".settings-content");
-                      if (modalBody) {
-                        modalBody.scrollTop = 0;
-                      }
                     }}
                     data-active={isActive}
                     className={cn(
@@ -288,7 +287,7 @@ function DesktopSettings() {
                   </button>
                 );
               })}
-            </ScrollShadow>
+            </ScrollArea>
           </div>
 
           {/* 右侧内容区域 */}

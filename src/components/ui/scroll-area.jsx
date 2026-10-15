@@ -4,14 +4,38 @@ import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 import { cn } from "@/lib/utils";
 
 const ScrollArea = React.forwardRef(
-  ({ className, children, ...props }, ref) => (
+  (
+    {
+      className,
+      children,
+      viewportRef,
+      viewportClassName,
+      contentClassName,
+      ...props
+    },
+    ref,
+  ) => (
     <ScrollAreaPrimitive.Root
       ref={ref}
-      className={cn("relative overflow-hidden", className)}
+      data-slot="scroll-area"
+      className={cn("relative flex flex-col overflow-hidden", className)}
       {...props}
     >
-      <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-        <ScrollAreaPrimitive.Content>{children}</ScrollAreaPrimitive.Content>
+      <ScrollAreaPrimitive.Viewport
+        ref={viewportRef}
+        data-slot="scroll-area-viewport"
+        className={cn(
+          "min-h-0 w-full flex-1 rounded-[inherit] outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+          viewportClassName,
+        )}
+      >
+        <ScrollAreaPrimitive.Content
+          data-slot="scroll-area-content"
+          className={contentClassName}
+          style={{ minWidth: 0 }}
+        >
+          {children}
+        </ScrollAreaPrimitive.Content>
       </ScrollAreaPrimitive.Viewport>
       <ScrollBar />
       <ScrollAreaPrimitive.Corner />
@@ -24,6 +48,7 @@ const ScrollBar = React.forwardRef(
   ({ className, orientation = "vertical", ...props }, ref) => (
     <ScrollAreaPrimitive.Scrollbar
       ref={ref}
+      data-slot="scroll-area-scrollbar"
       orientation={orientation}
       className={cn(
         "absolute flex touch-none select-none transition-colors",
@@ -35,7 +60,10 @@ const ScrollBar = React.forwardRef(
       )}
       {...props}
     >
-      <ScrollAreaPrimitive.Thumb className="relative h-full w-full rounded-full bg-border" />
+      <ScrollAreaPrimitive.Thumb
+        data-slot="scroll-area-thumb"
+        className="relative flex-1 rounded-full bg-border"
+      />
     </ScrollAreaPrimitive.Scrollbar>
   ),
 );

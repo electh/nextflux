@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import { useParams } from "react-router-dom";
 import {
@@ -18,6 +18,7 @@ import { isSyncing } from "@/stores/syncStore.js";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils.js";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 const ArticleItem = memo(({ article, isLast }) => (
   <div className="mx-auto w-full max-w-[560px] px-2">
     <ArticleCard article={article} />
@@ -71,6 +72,7 @@ export default function ArticleListContent({
   const $loading = useStore(loading);
   const $loadingMore = useStore(loadingMore);
   const reduceMotion = useReducedMotion();
+  const [scrollViewport, setScrollViewport] = useState(null);
   useEffect(() => {
     if (isMedium) {
       return;
@@ -81,7 +83,7 @@ export default function ArticleListContent({
         behavior: reduceMotion ? "auto" : "smooth",
       });
     }
-  }, [isMedium, index, reduceMotion, virtuosoRef]);
+  }, [isMedium, index, reduceMotion, virtuosoRef, scrollViewport]);
   const handleEndReached = () => {
     if (!$hasMore || loadingMore.get()) return;
     loadingMore.set(true);
@@ -98,41 +100,45 @@ export default function ArticleListContent({
     [feedId, categoryId, $filter, $isSyncing, $loadingMore],
   );
   return (
-    <div className="h-full">
+    <div className="min-h-0 flex-1 overflow-hidden">
       {$loading ? (
         <Loader2 className="size-4 animate-spin mx-auto mt-3 text-primary" />
       ) : (
-        <div
+        <ScrollArea
+          viewportRef={setScrollViewport}
           className={cn(
-            "motion-sensitive article-list-content flex-1 h-full",
+            "motion-sensitive article-list-content h-full",
             reduceMotion
               ? ""
               : " animate-in duration-400 fade-in slide-in-from-bottom-12 ease-in-out",
           )}
         >
-          <Virtuoso
-            ref={virtuosoRef}
-            className="v-list h-full"
-            overscan={{
-              main: 2,
-              reverse: 0,
-            }}
-            data={articles}
-            rangeChanged={setVisibleRange}
-            context={context}
-            computeItemKey={(_, article) => article.id}
-            totalCount={articles.length}
-            endReached={handleEndReached}
-            components={listComponents}
-            itemContent={(index, article) => (
-              <ArticleItem
-                key={article.id}
-                article={article}
-                isLast={index === articles.length - 1}
-              />
-            )}
-          />
-        </div>
+          {scrollViewport && (
+            <Virtuoso
+              ref={virtuosoRef}
+              className="v-list"
+              customScrollParent={scrollViewport}
+              overscan={{
+                main: 2,
+                reverse: 0,
+              }}
+              data={articles}
+              rangeChanged={setVisibleRange}
+              context={context}
+              computeItemKey={(_, article) => article.id}
+              totalCount={articles.length}
+              endReached={handleEndReached}
+              components={listComponents}
+              itemContent={(index, article) => (
+                <ArticleItem
+                  key={article.id}
+                  article={article}
+                  isLast={index === articles.length - 1}
+                />
+              )}
+            />
+          )}
+        </ScrollArea>
       )}
     </div>
   );

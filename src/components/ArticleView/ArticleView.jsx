@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils.js";
 import ArticleLoading from "./components/ArticleLoading.jsx";
 import ArticleReadingRail from "./components/ArticleReadingRail.jsx";
 import { useReducedMotion } from "@/hooks/useReducedMotion.js";
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 function useActiveArticle(articleId) {
   const result = useLiveQuery(async () => {
     if (!articleId) return { articleId, article: null };
@@ -186,12 +187,14 @@ export default function ArticleView() {
                   <EmptyPlaceholder />
                 ) : (
                   <>
-                    <div
-                      ref={scrollAreaRef}
+                    <ScrollArea
+                      viewportRef={scrollAreaRef}
                       className={cn(
-                        "article-scroll-area overflow-y-auto w-full min-w-0 h-full bg-popover relative",
-                        (isExpanded || isMedium) && "px-safe pb-safe",
+                        "article-scroll-area w-full min-w-0 h-full bg-popover relative",
                         !isExpanded && "md:shadow-custom md:rounded-2xl",
+                      )}
+                      viewportClassName={cn(
+                        (isExpanded || isMedium) && "px-safe pb-safe",
                       )}
                     >
                       <ActionButtons
@@ -265,7 +268,7 @@ export default function ArticleView() {
                           )}
                         </ArticleTransition>
                       </AnimatePresence>
-                    </div>
+                    </ScrollArea>
                     {showReadingRail && article && !error && (
                       <ArticleReadingRail
                         key={articleId}

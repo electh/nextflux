@@ -345,7 +345,7 @@
   }
 
   [data-slot="overlay-body"] {
-    @apply min-h-0 flex-1 overflow-y-auto;
+    @apply min-h-0 flex-1;
   }
   * {
     @apply border-border;
@@ -390,6 +390,17 @@
     transform: none;
     z-index: 2;
   }
+}
+
+.scroll-area-fade {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 min(40px, var(--scroll-area-overflow-y-start, 0px)),
+    #000 calc(100% - min(40px, var(--scroll-area-overflow-y-end, 0px))),
+    transparent
+  );
+  mask-repeat: no-repeat;
 }
 
 /* iOS 风格文章列表移动动画 */
