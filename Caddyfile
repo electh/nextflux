@@ -2,7 +2,14 @@
 
 root * /srv
 
-try_files {path} {path}/ /index.html
+route {
+	try_files {path} {path}/ /index.html
 
-# Enable the static file server.
-file_server
+	# Match the final file, including HTML served for deep app routes.
+	@pwa path /sw.js /*.webmanifest /index.html /
+	header @pwa Cache-Control "no-cache"
+	@manifest path /*.webmanifest
+	header @manifest Content-Type "application/manifest+json"
+
+	file_server
+}

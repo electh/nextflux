@@ -3,11 +3,28 @@ import { fileURLToPath } from "url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      registerType: "prompt",
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.js",
+      // Keep the existing manifest URL stable for installed applications.
+      manifest: false,
+      includeAssets: [],
+      injectManifest: {
+        // Fingerprint releases for update detection, without caching the files.
+        globPatterns: ["**/*.{js,css,html,woff,woff2,svg,png,ico,webmanifest}"],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

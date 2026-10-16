@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
+    <meta content="#f0f0f0" name="theme-color"/>
+    <link href="/site.webmanifest" rel="manifest"/>
     <script>
       // Apply the saved theme before the app bundle or styles can paint.
       (() => {
+        // Chromium crops macOS maskable icons; Safari scales them to fit.
+        // Keep the same manifest id so existing installations retain identity.
+        if (/Macintosh/.test(navigator.userAgent) && /(?:Chrome|Chromium|Edg)\//.test(navigator.userAgent)) {
+          document.querySelector('link[rel="manifest"]').href = "/site-chromium-macos.webmanifest";
+        }
         let theme = {};
         try {
           theme = JSON.parse(localStorage.getItem("theme")) || {};
@@ -18,6 +25,8 @@
         const available = mode === "dark" ? ["dark", "nord-dark"] : ["light", "stone"];
         document.documentElement.classList.add(mode);
         document.documentElement.dataset.theme = available.includes(selected) ? selected : mode;
+        const colors = { light: "#f0f0f0", dark: "#0a0a0a", stone: "#e3e0db", "nord-dark": "#242933" };
+        document.querySelector('meta[name="theme-color"]').content = colors[document.documentElement.dataset.theme];
       })();
     </script>
     <style>
@@ -28,19 +37,18 @@
         background-color: var(--sidebar, var(--startup-background));
       }
       html.dark {
-        --startup-background: #161616;
+        --startup-background: #0a0a0a;
         color-scheme: dark;
       }
       html[data-theme="stone"] { --startup-background: #e3e0db; }
       html[data-theme="nord-dark"] { --startup-background: #242933; }
       body { margin: 0; }
     </style>
-    <link href="favicon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
-    <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
-    <link href="favicon.ico" rel="shortcut icon"/>
-    <link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
+    <link href="/favicon.svg" rel="icon" sizes="any" type="image/svg+xml"/>
+    <link href="/favicon.ico" rel="shortcut icon"/>
+    <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
     <meta content="Nextflux" name="apple-mobile-web-app-title"/>
-    <link href="site.webmanifest" rel="manifest"/>
     <meta content="no-referrer" name="referrer"/>
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
     <meta content="yes" name="apple-mobile-web-app-capable"/>
@@ -48,10 +56,6 @@
     <meta content="yes" name="apple-touch-fullscreen"/>
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
           name="viewport"/>
-    <meta content="#f4f4f5" media="(prefers-color-scheme: light)" name="theme-color"/>
-    <meta content="#27272a" media="(prefers-color-scheme: dark)" name="theme-color"/>
-    <meta content="#FFFFFF" media="(prefers-color-scheme: light)" name="background-color"/>
-    <meta content="#000000" media="(prefers-color-scheme: dark)" name="background-color"/>
     <meta content="A Simple but Powerful RSS Reader for Miniflux" name="description"/>
     <!-- Fonts are loaded on demand via fontLoader.js -->
     <title>Nextflux</title>

@@ -1,4 +1,10 @@
 export default {
+  pwa: {
+    updateAvailable: "Nextflux 有新版本可用。",
+    reload: "刷新并更新",
+    later: "稍后",
+    updateFailed: "更新失败，请联网后重试。",
+  },
   audioPlayer: {
     inline: "文章音频播放器",
     playing: "正在播放",

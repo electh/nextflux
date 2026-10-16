@@ -1,4 +1,5 @@
 import "./i18n";
+import PwaUpdates from "@/components/Pwa/PwaUpdates";
 import { initTheme } from "@/stores/themeStore";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -32,9 +33,14 @@ createRoot(document.getElementById("root")).render(
           toast: "rounded-2xl! bg-popover! shadow-custom-md! p-4! border-none!",
           title: "text-foreground!",
           description: "text-muted-foreground!",
+          actionButton:
+            "bg-primary! text-primary-foreground! hover:bg-primary/80! focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-popover transition-colors",
+          cancelButton:
+            "bg-secondary! text-secondary-foreground! hover:bg-muted! focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-popover transition-colors",
         },
       }}
     />
+    <PwaUpdates />
     <RouterProvider
       router={router}
       future={{

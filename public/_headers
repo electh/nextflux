@@ -1,0 +1,22 @@
+/sw.js
+  Cache-Control: no-cache
+/site.webmanifest
+  Cache-Control: no-cache
+  Content-Type: application/manifest+json
+/site-chromium-macos.webmanifest
+  Cache-Control: no-cache
+  Content-Type: application/manifest+json
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+/login
+  Cache-Control: no-cache
+/login/
+  Cache-Control: no-cache
+/feed/*
+  Cache-Control: no-cache
+/category/*
+  Cache-Control: no-cache
+/article/*
+  Cache-Control: no-cache

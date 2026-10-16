@@ -1,4 +1,10 @@
 export default {
+  pwa: {
+    updateAvailable: "Nextflux uygulamasının yeni bir sürümü mevcut.",
+    reload: "Yenile ve güncelle",
+    later: "Daha sonra",
+    updateFailed: "Güncelleme başarısız. İnternete bağlanıp tekrar deneyin.",
+  },
   audioPlayer: {
     inline: "Makale ses oynatıcısı",
     playing: "Oynatılıyor",

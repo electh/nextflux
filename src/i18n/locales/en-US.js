@@ -1,4 +1,10 @@
 export default {
+  pwa: {
+    updateAvailable: "A new version of Nextflux is available.",
+    reload: "Reload to update",
+    later: "Later",
+    updateFailed: "Update failed. Please reconnect and try again.",
+  },
   audioPlayer: {
     inline: "Article audio player",
     playing: "Playing",

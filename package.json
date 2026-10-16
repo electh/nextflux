@@ -66,6 +66,8 @@
     "globals": "^15.12.0",
     "postcss": "^8.5.29",
     "tailwindcss": "^4.3.3",
-    "vite": "^6.4.4"
+    "vite": "^6.4.4",
+    "vite-plugin-pwa": "^2.0.0",
+    "workbox-window": "^7.4.1"
   }
 }

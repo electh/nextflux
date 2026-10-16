@@ -1,5 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
+import { syncBrowserTheme } from "@/lib/browserTheme";
 
 const defaultValue = {
   themeMode: "system",
@@ -93,6 +94,7 @@ export function setTheme(mode, themeId = null) {
   }
 
   themeState.set({ ...themeState.get(), themeMode: mode });
+  syncBrowserTheme();
 }
 
 // 初始化主题
@@ -115,6 +117,7 @@ export function initTheme() {
       root.removeAttribute("data-theme");
       root.classList.add(systemMode);
       root.setAttribute("data-theme", themeToUse);
+      syncBrowserTheme();
     }
   });
 }

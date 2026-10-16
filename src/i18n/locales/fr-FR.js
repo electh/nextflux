@@ -1,4 +1,10 @@
 export default {
+  pwa: {
+    updateAvailable: "Une nouvelle version de Nextflux est disponible.",
+    reload: "Recharger et mettre à jour",
+    later: "Plus tard",
+    updateFailed: "Échec de la mise à jour. Reconnectez-vous et réessayez.",
+  },
   audioPlayer: {
     inline: "Lecteur audio de l’article",
     playing: "En lecture",
