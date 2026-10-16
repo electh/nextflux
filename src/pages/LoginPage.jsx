@@ -12,33 +12,26 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authState, login } from "@/stores/authStore";
+import { authState, sessionAccount, login } from "@/stores/authStore";
+import { isAuthenticated } from "@/domain/auth/accounts.js";
 import { Eye, EyeClosed } from "lucide-react";
 import { toast } from "sonner";
-import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
 export default function LoginPage() {
   const navigate = useNavigate();
-  const $auth = useStore(authState);
   const { t } = useTranslation();
-  const [authType, setAuthType] = useState("basic");
-  const [serverUrl, setServerUrl] = useState("");
-  const [username, setUsername] = useState("");
+  const [authType, setAuthType] = useState(sessionAccount.authType || "basic");
+  const [serverUrl, setServerUrl] = useState(sessionAccount.serverUrl || "");
+  const [username, setUsername] = useState(sessionAccount.username || "");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if ($auth.serverUrl && $auth.username && $auth.password) {
-      navigate("/");
+    if (isAuthenticated(authState.get()) && isAuthenticated(sessionAccount)) {
+      navigate("/", { replace: true });
     }
-  }, [$auth.serverUrl, $auth.username, $auth.password, navigate]);
-  useEffect(() => {
-    if (!localStorage.getItem("refreshed")) {
-      window.location.reload();
-      localStorage.setItem("refreshed", "true");
-    }
-  }, []);
+  }, [navigate]);
   useEffect(() => {
     const url = new URL(window.location.href);
     const {
@@ -69,7 +62,6 @@ export default function LoginPage() {
         authType === "basic" ? password : "",
         authType === "token" ? token : "",
       );
-      navigate("/");
     } catch (err) {
       toast.error(err.message);
     } finally {

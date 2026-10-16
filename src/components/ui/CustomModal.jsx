@@ -1,4 +1,4 @@
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
 import { cn } from "@/lib/utils";
 import { CloseButton } from "@/components/ui/close-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +27,7 @@ export default function CustomModal({
   children,
   footer,
 }) {
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   const handleOpenChange = (nextOpen) => {
     if (!nextOpen) onOpenChange(false);
   };

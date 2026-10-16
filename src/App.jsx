@@ -26,7 +26,8 @@ const GlobalAudioPlayer = lazy(
   () => import("@/components/GlobalAudio/GlobalAudioPlayer.jsx"),
 );
 
-function App() {
+// Store changes used by global effects should not rerender the application shell.
+function AppEffects() {
   const { syncInterval } = useStore(settingsState);
   useEffect(() => {
     // 检查认证状态并启动自动同步
@@ -45,8 +46,13 @@ function App() {
   useZoom();
   useFontLoader(); // 按需加载字体
   useApplyReducedMotionPreference();
+  return null;
+}
+
+function App() {
   return (
     <SidebarProvider className="bg-sidebar">
+      <AppEffects />
       <Outlet />
       <SettingsModal />
       <AddFeedModal />

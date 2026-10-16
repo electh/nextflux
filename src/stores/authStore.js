@@ -1,5 +1,5 @@
 import { persistentAtom } from "@nanostores/persistent";
-import { computed } from "nanostores";
+import { atom, computed } from "nanostores";
 import { normalizeServerUrl } from "../lib/url.js";
 import { reportError } from "../lib/errors.js";
 import {
@@ -9,8 +9,11 @@ import {
   migrateLegacyAuth,
   saveAccount,
   removeAccount,
-  accountStorageKey,
 } from "../domain/auth/accounts.js";
+import {
+  cleanupAccountData,
+  LOGOUT_NOTICE_KEY,
+} from "../services/accountCleanup.js";
 
 export const accountsState = persistentAtom("accounts:v1", emptyAccounts, {
   encode: JSON.stringify,
@@ -38,21 +41,35 @@ localStorage.removeItem("auth");
 export const authState = computed(accountsState, getActiveAccount);
 // The database and requests stay bound to this session until the page reloads.
 export const sessionAccount = authState.get();
+export const sessionEnding = atom(false);
 let transitioning = false;
+let sessionStopped = false;
+let endingSession = false;
+let logoutPromise = null;
+
+function stopSession() {
+  if (sessionStopped) return;
+  sessionStopped = true;
+  sessionEnding.set(true);
+  window.dispatchEvent(new Event("nextflux:logout"));
+}
+
 function reloadSession(auth, force = false) {
   if (
+    endingSession ||
     transitioning ||
     (!force && JSON.stringify(auth) === JSON.stringify(sessionAccount))
   )
     return;
   transitioning = true;
-  window.dispatchEvent(new Event("nextflux:logout"));
+  stopSession();
   window.location.replace(isAuthenticated(auth) ? "/" : "/login");
 }
 authState.listen((auth) => reloadSession(auth));
 
 export async function login(serverUrl, username, password, token) {
   try {
+    if (endingSession || transitioning) throw new Error("Session is ending");
     const normalizedServerUrl = normalizeServerUrl(serverUrl);
     const headers = token
       ? { "X-Auth-Token": token }
@@ -64,6 +81,7 @@ export async function login(serverUrl, username, password, token) {
       );
     }
     const user = await response.json();
+    if (endingSession || transitioning) throw new Error("Session is ending");
     accountsState.set(
       saveAccount(accountsState.get(), {
         serverUrl: normalizedServerUrl,
@@ -82,29 +100,59 @@ export async function login(serverUrl, username, password, token) {
 }
 
 export function switchAccount(id) {
+  if (endingSession || transitioning) return;
   const state = accountsState.get();
   if (!state.accounts.some((account) => account.id === id)) return;
   accountsState.set({ ...state, activeAccountId: id });
 }
 
-export async function logout() {
+// Expired authentication keeps the account identity and cache for reauthentication.
+export function expireSession() {
+  if (endingSession || transitioning || !sessionAccount.id) return;
   const state = accountsState.get();
   const account = getActiveAccount(state);
-  if (!account.id) return;
-  window.dispatchEvent(new Event("nextflux:logout"));
-  // Remove only this account's cache and metadata; keep other accounts and preferences.
-  indexedDB.deleteDatabase(account.databaseName);
-  for (const key of [
-    "lastSyncTime",
-    "syncBootstrap:v1",
-    "syncHistoryComplete:v1",
-    "categoryExpanded",
-  ]) {
-    localStorage.removeItem(accountStorageKey(account, key));
-  }
-  const mediaProgressPrefix = accountStorageKey(account, "mediaProgress:v1:");
-  for (const key of Object.keys(localStorage)) {
-    if (key.startsWith(mediaProgressPrefix)) localStorage.removeItem(key);
-  }
-  accountsState.set(removeAccount(state, account.id));
+  if (JSON.stringify(account) !== JSON.stringify(sessionAccount)) return;
+  accountsState.set({
+    ...state,
+    accounts: state.accounts.map((item) =>
+      item.id === account.id ? { ...item, password: "", token: "" } : item,
+    ),
+  });
+}
+
+export function logout() {
+  if (logoutPromise) return logoutPromise;
+  const account = getActiveAccount(accountsState.get());
+  if (transitioning || !account.id || account.id !== sessionAccount.id)
+    return Promise.resolve();
+  endingSession = true;
+  logoutPromise = Promise.resolve().then(async () => {
+    try {
+      // Persist credential removal before stopping the current session. If this
+      // write fails, leave the session usable so the user can retry.
+      accountsState.set(removeAccount(accountsState.get(), account.id));
+    } catch (error) {
+      endingSession = false;
+      logoutPromise = null;
+      throw error;
+    }
+    stopSession();
+    let errors;
+    try {
+      errors = await cleanupAccountData(account);
+    } catch (error) {
+      errors = [error];
+    }
+    if (errors.length) {
+      for (const error of errors) reportError(error, "auth.logoutCleanup");
+      try {
+        sessionStorage.setItem(LOGOUT_NOTICE_KEY, "true");
+      } catch {
+        /* Logout still completes when sessionStorage is unavailable. */
+      }
+    }
+    endingSession = false;
+    reloadSession(authState.get(), true);
+  });
+  return logoutPromise;
 }

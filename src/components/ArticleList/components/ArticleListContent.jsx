@@ -11,7 +11,7 @@ import {
 } from "@/stores/articlesStore.js";
 import { useStore } from "@nanostores/react";
 import { Virtuoso } from "react-virtuoso";
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
 import { CheckCheck, Loader2 } from "lucide-react";
 import { handleMarkAllRead } from "@/handlers/articleHandlers";
 import { isSyncing } from "@/stores/syncStore.js";
@@ -64,7 +64,7 @@ export default function ArticleListContent({
   const { feedId, categoryId, articleId } = useParams();
   const $filter = useStore(filter);
   const $isSyncing = useStore(isSyncing);
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   const index = articles.findIndex(
     (article) => article.id === parseInt(articleId),
   );

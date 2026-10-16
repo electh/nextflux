@@ -249,6 +249,10 @@ export default {
     open: "Ouvrir",
   },
   auth: {
+    logoutFailed:
+      "Déconnexion impossible : les identifiants enregistrés n’ont pas pu être supprimés. Vérifiez les autorisations de stockage du navigateur et réessayez.",
+    logoutCleanupWarning:
+      "Vous êtes déconnecté, mais la suppression de certaines données locales n’a pas pu être confirmée. Fermez les autres onglets de l’application et effacez les données de ce site.",
     toggleCredentialVisibility: "Afficher ou masquer les identifiants",
     login: "Connexion à votre serveur",
     username: "Nom d'utilisateur",

@@ -245,6 +245,9 @@ export default {
     open: "打开",
   },
   auth: {
+    logoutFailed: "无法退出：登录信息未能移除，请检查浏览器存储权限后重试。",
+    logoutCleanupWarning:
+      "已退出，但部分本地缓存未能确认清理。请关闭此应用的其他标签页，并清除此站点的数据。",
     toggleCredentialVisibility: "显示或隐藏凭据",
     login: "登录到您的服务器",
     username: "用户名",

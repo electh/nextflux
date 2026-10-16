@@ -25,7 +25,7 @@ import {
   getArticleBasePath,
   getArticleTransitionDirection,
 } from "@/domain/articles/articleNavigation.js";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMedium } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils.js";
 import ArticleLoading from "./components/ArticleLoading.jsx";
 import ArticleReadingRail from "./components/ArticleReadingRail.jsx";
@@ -140,7 +140,7 @@ export default function ArticleView() {
     );
     return () => animation?.cancel();
   }, [isExpanded, reduceMotion, articleId]);
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   const { error, loading } = useActiveArticle(articleId);
   return (
     <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>

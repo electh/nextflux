@@ -25,7 +25,7 @@ import AppLogo from "@/components/FeedList/components/AppLogo.jsx";
 import { useTranslation } from "react-i18next";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useParams, useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobileViewport, useIsMedium } from "@/hooks/use-mobile";
 import { isModalOpen } from "@/stores/modalStore";
 import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 function SyncStatus() {
@@ -51,7 +51,8 @@ const FeedListSidebar = ({ resizable = false }) => {
   const { showHiddenFeeds } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
-  const { isMobile, isMedium } = useIsMobile();
+  const isMobile = useIsMobileViewport();
+  const isMedium = useIsMedium();
   const navigate = useNavigate();
   // 判断是否在移动端且正在查看文章详情
   const isArticleDetailOpen = isMedium && !!articleId;

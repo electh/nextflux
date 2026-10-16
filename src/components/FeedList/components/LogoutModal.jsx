@@ -4,6 +4,7 @@ import { logoutModalOpen } from "@/stores/modalStore.js";
 import { useStore } from "@nanostores/react";
 import { logout } from "@/stores/authStore.js";
 import { reportError } from "@/lib/errors.js";
+import { toast } from "sonner";
 
 export default function LogoutModal() {
   const { t } = useTranslation();
@@ -12,7 +13,8 @@ export default function LogoutModal() {
     try {
       await logout();
     } catch (error) {
-      reportError(error, "auth.logoutModal");
+      toast.error(t("auth.logoutFailed"));
+      throw reportError(error, "auth.logoutModal");
     }
   };
   return (

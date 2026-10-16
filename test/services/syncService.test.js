@@ -232,6 +232,32 @@ test("a server that ignores the cursor fails instead of looping forever", async 
   assert.equal(f.lastSync, null);
 });
 
+test("logout during an article merge does not recreate cleared bootstrap metadata", async () => {
+  const f = fixture({ entries: [entry(1)] });
+  const controller = new AbortController();
+  const writes = [];
+  const originalMerge = f.repository.mergeArticles;
+  f.repository.setSyncBootstrap = (value) => writes.push(value);
+  f.repository.mergeArticles = async (articles) => {
+    const changed = await originalMerge(articles);
+    // Simulate logout clearing local metadata before the transaction resolves.
+    writes.length = 0;
+    controller.abort();
+    return changed;
+  };
+  let batches = 0;
+  await assert.rejects(
+    f.service.synchronize({
+      signal: controller.signal,
+      onBatch: () => batches++,
+    }),
+    { name: "AbortError" },
+  );
+  assert.deepEqual(writes, []);
+  assert.equal(batches, 0);
+  assert.equal(f.lastSync, null);
+});
+
 test("uses an exact total to avoid requesting an unnecessary empty final page", async () => {
   const f = fixture({
     lastSync: new Date("2026-09-29T00:00:00Z"),

@@ -7,6 +7,10 @@ import { Virtuoso } from "react-virtuoso";
 import { useTranslation } from "react-i18next";
 import { searching } from "@/stores/searchStore.js";
 import { useStore } from "@nanostores/react";
+const listComponents = {
+  Header: () => <div className="header h-2" />,
+  Footer: () => <div className="footer h-2" />,
+};
 export default function SearchResults({
   results,
   keyword,
@@ -106,10 +110,7 @@ export default function SearchResults({
       customScrollParent={scrollViewport}
       totalCount={results.length}
       data={results}
-      components={{
-        Header: () => <div className="header h-2"></div>,
-        Footer: () => <div className="footer h-2"></div>,
-      }}
+      components={listComponents}
       itemContent={(index, item) => (
         <div
           key={item.id}

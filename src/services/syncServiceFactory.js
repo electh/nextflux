@@ -64,7 +64,10 @@ export function createSyncService({
         throw new Error("Miniflux entry cursor did not advance");
       }
       const changed = await repository.mergeArticles(entries.map(mapEntry));
+      signal?.throwIfAborted();
       if (changed.length) await onBatch?.({ articles: changed, first });
+      // Logout may clear metadata while a transaction or batch callback settles.
+      signal?.throwIfAborted();
       beforeId = nextId;
       const complete = Number.isInteger(total) && total === entries.length;
       if (checkpoint) {

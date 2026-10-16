@@ -20,7 +20,7 @@ import Backup from "@/components/Settings/Backup.jsx";
 import About from "@/components/Settings/About.jsx";
 import Shortcuts from "@/components/Settings/Shortcuts.jsx";
 import { useTranslation } from "react-i18next";
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
 import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 import {
   Cog,
@@ -307,7 +307,7 @@ function DesktopSettings() {
 
 // 主组件 - 根据设备类型选择渲染方式
 export default function SettingsModal() {
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   if (isMedium) {
     return <MobileSettings />;
   }

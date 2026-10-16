@@ -247,6 +247,10 @@ export default {
     open: "Open",
   },
   auth: {
+    logoutFailed:
+      "Unable to sign out: saved credentials could not be removed. Check browser storage permissions and try again.",
+    logoutCleanupWarning:
+      "You are signed out, but some local cache could not be confirmed as cleared. Close other app tabs and clear this site’s data.",
     toggleCredentialVisibility: "Toggle credential visibility",
     login: "Login to your server",
     username: "Username",

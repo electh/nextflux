@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobileViewport } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -46,7 +46,7 @@ const SidebarProvider = React.forwardRef(
     },
     ref,
   ) => {
-    const { isMobile } = useIsMobile();
+    const isMobile = useIsMobileViewport();
     const [openMobile, setOpenMobile] = React.useState(false);
 
     // This is the internal state of the sidebar.

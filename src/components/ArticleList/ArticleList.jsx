@@ -24,7 +24,7 @@ import ArticleListHeader from "./components/ArticleListHeader";
 import ArticleListContent from "./components/ArticleListContent";
 import ArticleListFooter from "./components/ArticleListFooter";
 import { settingsState } from "@/stores/settingsStore.js";
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
 import { reportError } from "@/lib/errors.js";
 import ArticleView from "@/components/ArticleView/ArticleView.jsx";
 import ReadingLayout from "@/components/ReadingLayout.jsx";
@@ -39,7 +39,7 @@ const ArticleList = () => {
   const $atTop = useStore(atTop);
   const { sortDirection, sortField, showHiddenFeeds } = useStore(settingsState);
   const virtuosoRef = useRef(null);
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   // 判断是否在移动端且正在查看文章详情
   const isArticleDetailOpen = isMedium && !!articleId;
   const scope = JSON.stringify([

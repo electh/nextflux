@@ -1,30 +1,26 @@
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react";
+import { createMediaQueryStore } from "@/lib/mediaQueryStore.js";
 
-const MOBILE_BREAKPOINT = 1024
-const MEDIUM_BREAKPOINT = 768
-const SMALL_BREAKPOINT = 640
+// Match Tailwind's sm/md/lg boundaries, including fractional CSS pixels.
+const mobile = createMediaQueryStore("(width < 1024px)");
+const medium = createMediaQueryStore("(width < 768px)");
+const small = createMediaQueryStore("(width < 640px)");
+
+function useQuery(store) {
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
+}
+
+export const useIsMobileViewport = () => useQuery(mobile);
+export const useIsMedium = () => useQuery(medium);
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(
-    window.innerWidth <= SMALL_BREAKPOINT || 
-    (window.innerWidth >= MEDIUM_BREAKPOINT && window.innerWidth <= MOBILE_BREAKPOINT)
-  )
-  const [isMedium, setIsMedium] = useState(window.innerWidth <= MEDIUM_BREAKPOINT)
-  const [isSmall, setIsSmall] = useState(window.innerWidth <= SMALL_BREAKPOINT)
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(
-        window.innerWidth <= SMALL_BREAKPOINT || 
-        (window.innerWidth >= MEDIUM_BREAKPOINT && window.innerWidth <= MOBILE_BREAKPOINT)
-      )
-      setIsMedium(window.innerWidth <= MEDIUM_BREAKPOINT)
-      setIsSmall(window.innerWidth <= SMALL_BREAKPOINT)
-    }
-
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  return { isMobile, isMedium, isSmall }
+  return {
+    isMobile: useIsMobileViewport(),
+    isMedium: useIsMedium(),
+    isSmall: useQuery(small),
+  };
 }

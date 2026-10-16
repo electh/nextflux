@@ -1,6 +1,8 @@
 import axios from "axios";
 import { toast } from "sonner";
-import { authState, sessionAccount, logout } from "@/stores/authStore";
+import { authState, sessionAccount, expireSession } from "@/stores/authStore";
+import { reportError } from "@/lib/errors.js";
+import i18n from "@/i18n/index.js";
 
 function getAuthHeaders(auth) {
   if (auth?.authType === "token") {
@@ -28,7 +30,12 @@ apiClient.interceptors.response.use(
       error.response?.status === 401 &&
       JSON.stringify(authState.get()) === JSON.stringify(sessionAccount)
     ) {
-      logout();
+      try {
+        expireSession();
+      } catch (sessionError) {
+        reportError(sessionError, "auth.expireSession");
+        toast.error(i18n.t("auth.logoutFailed"));
+      }
     }
 
     const errorMessage = error.response?.data?.error_message;

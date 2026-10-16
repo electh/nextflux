@@ -1,5 +1,6 @@
 import "./i18n";
 import PwaUpdates from "@/components/Pwa/PwaUpdates";
+import SessionNotices from "@/components/SessionNotices";
 import { initTheme } from "@/stores/themeStore";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -41,6 +42,7 @@ createRoot(document.getElementById("root")).render(
       }}
     />
     <PwaUpdates />
+    <SessionNotices />
     <RouterProvider
       router={router}
       future={{

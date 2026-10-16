@@ -247,6 +247,10 @@ export default {
     open: "Aç",
   },
   auth: {
+    logoutFailed:
+      "Oturum kapatılamadı: kayıtlı kimlik bilgileri kaldırılamadı. Tarayıcı depolama izinlerini kontrol edip yeniden deneyin.",
+    logoutCleanupWarning:
+      "Oturumunuz kapatıldı ancak bazı yerel önbelleklerin temizlendiği doğrulanamadı. Diğer uygulama sekmelerini kapatıp bu sitenin verilerini temizleyin.",
     toggleCredentialVisibility: "Kimlik bilgilerini göster veya gizle",
     login: "Sunucunuza giriş yapın",
     username: "Kullanıcı adı",

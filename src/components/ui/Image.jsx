@@ -10,12 +10,15 @@ export const Image = ({
   onError,
   ...props
 }) => {
-  const [imgSrc, setImgSrc] = useState(src);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loadedSrc, setLoadedSrc] = useState(null);
+  const [failedSrc, setFailedSrc] = useState(null);
+  const imgSrc = failedSrc === src && fallbackSrc ? fallbackSrc : src;
+  const isLoading = loadedSrc !== imgSrc;
 
   const handleError = (e) => {
     if (fallbackSrc && imgSrc !== fallbackSrc) {
-      setImgSrc(fallbackSrc);
+      setFailedSrc(src);
+      return;
     }
     onError?.(e);
   };
@@ -29,25 +32,21 @@ export const Image = ({
         "transition-opacity duration-300 animate-in fade-in",
         className,
       )}
-      onLoad={() => {
-        setIsLoading(false);
-        onLoad?.();
+      onLoad={(event) => {
+        setLoadedSrc(imgSrc);
+        onLoad?.(event);
       }}
       onError={handleError}
       {...props}
     />
   );
 
-  if (isLoading) {
-    return (
-      <div className="relative">
-        {isLoading && (
-          <div className={cn("absolute inset-0 bg-secondary", className)} />
-        )}
-        {imageElement}
-      </div>
-    );
-  }
-
-  return imageElement;
+  return (
+    <div className="relative">
+      {isLoading && (
+        <div className={cn("absolute inset-0 bg-secondary", className)} />
+      )}
+      {imageElement}
+    </div>
+  );
 };
