@@ -5,6 +5,7 @@ export function mapEntryToArticle(entry) {
     title: entry.title,
     author: entry.author,
     url: entry.url,
+    commentsUrl: entry.comments_url || "",
     content: entry.content,
     status: entry.status,
     starred: entry.starred ? 1 : 0,

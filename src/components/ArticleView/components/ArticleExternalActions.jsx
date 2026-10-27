@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
+import ArticleCommentsLink from "./ArticleCommentsLink.jsx";
 import { CloudUpload, Share } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -47,6 +48,7 @@ export default function ArticleExternalActions({ article }) {
   };
   return (
     <>
+      <ArticleCommentsLink article={article} />
       {integrationsEnabled && (
         <Tooltip>
           <TooltipTrigger
