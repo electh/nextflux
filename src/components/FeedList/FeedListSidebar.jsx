@@ -2,7 +2,14 @@ import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import { loadFeeds } from "@/stores/feedsStore.js";
-import { isSyncing, lastSync, syncProgress } from "@/stores/syncStore.js";
+import {
+  isSyncing,
+  isOnline,
+  pendingCount,
+  error,
+  lastSync,
+  syncProgress,
+} from "@/stores/syncStore.js";
 import {
   Sidebar,
   SidebarContent,
@@ -33,15 +40,25 @@ function SyncStatus() {
   const $lastSync = useStore(lastSync);
   const $isSyncing = useStore(isSyncing);
   const progress = useStore(syncProgress);
-  const label = $isSyncing
-    ? progress.phase === "background"
-      ? t("common.backgroundSync", { count: progress.received })
-      : t("common.syncing")
-    : formatLastSync($lastSync);
+  const online = useStore(isOnline);
+  const pending = useStore(pendingCount);
+  const syncError = useStore(error);
+  const label = !online
+    ? `Offline · ${pending ? `${pending} articles with saved changes` : "downloaded articles"}`
+    : syncError
+      ? `Sync unavailable${pending ? ` · ${pending} pending` : ""}`
+      : pending && !$isSyncing
+        ? `${pending} articles waiting to sync`
+        : $isSyncing
+          ? progress.phase === "background"
+            ? t("common.backgroundSync", { count: progress.received })
+            : t("common.syncing")
+          : formatLastSync($lastSync);
   return (
     <span
       className="truncate text-xs text-muted-foreground opacity-60"
       role="status"
+      title={`Last sync: ${formatLastSync($lastSync)}${syncError ? `. ${syncError.message}` : ""}`}
     >
       {label}
     </span>

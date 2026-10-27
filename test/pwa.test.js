@@ -3,42 +3,46 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { runInNewContext } from "node:vm";
 
-test("worker only handles explicit updates and removes its previous offline cache", async () => {
+test("offline shell excludes API routes and waits for acceptance before activating updates", async () => {
   const events = new Map();
-  const removed = [];
-  const scope = "https://nextflux.example/";
   let activations = 0;
-  const oldCache = `workbox-precache-v2-${scope}`;
-  runInNewContext(
-    await readFile(new URL("../src/sw.js", import.meta.url), "utf8"),
-    {
-      self: {
-        __WB_MANIFEST: [{ url: "index.html", revision: "release" }],
-        registration: { scope },
-        addEventListener: (type, handler) => events.set(type, handler),
-        skipWaiting: () => {
-          activations += 1;
-        },
-      },
-      caches: {
-        keys: async () => [oldCache, "other-app-cache", `${oldCache}other/`],
-        delete: async (name) => {
-          removed.push(name);
-        },
-      },
+  let navigation;
+  let cached;
+  const source = (
+    await readFile(new URL("../src/sw.js", import.meta.url), "utf8")
+  ).replace(/import[\s\S]*?from "workbox-[^"]+";/g, "");
+  runInNewContext(source, {
+    precacheAndRoute: (manifest) => {
+      cached = manifest;
     },
-  );
-  assert.equal(events.has("fetch"), false);
-  assert.equal(activations, 0);
-  assert.deepEqual(removed, []);
-  let cleanup;
-  events.get("activate")({
-    waitUntil: (promise) => {
-      cleanup = promise;
+    cleanupOutdatedCaches: () => {},
+    createHandlerBoundToURL: (url) => url,
+    NavigationRoute: class {
+      constructor(handler, options) {
+        this.handler = handler;
+        this.options = options;
+      }
+    },
+    registerRoute: (route) => {
+      navigation = route;
+    },
+    self: {
+      __WB_MANIFEST: [{ url: "index.html", revision: "release" }],
+      clients: { claim: async () => {} },
+      addEventListener: (type, handler) => events.set(type, handler),
+      skipWaiting: () => {
+        activations += 1;
+      },
     },
   });
-  await cleanup;
-  assert.deepEqual(removed, [oldCache]);
+  assert.equal(cached[0].url, "index.html");
+  assert.equal(navigation.handler, "/index.html");
+  const excluded = (path) =>
+    navigation.options.denylist.some((rule) => rule.test(path));
+  assert.equal(excluded("/article/42"), false);
+  assert.equal(excluded("/v1/me"), true);
+  assert.equal(excluded("/api/private"), true);
+  assert.equal(activations, 0);
   events.get("message")({ data: { type: "UNRELATED" } });
   assert.equal(activations, 0);
   events.get("message")({ data: { type: "SKIP_WAITING" } });

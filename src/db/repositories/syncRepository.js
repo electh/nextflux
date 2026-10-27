@@ -1,4 +1,5 @@
 import Dexie from "dexie";
+import { mergePendingArticle } from "@/domain/articles/offlineChanges.js";
 import { db } from "@/db/database.js";
 import { changedRecords } from "@/domain/sync/reconcileRecords.js";
 
@@ -53,7 +54,13 @@ export async function mergeArticles(articles) {
     const relevant = articles.filter(
       (article) => article.status !== "removed" || existingIds.has(article.id),
     );
-    const changed = changedRecords(existing.filter(Boolean), relevant);
+    const byId = new Map(
+      existing.filter(Boolean).map((article) => [article.id, article]),
+    );
+    const protectedArticles = relevant.map((article) =>
+      mergePendingArticle(article, byId.get(article.id)),
+    );
+    const changed = changedRecords(existing.filter(Boolean), protectedArticles);
     const removedIds = changed
       .filter(({ status }) => status === "removed")
       .map(({ id }) => id);

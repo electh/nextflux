@@ -1,10 +1,7 @@
 import { atom } from "nanostores";
-import {
-  getFeeds,
-  markUnreadArticlesAsRead,
-  getUnreadCount,
-} from "../db/storage";
-import minifluxAPI from "../api/miniflux";
+import { getFeeds, getUnreadCount } from "../db/storage";
+import { db } from "@/db/database.js";
+import { queueArticleChanges } from "@/db/repositories/outboxRepository.js";
 import { starredCounts, unreadCounts } from "./feedCountersStore.js";
 import { settingsState } from "./settingsStore";
 import { getAffectedFeedIds } from "@/domain/articles/articleScope.js";
@@ -134,33 +131,16 @@ export async function markAllAsRead(type = "all", id = null) {
       unreadCounts.set(restoredCounts);
     };
 
-    if (!navigator.onLine) {
-      try {
-        await markUnreadArticlesAsRead(affectedFeedIds);
-      } catch (error) {
-        await rollbackFeeds(affectedFeedIds);
-        throw error;
-      }
-      return;
-    }
-
-    let result;
     try {
-      result = await minifluxAPI.markFeedsAsRead(affectedFeedIds);
+      const downloaded = await db.articles
+        .where("feedId")
+        .anyOf(affectedFeedIds)
+        .filter((article) => article.status === "unread")
+        .primaryKeys();
+      await queueArticleChanges(downloaded, { status: "read" });
     } catch (error) {
       await rollbackFeeds(affectedFeedIds);
       throw error;
-    }
-
-    if (result.failedFeedIds.length > 0) {
-      await rollbackFeeds(result.failedFeedIds);
-    }
-
-    // 只持久化服务端已成功处理的 feed。
-    await markUnreadArticlesAsRead(result.succeededFeedIds);
-
-    if (result.failedFeedIds.length > 0) {
-      throw new Error(`${result.failedFeedIds.length} 个订阅源标记已读失败`);
     }
   } catch (err) {
     throw reportError(err, "articles.markAllRead");

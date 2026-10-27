@@ -1,3 +1,4 @@
+import { isOnline } from "@/stores/syncStore.js";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -33,6 +34,7 @@ export default function ArticleStateActions({
 }) {
   const { t } = useTranslation();
   const starButtonRef = useRef(null);
+  const online = useStore(isOnline);
   const fetchLoading = useStore(loadingOriginContent);
   const pending = useStore(pendingArticleMutations);
   const statusPending = article ? `${article.id}:status` in pending : false;
@@ -122,7 +124,9 @@ export default function ArticleStateActions({
                   : t("articleView.getFullText")
               }
               onClick={() => handleToggleContent(article)}
-              disabled={!article || fetchLoading}
+              disabled={
+                !article || fetchLoading || (!online && !article.shownOriginal)
+              }
               focusableWhenDisabled={Boolean(article)}
               className="rounded-full data-disabled:opacity-50"
               aria-busy={fetchLoading}

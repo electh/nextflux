@@ -21,6 +21,7 @@ function getAuthHeaders(auth) {
 export const apiClient = axios.create({
   baseURL: sessionAccount.serverUrl || "",
   headers: getAuthHeaders(sessionAccount),
+  timeout: 15000,
 });
 
 apiClient.interceptors.response.use(

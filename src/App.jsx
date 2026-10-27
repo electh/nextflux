@@ -39,7 +39,9 @@ function AppEffects() {
   }, [syncInterval]);
   // 检查第三方集成状态
   useEffect(() => {
-    checkIntegrations();
+    if (navigator.onLine) checkIntegrations();
+    // Ask the browser to retain downloaded articles where supported.
+    navigator.storage?.persist?.().catch(() => {});
   }, []);
 
   useHotkeys();

@@ -1,10 +1,15 @@
 import { atom } from "nanostores";
 import { getLastSyncTime, isHistorySyncComplete } from "@/db/storage.js";
 import { reportError } from "@/lib/errors.js";
-import { syncService } from "@/services/syncService.js";
+import { liveQuery } from "dexie";
+import { getPendingCount } from "@/db/repositories/outboxRepository.js";
+import { syncService, flushOutbox } from "@/services/syncService.js";
 import { settingsState } from "@/stores/settingsStore.js";
 
 import { sessionAccount } from "@/stores/authStore.js";
+
+export const pendingCount = atom(0);
+let outboxSubscription = null;
 
 export const isOnline = atom(navigator.onLine);
 export const isSyncing = atom(false);
@@ -29,6 +34,7 @@ export function sync() {
   syncProgress.set({ phase: "loading", received: 0 });
   const synchronize = async () => {
     signal.throwIfAborted();
+    await flushOutbox({ signal });
     const result = await syncService.synchronize({
       signal,
       onBatch: ({ articles }) => {
@@ -66,6 +72,15 @@ export function sync() {
       syncProgress.set({ ...syncProgress.get(), phase: "idle" });
       inFlight = null;
       controller = null;
+      // An edit may have been queued while the current request was in flight.
+      if (running && !signal.aborted && !retryAfter) {
+        getPendingCount()
+          .then((count) => {
+            pendingCount.set(count);
+            if (count) queueMicrotask(performSync);
+          })
+          .catch(() => {});
+      }
     });
   return inFlight;
 }
@@ -83,6 +98,7 @@ async function performSync() {
   const interval = Number.parseInt(settingsState.get().syncInterval, 10);
   // Disabling periodic sync must not prevent a new account from loading its first page.
   if (
+    pendingCount.get() > 0 ||
     !lastSyncTime ||
     !isHistorySyncComplete() ||
     (interval > 0 && Date.now() - lastSyncTime >= interval * 60_000)
@@ -91,18 +107,39 @@ async function performSync() {
   }
 }
 
+function onOutbox() {
+  getPendingCount()
+    .then((count) => {
+      pendingCount.set(count);
+      if (!inFlight) performSync();
+    })
+    .catch((outboxError) =>
+      error.set(reportError(outboxError, "outbox.count")),
+    );
+}
+
 function onOnline() {
   isOnline.set(true);
-  performSync();
+  retryAfter = 0;
+  sync();
 }
 function onOffline() {
   isOnline.set(false);
+  controller?.abort();
 }
 
 export function startAutoSync() {
   stopAutoSync();
   running = true;
   isOnline.set(navigator.onLine);
+  outboxSubscription = liveQuery(getPendingCount).subscribe({
+    next: (count) => {
+      pendingCount.set(count);
+      if (count) performSync();
+    },
+    error: (outboxError) => error.set(reportError(outboxError, "outbox.count")),
+  });
+  window.addEventListener("nextflux:outbox", onOutbox);
   window.addEventListener("online", onOnline);
   window.addEventListener("offline", onOffline);
   document.addEventListener("visibilitychange", performSync);
@@ -115,6 +152,9 @@ export function stopAutoSync() {
   running = false;
   if (syncInterval) clearInterval(syncInterval);
   syncInterval = null;
+  outboxSubscription?.unsubscribe();
+  outboxSubscription = null;
+  window.removeEventListener("nextflux:outbox", onOutbox);
   window.removeEventListener("online", onOnline);
   window.removeEventListener("offline", onOffline);
   document.removeEventListener("visibilitychange", performSync);

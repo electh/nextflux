@@ -1,16 +1,11 @@
 import {
-  updateArticleFields,
-  updateArticleStatuses,
   getArticlesByPage,
   getFeeds,
   getStarredCount,
   getUnreadCount,
 } from "@/db/storage.js";
-import { updateEntries } from "@/api/resources/entries.js";
+import { queueArticleChanges } from "@/db/repositories/outboxRepository.js";
 import { getArticleFeedIds } from "@/domain/articles/articleScope.js";
-
-const remoteUpdate = (operation) =>
-  navigator.onLine ? operation() : Promise.resolve();
 
 export async function loadArticlePage({
   sourceId,
@@ -44,21 +39,16 @@ export async function loadArticlePage({
 }
 
 export async function persistArticleStatus(article, status) {
-  await remoteUpdate(() => updateEntries([article.id], { status }));
-  await updateArticleFields(article.id, { status });
+  await queueArticleChanges([article.id], { status });
   return getUnreadCount(article.feedId);
 }
 
 export async function persistArticleStarred(article, starred) {
-  await remoteUpdate(() =>
-    updateEntries([article.id], { starred: starred === 1 }),
-  );
-  await updateArticleFields(article.id, { starred });
+  await queueArticleChanges([article.id], { starred });
   return getStarredCount(article.feedId);
 }
 
 export async function persistArticlesAsRead(articles) {
   const ids = articles.map(({ id }) => id);
-  await remoteUpdate(() => updateEntries(ids, { status: "read" }));
-  await updateArticleStatuses(ids, "read");
+  await queueArticleChanges(ids, { status: "read" });
 }

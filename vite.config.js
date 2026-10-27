@@ -20,7 +20,7 @@ export default defineConfig({
       manifest: false,
       includeAssets: [],
       injectManifest: {
-        // Fingerprint releases for update detection, without caching the files.
+        // Preload the complete shell, including lazy article and language chunks.
         globPatterns: ["**/*.{js,css,html,woff,woff2,svg,png,ico,webmanifest}"],
       },
     }),

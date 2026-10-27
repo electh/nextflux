@@ -13,6 +13,11 @@ export default function PwaUpdates() {
     onRegisteredSW(_url, value) {
       setRegistration(value);
     },
+    onOfflineReady() {
+      toast.success(
+        "Offline launch is ready. Sync your articles before disconnecting.",
+      );
+    },
     onRegisterError(error) {
       console.error("PWA registration failed", error);
     },
